@@ -1,4 +1,4 @@
-﻿"""Database-neutral tools for structured educational questions."""
+"""Database-neutral tools for structured educational questions."""
 
 from .exceptions import (
     FormatDetectionError,
@@ -24,7 +24,12 @@ from .models import (
     TaxonomyRef,
 )
 from .schema import load_schema, schema_path
-from .validation import ValidationIssue, validate_question, validate_question_set, validate_with_schema
+from .validation import (
+    ValidationIssue,
+    validate_question,
+    validate_question_set,
+    validate_with_schema,
+)
 
 __all__ = [
     "FormatDetectionError",
@@ -56,5 +61,4 @@ __all__ = [
     "validate_with_schema",
 ]
 
-__version__ = "0.1.0"
-__version__ = "0.2.0"
+__version__ = "0.2.1"

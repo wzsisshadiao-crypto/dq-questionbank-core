@@ -1,4 +1,4 @@
-﻿"""Importer and exporter registry with safe built-in defaults."""
+"""Importer and exporter registry with safe built-in defaults."""
 
 from __future__ import annotations
 

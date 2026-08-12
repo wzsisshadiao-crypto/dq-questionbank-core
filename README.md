@@ -1,12 +1,15 @@
 # DQ QuestionBank Core
 
+[![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
+[![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
+[![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
+[![Release](https://img.shields.io/badge/release-v0.2.1-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+
 Open infrastructure for structured educational questions.
 
-DQ QuestionBank Core is a database-neutral Python library, command-line tool, and local browser playground for importing, validating, converting, and exchanging educational questions. Its versioned canonical model supports multilingual text, LaTeX math, images, tables, answer types, source provenance, taxonomy references, and composite questions.
+DQ QuestionBank Core is a database-neutral Python library, CLI, and local browser playground for importing, validating, converting, and exchanging educational questions. Its versioned canonical model supports multilingual text, LaTeX math, images, tables, answer types, source provenance, taxonomy references, and composite questions.
 
 This repository is an independent open-core extraction. It contains no production question bank, user data, private database, commercial workflow, or built-in AI provider.
-
-> Status: `0.1.0` alpha. The canonical JSON model is usable, but compatibility guarantees remain pre-1.0.
 
 ## Why it exists
 
@@ -58,7 +61,7 @@ For development:
 python -m pip install -e ".[docx,dev]"
 ```
 
-Python 3.10, 3.11, and 3.12 are the initial supported versions.
+Python 3.10, 3.11, and 3.12 are the supported versions.
 
 ## Quick start
 
@@ -71,8 +74,8 @@ dq validate examples/sample_questions.json
 Convert canonical JSON to Markdown or LaTeX:
 
 ```bash
-dq convert examples/sample_questions.json --to markdown -o questions.md
-dq convert examples/sample_questions.json --to latex -o questions.tex
+dq convert examples/sample_questions.json --output-format markdown -o questions.md
+dq convert examples/sample_questions.json --output-format latex -o questions.tex
 ```
 
 Import a DOCX document:
@@ -146,14 +149,16 @@ Human document formats are not lossless containers for every source-specific fea
 ## Architecture
 
 - `models.py`: canonical, recursive data model
-- `validation.py`: structural and safety rules
+- `validation.py`: structural and safety rules (plus unified `validate_with_schema()`)
+- `exceptions.py`: catchable error hierarchy (`QuestionBankError` and subtypes)
+- `migration.py`: schema version migration framework
 - `interfaces.py`: extension contracts
-- `registry.py`: built-in format discovery
+- `registry.py`: built-in format discovery with protocol enforcement
 - `formats/`: JSON, Markdown, LaTeX, and DOCX adapters
 - `cli.py`: thin command wrapper over the library
 - `web/`: static local playground; no server-side data storage
 
-The architecture proposal and private/public boundary are documented in [`docs/oss-architecture-proposal.md`](docs/oss-architecture-proposal.md) and [`OPEN_SOURCE_BOUNDARY.md`](OPEN_SOURCE_BOUNDARY.md).
+See [`OPEN_SOURCE_BOUNDARY.md`](OPEN_SOURCE_BOUNDARY.md) for the public/private boundary and [`docs/oss-architecture-proposal.md`](docs/oss-architecture-proposal.md) for design rationale.
 
 ## Development
 
@@ -165,19 +170,15 @@ python scripts/audit_public_tree.py
 python scripts/check_docs.py
 ```
 
-The test suite covers model serialization, schema conformance, validation, unsafe asset paths,
-CLI behavior, format round trips, DOCX conversion, composite questions, formulas, documentation
-links, and the English-only public interface.
+The test suite covers model serialization, schema conformance, validation, unsafe asset paths, CLI behavior, format round trips, DOCX conversion, composite questions, formulas, documentation links, English-only public interface, web playground smoke tests, and the exception hierarchy.
+
+## Compatibility
+
+Python 3.10-3.12. See [`docs/compatibility.md`](docs/compatibility.md) for format-specific notes.
 
 ## Roadmap
 
-- Stabilize the `1.x` compatibility policy through real external integrations
-- Add richer DOCX style profiles and table/image placement fidelity
-- Add parser conformance fixtures contributed under explicit licenses
-- Add optional IMS QTI adapters
-- Publish extension entry-point discovery after the plugin API matures
-
-See [`docs/roadmap.md`](docs/roadmap.md) for release milestones.
+See [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Contributing and security
 
@@ -185,4 +186,4 @@ Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening an issue or pull reques
 
 ## License
 
-A final license has not been selected. This is a release blocker, not an invitation to use the code without permission. See [`LICENSE_RECOMMENDATION.md`](LICENSE_RECOMMENDATION.md). A valid OSI-approved `LICENSE` file must be added before the repository is announced as open source.
+Apache License 2.0. See [`LICENSE`](LICENSE).

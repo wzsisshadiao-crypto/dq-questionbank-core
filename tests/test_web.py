@@ -3,9 +3,8 @@
 from __future__ import annotations
 
 import re
-import subprocess
-import sys
 import shutil
+import subprocess
 import unittest
 from pathlib import Path
 

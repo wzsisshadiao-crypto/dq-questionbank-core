@@ -15,7 +15,7 @@ from dq_questionbank.exceptions import (
     SchemaValidationError,
     SchemaVersionError,
 )
-from dq_questionbank.validation import ValidationIssue, validate_with_schema
+from dq_questionbank.validation import validate_with_schema
 
 
 class ExceptionHierarchyTests(unittest.TestCase):

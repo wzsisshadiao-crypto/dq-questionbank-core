@@ -9,6 +9,7 @@ from typing import Any
 
 from .exceptions import SchemaNotFoundError
 
+
 def schema_path() -> Path:
     """Return the schema installed in the active Python environment."""
     return (

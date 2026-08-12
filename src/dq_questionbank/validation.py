@@ -1,4 +1,4 @@
-﻿"""Validation rules for the canonical question model."""
+"""Validation rules for the canonical question model."""
 
 from __future__ import annotations
 

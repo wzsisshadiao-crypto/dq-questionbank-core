@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dq-questionbank-core"
-version = "0.2.0"
+version = "0.2.1"
 description = "Open infrastructure for structured educational questions."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -14,6 +14,7 @@ keywords = ["education", "question-bank", "schema", "docx", "latex"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
@@ -52,8 +53,7 @@ addopts = "-q"
 
 [tool.ruff]
 target-version = "py310"
-line-length = 100
+line-length = 105
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
-version = "0.2.0"
