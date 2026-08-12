@@ -98,6 +98,21 @@ def main(argv: list[str] | None = None) -> int:
         registry.exporter(output_format).dump(question_set, args.output, **options)
         print(f"Wrote {len(question_set.questions)} question(s) to {args.output}.")
         return 0
+    except FormatDetectionError as exc:
+        print(f"Format error: {exc}", file=sys.stderr)
+        return 2
+    except FormatLoadError as exc:
+        print(f"Load error: {exc}", file=sys.stderr)
+        return 2
+    except FormatWriteError as exc:
+        print(f"Write error: {exc}", file=sys.stderr)
+        return 2
+    except SchemaNotFoundError as exc:
+        print(f"Installation error: {exc}", file=sys.stderr)
+        return 2
+    except QuestionBankError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        return 2
     except (OSError, RuntimeError, TypeError, ValueError, json.JSONDecodeError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 2
@@ -105,3 +120,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+from .exceptions import FormatDetectionError, FormatLoadError, FormatWriteError, QuestionBankError, SchemaNotFoundError

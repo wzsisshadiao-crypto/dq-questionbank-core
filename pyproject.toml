@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dq-questionbank-core"
-version = "0.1.0"
+version = "0.2.0"
 description = "Open infrastructure for structured educational questions."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -56,3 +56,4 @@ line-length = 100
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+version = "0.2.0"

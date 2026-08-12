@@ -1,4 +1,4 @@
-"""Validation rules for the canonical question model."""
+﻿"""Validation rules for the canonical question model."""
 
 from __future__ import annotations
 
@@ -217,4 +217,47 @@ def validate_question_set(question_set: QuestionSet) -> list[ValidationIssue]:
         )
     for index, question in enumerate(question_set.questions):
         issues.extend(validate_question(question, f"questions[{index}]"))
+    return issues
+def validate_with_schema(
+    payload: dict,
+    schema: dict | None = None,
+) -> list[ValidationIssue]:
+    """Run JSON Schema structural validation followed by semantic rules.
+
+    Returns a combined list; schema validation failures do not prevent semantic checks.
+    """
+    issues: list[ValidationIssue] = []
+    if schema is None:
+        try:
+            from .schema import load_schema
+            schema = load_schema()
+        except Exception:
+            pass
+    if schema is not None:
+        try:
+            import jsonschema
+            validator = jsonschema.Draft202012Validator(schema)
+            for error in validator.iter_errors(payload):
+                issues.append(
+                    ValidationIssue(
+                        "/".join(str(p) for p in error.absolute_path),
+                        "schema",
+                        error.message,
+                        "error",
+                    )
+                )
+        except ImportError:
+            pass
+        except Exception as exc:
+            issues.append(
+                ValidationIssue("$", "schema_error", str(exc), "error")
+            )
+    try:
+        from .models import QuestionSet
+        question_set = QuestionSet.from_dict(payload)
+        issues.extend(validate_question_set(question_set))
+    except Exception as exc:
+        issues.append(
+            ValidationIssue("$", "model_parse_error", str(exc), "error")
+        )
     return issues

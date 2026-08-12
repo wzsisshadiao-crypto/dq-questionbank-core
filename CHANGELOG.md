@@ -4,7 +4,21 @@ All notable changes will be documented here. The project follows semantic versio
 
 ## [Unreleased]
 
-- License selection and first public release review.
+## [0.2.0] - 2026-08-12
+
+### Added
+- Custom exception hierarchy: `QuestionBankError`, `FormatError`, `FormatDetectionError`, `FormatLoadError`, `FormatWriteError`, `SchemaError`, `SchemaNotFoundError`, `SchemaValidationError`, `SchemaVersionError`.
+- Protocol enforcement in `FormatRegistry`: `register_importer` and `register_exporter` reject non-conforming objects.
+- Unified validation pipeline: `validate_with_schema()` runs JSON Schema then semantic rules in one pass.
+- Schema version migration framework: `register_migration()`, `migrate()`, `list_migrations()`.
+- Lazy format module loading: LaTeX and DOCX modules are only imported when available.
+- Thread-safe `FormatRegistry` using `threading.Lock`.
+- Web playground smoke tests: HTML structure, CSS rules, and JS syntax.
+
+### Changed
+- `registry.py` raises `FormatDetectionError` instead of `ValueError`.
+- `schema.py` raises `SchemaNotFoundError` instead of `FileNotFoundError`.
+- CLI catches domain-specific exceptions for clearer error messages.
 
 ## [0.1.0] - 2026-08-12
 
