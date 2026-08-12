@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dq-questionbank:schema:question-set:1.0",
+  "title": "DQ Question Set",
+  "description": "Database-neutral interchange format for educational questions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "id", "title", "language", "questions"],
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string" },
+    "language": { "$ref": "#/$defs/language" },
+    "questions": { "type": "array", "items": { "$ref": "#/$defs/question" } },
+    "metadata": { "type": "object" }
+  },
+  "$defs": {
+    "language": { "type": "string", "pattern": "^[A-Za-z]{2,8}(-[A-Za-z0-9]{1,8})*$" },
+    "content": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["blocks"],
+      "properties": {
+        "blocks": { "type": "array", "items": { "$ref": "#/$defs/contentBlock" } }
+      }
+    },
+    "contentBlock": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": { "enum": ["text", "math", "image", "table", "code", "line_break"] },
+        "text": { "type": "string" },
+        "latex": { "type": "string" },
+        "asset_id": { "type": "string" },
+        "alt_text": { "type": "string" },
+        "language": { "$ref": "#/$defs/language" },
+        "rows": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } },
+        "metadata": { "type": "object" }
+      }
+    },
+    "choice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "content"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "content": { "$ref": "#/$defs/content" },
+        "metadata": { "type": "object" }
+      }
+    },
+    "answer": {
+      "type": "object",
+      "required": ["kind", "value"],
+      "properties": {
+        "kind": { "type": "string", "minLength": 1 },
+        "value": {},
+        "alternatives": { "type": "array" },
+        "metadata": { "type": "object" }
+      }
+    },
+    "asset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "uri"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "type": "string", "minLength": 1 },
+        "uri": { "type": "string", "minLength": 1 },
+        "media_type": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "metadata": { "type": "object" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "year": { "type": "integer" },
+        "uri": { "type": "string" },
+        "license": { "type": "string" },
+        "attribution": { "type": "string" },
+        "locator": { "type": "string" }
+      }
+    },
+    "taxonomy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["system", "code"],
+      "properties": {
+        "system": { "type": "string", "minLength": 1 },
+        "code": { "type": "string", "minLength": 1 },
+        "label": { "type": "string" }
+      }
+    },
+    "question": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "id", "type", "language", "stem"],
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "id": { "type": "string", "minLength": 1 },
+        "type": { "enum": ["single_choice", "multiple_choice", "true_false", "fill_blank", "short_answer", "essay", "composite"] },
+        "language": { "$ref": "#/$defs/language" },
+        "subject": { "type": "string" },
+        "stem": { "$ref": "#/$defs/content" },
+        "choices": { "type": "array", "items": { "$ref": "#/$defs/choice" } },
+        "answer": { "$ref": "#/$defs/answer" },
+        "solution": { "$ref": "#/$defs/content" },
+        "hints": { "type": "array", "items": { "$ref": "#/$defs/content" } },
+        "assets": { "type": "array", "items": { "$ref": "#/$defs/asset" } },
+        "tags": { "type": "array", "items": { "type": "string" }, "uniqueItems": true },
+        "difficulty": { "type": "number", "minimum": 0, "maximum": 1 },
+        "source": { "$ref": "#/$defs/source" },
+        "taxonomy": { "type": "array", "items": { "$ref": "#/$defs/taxonomy" } },
+        "subquestions": { "type": "array", "items": { "$ref": "#/$defs/question" } },
+        "metadata": { "type": "object" }
+      }
+    }
+  }
+}

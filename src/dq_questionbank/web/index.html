@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DQ QuestionBank Playground</title>
+  <meta name="description" content="A local playground for the DQ Question Schema.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#">DQ QuestionBank <span>Core</span></a>
+    <div class="status" id="status" role="status">Ready</div>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">LOCAL SCHEMA PLAYGROUND</p>
+      <h1>Structure questions without locking them to an app.</h1>
+      <p>Inspect, edit, validate, and download canonical question JSON. Nothing leaves your browser.</p>
+    </section>
+    <section class="workspace" aria-label="Question schema workspace">
+      <aside class="sidebar">
+        <div class="panel-heading">
+          <div>
+            <p class="label">QUESTION SET</p>
+            <h2 id="set-title">Sample Set</h2>
+          </div>
+          <button id="new-question" class="icon-button" title="Add question" aria-label="Add question">+</button>
+        </div>
+        <nav id="question-list" aria-label="Questions"></nav>
+        <div class="sidebar-actions">
+          <label class="button secondary" for="file-input">Open JSON</label>
+          <input id="file-input" type="file" accept="application/json,.json" hidden>
+          <button id="download" class="button primary">Download JSON</button>
+        </div>
+      </aside>
+      <section class="editor-panel">
+        <div class="panel-heading editor-heading">
+          <div>
+            <p class="label">CANONICAL JSON</p>
+            <h2>Question Editor</h2>
+          </div>
+          <button id="format" class="button secondary">Format</button>
+        </div>
+        <textarea id="editor" spellcheck="false" aria-label="Question JSON editor"></textarea>
+      </section>
+      <section class="preview-panel">
+        <div class="panel-heading">
+          <div>
+            <p class="label">LIVE PREVIEW</p>
+            <h2>Rendered Question</h2>
+          </div>
+        </div>
+        <article id="preview" class="preview"></article>
+        <div class="validation" id="validation" aria-live="polite"></div>
+      </section>
+    </section>
+  </main>
+  <footer>DQ QuestionBank Core &middot; Local by design &middot; Schema v1.0</footer>
+  <script src="app.js" defer></script>
+</body>
+</html>

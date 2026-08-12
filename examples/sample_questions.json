@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "id": "original-samples",
+  "title": "Original Sample Questions",
+  "description": "Synthetic questions written specifically for this project.",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "math-001",
+      "type": "single_choice",
+      "language": "en",
+      "subject": "Mathematics",
+      "stem": {
+        "blocks": [
+          { "type": "text", "text": "If " },
+          { "type": "math", "latex": "x + 3 = 7" },
+          { "type": "text", "text": ", what is the value of " },
+          { "type": "math", "latex": "x" },
+          { "type": "text", "text": "?" }
+        ]
+      },
+      "choices": [
+        { "id": "A", "content": { "blocks": [{ "type": "text", "text": "2" }] } },
+        { "id": "B", "content": { "blocks": [{ "type": "text", "text": "3" }] } },
+        { "id": "C", "content": { "blocks": [{ "type": "text", "text": "4" }] } },
+        { "id": "D", "content": { "blocks": [{ "type": "text", "text": "5" }] } }
+      ],
+      "answer": { "kind": "choice", "value": "C" },
+      "solution": { "blocks": [{ "type": "math", "latex": "x = 7 - 3 = 4", "metadata": { "display": true } }] },
+      "hints": [{ "blocks": [{ "type": "text", "text": "Subtract the same number from both sides." }] }],
+      "tags": ["algebra", "linear-equation"],
+      "difficulty": 0.2,
+      "source": { "title": "DQ original sample", "license": "Project sample data; not third-party material" }
+    },
+    {
+      "schema_version": "1.0",
+      "id": "science-001",
+      "type": "composite",
+      "language": "en",
+      "subject": "Science",
+      "stem": { "blocks": [{ "type": "text", "text": "A sealed container is warmed while its volume remains constant." }] },
+      "subquestions": [
+        {
+          "schema_version": "1.0",
+          "id": "science-001-a",
+          "type": "short_answer",
+          "language": "en",
+          "stem": { "blocks": [{ "type": "text", "text": "What happens to the average kinetic energy of the particles?" }] },
+          "answer": { "kind": "text", "value": "It increases." }
+        },
+        {
+          "schema_version": "1.0",
+          "id": "science-001-b",
+          "type": "short_answer",
+          "language": "en",
+          "stem": { "blocks": [{ "type": "text", "text": "What happens to the pressure?" }] },
+          "answer": { "kind": "text", "value": "It increases." }
+        }
+      ],
+      "tags": ["particle-model", "temperature"],
+      "difficulty": 0.35,
+      "source": { "title": "DQ original sample", "license": "Project sample data; not third-party material" }
+    }
+  ]
+}
