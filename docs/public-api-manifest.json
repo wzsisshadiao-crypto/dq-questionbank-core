@@ -1,0 +1,314 @@
+{
+  "exports": [
+    "FormatDetectionError",
+    "FormatError",
+    "FormatLoadError",
+    "FormatWriteError",
+    "PluginDiscoveryError",
+    "QuestionBankError",
+    "FormatRegistry",
+    "FilesystemStorageAdapter",
+    "PLUGIN_ENTRY_POINT_GROUP",
+    "SchemaError",
+    "SchemaNotFoundError",
+    "SchemaValidationError",
+    "SchemaVersionError",
+    "Answer",
+    "Asset",
+    "Choice",
+    "Content",
+    "ContentBlock",
+    "Question",
+    "QuestionSet",
+    "QuestionExporter",
+    "QuestionImporter",
+    "SourceMetadata",
+    "StorageAdapter",
+    "TaxonomyRef",
+    "AIProvider",
+    "ValidationIssue",
+    "list_migrations",
+    "load_schema",
+    "available_plugins",
+    "default_registry",
+    "discover_plugins",
+    "migrate",
+    "register_migration",
+    "schema_path",
+    "validate_question",
+    "validate_question_set",
+    "validate_with_schema"
+  ],
+  "manifest_version": 1,
+  "members": {
+    "Answer.from_dict": {
+      "kind": "function",
+      "signature": "(data)"
+    },
+    "Answer.to_dict": {
+      "kind": "function",
+      "signature": "(self)"
+    },
+    "Asset.from_dict": {
+      "kind": "function",
+      "signature": "(data)"
+    },
+    "Asset.to_dict": {
+      "kind": "function",
+      "signature": "(self)"
+    },
+    "Choice.from_dict": {
+      "kind": "function",
+      "signature": "(data)"
+    },
+    "Choice.to_dict": {
+      "kind": "function",
+      "signature": "(self)"
+    },
+    "Content.from_dict": {
+      "kind": "function",
+      "signature": "(data)"
+    },
+    "Content.plain_text": {
+      "kind": "function",
+      "signature": "(self)"
+    },
+    "Content.text": {
+      "kind": "function",
+      "signature": "(value, language=None)"
+    },
+    "Content.to_dict": {
+      "kind": "function",
+      "signature": "(self)"
+    },
+    "ContentBlock.from_dict": {
+      "kind": "function",
+      "signature": "(data)"
+    },
+    "ContentBlock.to_dict": {
+      "kind": "function",
+      "signature": "(self)"
+    },
+    "FilesystemStorageAdapter.load": {
+      "kind": "function",
+      "signature": "(self, question_set_id)"
+    },
+    "FilesystemStorageAdapter.save": {
+      "kind": "function",
+      "signature": "(self, question_set)"
+    },
+    "FormatRegistry.detect_input": {
+      "kind": "function",
+      "signature": "(self, path)"
+    },
+    "FormatRegistry.export_formats": {
+      "kind": "property"
+    },
+    "FormatRegistry.exporter": {
+      "kind": "function",
+      "signature": "(self, name)"
+    },
+    "FormatRegistry.import_formats": {
+      "kind": "property"
+    },
+    "FormatRegistry.importer": {
+      "kind": "function",
+      "signature": "(self, name)"
+    },
+    "FormatRegistry.register_exporter": {
+      "kind": "function",
+      "signature": "(self, exporter)"
+    },
+    "FormatRegistry.register_importer": {
+      "kind": "function",
+      "signature": "(self, importer)"
+    },
+    "Question.from_dict": {
+      "kind": "function",
+      "signature": "(data)"
+    },
+    "Question.to_dict": {
+      "kind": "function",
+      "signature": "(self)"
+    },
+    "QuestionSet.from_dict": {
+      "kind": "function",
+      "signature": "(data)"
+    },
+    "QuestionSet.to_dict": {
+      "kind": "function",
+      "signature": "(self)"
+    },
+    "SourceMetadata.from_dict": {
+      "kind": "function",
+      "signature": "(data)"
+    },
+    "SourceMetadata.to_dict": {
+      "kind": "function",
+      "signature": "(self)"
+    },
+    "TaxonomyRef.from_dict": {
+      "kind": "function",
+      "signature": "(data)"
+    },
+    "TaxonomyRef.to_dict": {
+      "kind": "function",
+      "signature": "(self)"
+    }
+  },
+  "package": "dq_questionbank",
+  "symbols": {
+    "AIProvider": {
+      "kind": "class",
+      "signature": "(*args, **kwargs)"
+    },
+    "Answer": {
+      "kind": "class",
+      "signature": "(kind, value, alternatives=<factory>, metadata=<factory>)"
+    },
+    "Asset": {
+      "kind": "class",
+      "signature": "(id, kind, uri, media_type=None, sha256=None, width=None, height=None, metadata=<factory>)"
+    },
+    "Choice": {
+      "kind": "class",
+      "signature": "(id, content, metadata=<factory>)"
+    },
+    "Content": {
+      "kind": "class",
+      "signature": "(blocks=<factory>)"
+    },
+    "ContentBlock": {
+      "kind": "class",
+      "signature": "(type='text', text=None, latex=None, asset_id=None, alt_text=None, language=None, rows=None, metadata=<factory>)"
+    },
+    "FilesystemStorageAdapter": {
+      "kind": "class",
+      "signature": "(root)"
+    },
+    "FormatDetectionError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
+    "FormatError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
+    "FormatLoadError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
+    "FormatRegistry": {
+      "kind": "class",
+      "signature": "()"
+    },
+    "FormatWriteError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
+    "PLUGIN_ENTRY_POINT_GROUP": {
+      "kind": "value",
+      "value": "'dq_questionbank.plugins'"
+    },
+    "PluginDiscoveryError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
+    "Question": {
+      "kind": "class",
+      "signature": "(id, type, stem, language='en', subject=None, choices=<factory>, answer=None, solution=None, hints=<factory>, assets=<factory>, tags=<factory>, difficulty=None, source=None, taxonomy=<factory>, subquestions=<factory>, metadata=<factory>, schema_version='1.0')"
+    },
+    "QuestionBankError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
+    "QuestionExporter": {
+      "kind": "class",
+      "signature": "(*args, **kwargs)"
+    },
+    "QuestionImporter": {
+      "kind": "class",
+      "signature": "(*args, **kwargs)"
+    },
+    "QuestionSet": {
+      "kind": "class",
+      "signature": "(id, title, questions=<factory>, description=None, language='en', metadata=<factory>, schema_version='1.0')"
+    },
+    "SchemaError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
+    "SchemaNotFoundError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
+    "SchemaValidationError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
+    "SchemaVersionError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
+    "SourceMetadata": {
+      "kind": "class",
+      "signature": "(title=None, author=None, year=None, uri=None, license=None, attribution=None, locator=None, metadata=<factory>)"
+    },
+    "StorageAdapter": {
+      "kind": "class",
+      "signature": "(*args, **kwargs)"
+    },
+    "TaxonomyRef": {
+      "kind": "class",
+      "signature": "(system, code, label=None)"
+    },
+    "ValidationIssue": {
+      "kind": "class",
+      "signature": "(path, code, message, severity='error')"
+    },
+    "available_plugins": {
+      "kind": "function",
+      "signature": "(*, group='dq_questionbank.plugins')"
+    },
+    "default_registry": {
+      "kind": "function",
+      "signature": "()"
+    },
+    "discover_plugins": {
+      "kind": "function",
+      "signature": "(registry, *, group='dq_questionbank.plugins')"
+    },
+    "list_migrations": {
+      "kind": "function",
+      "signature": "()"
+    },
+    "load_schema": {
+      "kind": "function",
+      "signature": "()"
+    },
+    "migrate": {
+      "kind": "function",
+      "signature": "(payload, target_version)"
+    },
+    "register_migration": {
+      "kind": "function",
+      "signature": "(from_version, to_version)"
+    },
+    "schema_path": {
+      "kind": "function",
+      "signature": "()"
+    },
+    "validate_question": {
+      "kind": "function",
+      "signature": "(question, path='question')"
+    },
+    "validate_question_set": {
+      "kind": "function",
+      "signature": "(question_set)"
+    },
+    "validate_with_schema": {
+      "kind": "function",
+      "signature": "(payload, schema=None)"
+    }
+  }
+}

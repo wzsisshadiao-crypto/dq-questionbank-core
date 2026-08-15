@@ -19,12 +19,12 @@
 
 - Optional IMS QTI research adapter
 - Stable plugin discovery mechanism (implemented; opt-in entry-point loading)
-- Reference filesystem storage adapter
+- Reference filesystem storage adapter (implemented; local JSON only)
 
 ## 1.0: Stable interchange contract
 
 - External implementation feedback incorporated
-- Published compatibility and migration suites
-- Stable public Python API
+- Broaden the initial compatibility and migration fixture suite with external implementation feedback
+- Maintain the stable public Python API manifest through release governance
 - Proven release and security process
 

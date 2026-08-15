@@ -1,0 +1,26 @@
+{
+  "schema_version": "1.0",
+  "id": "compatibility-basic",
+  "title": "Compatibility fixture",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "basic-1",
+      "type": "short_answer",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "What is 2 + 2?"
+          }
+        ]
+      },
+      "answer": {
+        "kind": "text",
+        "value": "4"
+      }
+    }
+  ]
+}

@@ -11,6 +11,10 @@ All notable changes will be documented here. The project follows semantic versio
 - Repository-owned Wiki source, manifest, and export/sync/check utility.
 - English public-interface policy for maintained documentation and community
   contributions.
+- Stable public API manifest and CI compatibility check.
+- Executable synthetic schema and migration-framework compatibility fixtures.
+- Reference `FilesystemStorageAdapter` with deterministic paths, atomic writes,
+  and path-traversal rejection.
 
 ## [0.2.1] - 2026-08-12
 

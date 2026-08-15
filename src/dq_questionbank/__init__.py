@@ -15,6 +15,7 @@ from .exceptions import (
 from .plugins import PLUGIN_ENTRY_POINT_GROUP, available_plugins, discover_plugins
 from .registry import FormatRegistry, default_registry
 from .migration import list_migrations, migrate, register_migration
+from .interfaces import AIProvider, QuestionExporter, QuestionImporter, StorageAdapter
 from .models import (
     Answer,
     Asset,
@@ -27,6 +28,7 @@ from .models import (
     TaxonomyRef,
 )
 from .schema import load_schema, schema_path
+from .storage import FilesystemStorageAdapter
 from .validation import (
     ValidationIssue,
     validate_question,
@@ -42,6 +44,7 @@ __all__ = [
     "PluginDiscoveryError",
     "QuestionBankError",
     "FormatRegistry",
+    "FilesystemStorageAdapter",
     "PLUGIN_ENTRY_POINT_GROUP",
     "SchemaError",
     "SchemaNotFoundError",
@@ -54,8 +57,12 @@ __all__ = [
     "ContentBlock",
     "Question",
     "QuestionSet",
+    "QuestionExporter",
+    "QuestionImporter",
     "SourceMetadata",
+    "StorageAdapter",
     "TaxonomyRef",
+    "AIProvider",
     "ValidationIssue",
     "list_migrations",
     "load_schema",

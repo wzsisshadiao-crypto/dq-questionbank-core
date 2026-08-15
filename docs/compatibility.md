@@ -12,6 +12,18 @@ The package follows semantic versioning:
 
 Schema versions use `MAJOR.MINOR`. Unsupported versions produce validation errors. Readers do not guess migrations.
 
+The current schema version is `1.0`; it is separate from the package release
+version. The package has not declared a 1.0 release. See
+[Compatibility Fixtures](compatibility-fixtures.md) for the executable current
+schema and migration-framework checks.
+
+## Stable Python API
+
+The package-level public API is recorded in
+[`public-api-manifest.json`](public-api-manifest.json). CI rejects removed,
+renamed, or signature-incompatible exports and documented members. See
+[Stable Public Python API](public-api.md) for the update procedure.
+
 ## Round-trip guarantees
 
 - JSON: canonical object equality after serialize and deserialize

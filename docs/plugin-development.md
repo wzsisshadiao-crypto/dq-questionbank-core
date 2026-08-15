@@ -7,10 +7,11 @@ The core exposes four protocols. Two are fully implemented; two are extension po
 - `QuestionImporter` — JSON, Markdown, LaTeX, DOCX
 - `QuestionExporter` — JSON, Markdown, LaTeX, DOCX
 
-## Extension points (no built-in implementation)
+## Storage and AI extension points
 
-`StorageAdapter` and `AIProvider` are intentionally left as protocol definitions
-without implementations. They are hooks for private downstream projects.
+`AIProvider` remains a protocol-only hook for private downstream projects.
+`StorageAdapter` has a small local filesystem reference implementation; database,
+cloud, and application-specific storage remain downstream integration work.
 
 ### StorageAdapter
 
@@ -21,8 +22,9 @@ class StorageAdapter(Protocol):
 ```
 
 Use for PostgreSQL, SQLite, S3, or any other backend. The open-source core never
-calls this protocol. Private projects import it, implement it, and wire it into
-their own CLI or web servers.
+calls this protocol automatically. Private projects import it, implement it, and
+wire it into their own CLI or web servers. For a safe local JSON example, see
+[Reference Filesystem Storage](filesystem-storage.md).
 
 ### AIProvider
 

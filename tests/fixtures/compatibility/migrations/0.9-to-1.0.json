@@ -1,0 +1,58 @@
+{
+  "fixture_format": "dq-questionbank-migration-fixture-1",
+  "description": "Synthetic migration-harness example; schema 0.9 is not a supported release.",
+  "from_version": "0.9",
+  "to_version": "1.0",
+  "source": {
+    "schema_version": "0.9",
+    "id": "migration-basic",
+    "title": "Migration fixture",
+    "language": "en",
+    "questions": [
+      {
+        "schema_version": "0.9",
+        "id": "migration-1",
+        "type": "short_answer",
+        "language": "en",
+        "stem": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "State the fixture result."
+            }
+          ]
+        },
+        "answer": {
+          "kind": "text",
+          "value": "fixture"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "schema_version": "1.0",
+    "id": "migration-basic",
+    "title": "Migration fixture",
+    "language": "en",
+    "questions": [
+      {
+        "schema_version": "1.0",
+        "id": "migration-1",
+        "type": "short_answer",
+        "language": "en",
+        "stem": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "State the fixture result."
+            }
+          ]
+        },
+        "answer": {
+          "kind": "text",
+          "value": "fixture"
+        }
+      }
+    ]
+  }
+}
