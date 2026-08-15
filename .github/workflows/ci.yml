@@ -30,6 +30,11 @@ jobs:
         run: python scripts/audit_public_tree.py
       - name: Check documentation links
         run: python scripts/check_docs.py
+      - name: Verify Wiki source and export determinism
+        run: |
+          python scripts/wiki_sync.py check-manifest
+          python scripts/wiki_sync.py export "$RUNNER_TEMP/dq-wiki"
+          python scripts/wiki_sync.py check "$RUNNER_TEMP/dq-wiki"
       - name: Build distributions
         if: matrix.python-version == '3.12'
         run: python -m build

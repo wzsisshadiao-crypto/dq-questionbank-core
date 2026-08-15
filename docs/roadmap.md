@@ -18,7 +18,7 @@
 ## 0.3: Ecosystem adapters
 
 - Optional IMS QTI research adapter
-- Stable plugin discovery mechanism
+- Stable plugin discovery mechanism (implemented; opt-in entry-point loading)
 - Reference filesystem storage adapter
 
 ## 1.0: Stable interchange contract

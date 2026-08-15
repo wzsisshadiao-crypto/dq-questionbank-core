@@ -4,6 +4,14 @@ All notable changes will be documented here. The project follows semantic versio
 
 ## [Unreleased]
 
+### Added
+
+- Opt-in, deterministic discovery for third-party format plugins through the
+  `dq_questionbank.plugins` entry-point group.
+- Repository-owned Wiki source, manifest, and export/sync/check utility.
+- English public-interface policy for maintained documentation and community
+  contributions.
+
 ## [0.2.1] - 2026-08-12
 
 ### Fixed

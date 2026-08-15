@@ -52,11 +52,41 @@ Since v0.2.0, `register_importer` and `register_exporter` enforce the protocol
 at registration time with `isinstance` checks. Passing a non-conforming object
 raises `TypeError`.
 
-## Registration is explicit
+## Registration and discovery are explicit
 
 Create a caller-owned `FormatRegistry` and register format instances explicitly.
 Explicit registration keeps import behavior auditable and avoids executing unknown
 package entry points.
+
+For reusable public plugins, publish one registrar under the stable
+`dq_questionbank.plugins` entry-point group:
+
+```toml
+[project.entry-points."dq_questionbank.plugins"]
+my_format = "example_plugin:register"
+```
+
+The registrar receives a caller-owned registry and uses the same protocol
+checks as built-in registration:
+
+```python
+from dq_questionbank.plugins import discover_plugins
+from dq_questionbank.registry import default_registry
+
+
+def register(registry):
+    registry.register_importer(MyCustomImporter())
+    registry.register_exporter(MyCustomExporter())
+
+
+registry = default_registry()
+discover_plugins(registry)
+```
+
+`default_registry()` never discovers plugins. Discovery is an explicit
+application decision because loading an installed package executes its code.
+`available_plugins()` lists entry-point names without loading them; malformed,
+duplicate, or failing plugins raise `PluginDiscoveryError`.
 
 ## Private adapters
 

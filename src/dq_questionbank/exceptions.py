@@ -40,3 +40,7 @@ class SchemaValidationError(SchemaError):
 
 class SchemaVersionError(SchemaError):
     """The document's schema_version is not supported by this library."""
+
+
+class PluginDiscoveryError(QuestionBankError):
+    """An installed plugin could not be selected, loaded, or registered."""

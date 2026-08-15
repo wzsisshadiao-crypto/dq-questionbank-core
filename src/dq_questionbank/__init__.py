@@ -5,12 +5,15 @@ from .exceptions import (
     FormatError,
     FormatLoadError,
     FormatWriteError,
+    PluginDiscoveryError,
     QuestionBankError,
     SchemaError,
     SchemaNotFoundError,
     SchemaValidationError,
     SchemaVersionError,
 )
+from .plugins import PLUGIN_ENTRY_POINT_GROUP, available_plugins, discover_plugins
+from .registry import FormatRegistry, default_registry
 from .migration import list_migrations, migrate, register_migration
 from .models import (
     Answer,
@@ -36,7 +39,10 @@ __all__ = [
     "FormatError",
     "FormatLoadError",
     "FormatWriteError",
+    "PluginDiscoveryError",
     "QuestionBankError",
+    "FormatRegistry",
+    "PLUGIN_ENTRY_POINT_GROUP",
     "SchemaError",
     "SchemaNotFoundError",
     "SchemaValidationError",
@@ -53,6 +59,9 @@ __all__ = [
     "ValidationIssue",
     "list_migrations",
     "load_schema",
+    "available_plugins",
+    "default_registry",
+    "discover_plugins",
     "migrate",
     "register_migration",
     "schema_path",

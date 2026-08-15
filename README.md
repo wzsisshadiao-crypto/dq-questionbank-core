@@ -176,6 +176,13 @@ The test suite covers model serialization, schema conformance, validation, unsaf
 
 Python 3.10-3.12. See [`docs/compatibility.md`](docs/compatibility.md) for format-specific notes.
 
+## Language policy
+
+English is the single normative language for the public API, CLI, playground,
+documentation, and repository-maintained Wiki. This keeps one reviewable public
+contract; it does not restrict multilingual question content. See
+[`docs/language-policy.md`](docs/language-policy.md).
+
 ## Roadmap
 
 See [`docs/roadmap.md`](docs/roadmap.md).

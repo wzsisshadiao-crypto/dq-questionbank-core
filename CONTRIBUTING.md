@@ -31,6 +31,16 @@ Search existing issues first. Use a minimal, synthetic example and include the P
 - Do not commit generated databases, logs, credentials, private URLs, or real exam content.
 - Use concise imperative commit messages, such as `Preserve image references in Markdown export`.
 
+## Language policy
+
+The maintained public API, CLI, browser playground, documentation, issue
+templates, release notes, and Wiki source are English-only. This is an
+intentional product boundary, not a restriction on multilingual question data.
+Submit English changes to the normative documentation. Community translations
+may live independently when they identify the English upstream version and do
+not become a competing specification. See
+[`docs/language-policy.md`](docs/language-policy.md).
+
 ## Adding an importer or exporter
 
 Implement `QuestionImporter` or `QuestionExporter` from `dq_questionbank.interfaces`, declare a stable `format_name` and `extensions`, and register the adapter in a caller-owned `FormatRegistry`. Built-in formats require focused tests, documented limitations, and deterministic output where practical.
