@@ -80,10 +80,15 @@ class LocalServerTests(unittest.TestCase):
             'id="question-bank-nav"',
             'id="editor-nav"',
             'id="question-search"',
+            'id="question-year"',
+            'id="question-search-scope"',
+            'id="collection-search"',
             'id="subject-filter"',
             'id="type-filter"',
             'id="question-results"',
             'id="question-list"',
+            'id="editor-question-select"',
+            'id="editor-field-nav"',
         ):
             self.assertIn(required_control, page)
 
@@ -97,6 +102,9 @@ class LocalServerTests(unittest.TestCase):
         self.assertIn("globalThis.katex.render", script)
         self.assertIn("function renderQuestionResults()", script)
         self.assertIn("function makeQuestionCard(question, index)", script)
+        self.assertIn("function updateEditorSelection()", script)
+        self.assertIn('searchScope.value === "all"', script)
+        self.assertIn("question.source?.year ?? question.metadata?.year", script)
         self.assertIn("Expand answer and solution", script)
         self.assertNotIn("innerHTML", script)
 

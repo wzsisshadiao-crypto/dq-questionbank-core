@@ -27,6 +27,22 @@ class InterfaceParser(HTMLParser):
 
 
 class EnglishInterfaceTests(unittest.TestCase):
+    def test_both_public_web_roots_are_english_only(self):
+        root = Path(__file__).resolve().parents[1] / "src"
+        web_roots = (
+            root / "dq_questionbank" / "web",
+            root / "dq_questionbank_local" / "web",
+        )
+        for web_root in web_roots:
+            for target in web_root.rglob("*"):
+                if not target.is_file() or target.suffix not in {".css", ".html", ".js"}:
+                    continue
+                with self.subTest(target=target):
+                    text = target.read_text(encoding="utf-8")
+                    self.assertIsNone(
+                        re.search(r"[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]", text)
+                    )
+
     def test_public_interface_contains_no_cjk_text(self):
         root = Path(__file__).resolve().parents[1]
         public_extensions = {".css", ".html", ".js", ".json", ".md", ".py", ".toml", ".yml"}
@@ -61,3 +77,30 @@ class EnglishInterfaceTests(unittest.TestCase):
             has_label = attributes.get("id") in labelled_control_ids
             if tag != "button":
                 self.assertTrue(has_name or has_label, f"Unlabelled {tag}: {attributes}")
+
+    def test_local_workspace_exposes_mature_english_navigation_and_filters(self):
+        root = Path(__file__).resolve().parents[1]
+        document = root / "src" / "dq_questionbank_local" / "web" / "index.html"
+        text = document.read_text(encoding="utf-8")
+        for label in (
+            "Question Bank",
+            "Paper Center",
+            "Import Center",
+            "Editor Center",
+            "Bank Data",
+            "Quality Center",
+            "Review Center",
+            "Image Repair",
+            "Export Center",
+            "Recycle Bin",
+        ):
+            self.assertIn(label, text)
+        for control_id in (
+            "question-year",
+            "question-search",
+            "question-search-scope",
+            "collection-search",
+            "editor-question-select",
+            "editor-field-nav",
+        ):
+            self.assertIn(f'id="{control_id}"', text)

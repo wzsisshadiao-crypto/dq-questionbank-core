@@ -17,11 +17,18 @@
           <button class="menu-item" type="button" disabled title="Planned public migration">Paper Center</button>
           <button class="menu-item" type="button" disabled title="Planned public migration">Import Center</button>
           <button id="editor-nav" class="menu-item" type="button" disabled>Editor Center</button>
-          <button class="menu-item" type="button" disabled title="Planned public migration">Statistics</button>
+          <button class="menu-item" type="button" disabled title="Planned public migration">Bank Data</button>
           <button class="menu-item" type="button" disabled title="Planned public migration">Quality Center</button>
-          <div class="menu-divider"></div>
-          <button class="menu-item" type="button" disabled title="Planned public migration">Review Center</button>
-          <button class="menu-item" type="button" disabled title="Planned public migration">Export Center</button>
+          <div id="more-nav" class="more-nav">
+            <button id="more-nav-toggle" class="menu-item" type="button" aria-expanded="false" aria-controls="more-nav-menu">More</button>
+            <div id="more-nav-menu" class="more-nav-menu" hidden>
+              <button class="more-nav-item" type="button" disabled title="Planned public migration">Review Center</button>
+              <button class="more-nav-item" type="button" disabled title="Planned public migration">Image Repair</button>
+              <button class="more-nav-item" type="button" disabled title="Planned public migration">Export Center</button>
+              <button id="theme-toggle" class="more-nav-item" type="button">Dark theme</button>
+              <button class="more-nav-item recycle-nav-item" type="button" disabled title="Planned public migration">Recycle Bin</button>
+            </div>
+          </div>
         </nav>
         <div class="sidebar-footer"><span class="local-status">Loopback only</span><small>Public local edition</small></div>
       </aside>
@@ -52,9 +59,20 @@
               <button id="load-case" class="text-action" type="button">Open public case</button>
             </div>
             <div class="filter-group"><label>Subject</label><div id="subject-filter" class="chip-group" role="group" aria-label="Subject"></div></div>
-            <div class="filter-row">
-              <label class="search-field" for="question-search"><span>Search</span><input id="question-search" type="search" placeholder="Question ID, source, stem, answer, or solution" autocomplete="off"></label>
-              <div class="filter-pair"><span>Question type</span><div id="type-filter" class="chip-group compact" role="group" aria-label="Question type"></div></div>
+            <div class="filter-row filter-controls">
+              <label class="filter-control narrow" for="question-year"><span>Year</span><input id="question-year" type="text" inputmode="numeric" maxlength="4" placeholder="All" autocomplete="off"></label>
+              <label class="filter-control search-control" for="question-search"><span>Search</span><input id="question-search" type="search" placeholder="Search question content" autocomplete="off"></label>
+              <label class="filter-control scope-control" for="question-search-scope"><span>Scope</span><select id="question-search-scope">
+                <option value="all">All fields</option>
+                <option value="id">ID</option>
+                <option value="source">Source</option>
+                <option value="stem">Stem</option>
+                <option value="choices">Choices</option>
+                <option value="answer">Answer</option>
+                <option value="analysis">Analysis</option>
+                <option value="solution">Solution</option>
+              </select></label>
+              <div class="filter-pair type-control"><span>Question type</span><div id="type-filter" class="chip-group compact" role="group" aria-label="Question type"></div></div>
             </div>
           </section>
 
@@ -66,6 +84,7 @@
             <aside class="directory-sidebar" aria-label="Collections">
               <div id="case-panel" class="case-panel" hidden><span class="eyebrow">PUBLIC DATABASE CASE</span><strong id="case-title"></strong><p id="case-detail"></p></div>
               <div class="directory-heading"><strong>Collections</strong><span id="set-count" class="count-badge">0</span></div>
+              <label class="directory-search" for="collection-search"><span>Find a collection</span><input id="collection-search" type="search" placeholder="Title or ID" autocomplete="off"></label>
               <div id="set-list" class="set-list"></div>
               <div class="directory-actions">
                 <label class="action-btn secondary" for="import-file">Import JSON</label>
@@ -83,14 +102,34 @@
               <button class="action-btn primary" type="submit">Save changes</button>
             </div>
           </header>
-          <section class="card editor-toolbar"><strong id="editor-title">Untitled set</strong><span>Changes remain on this computer until exported.</span></section>
-          <section class="card metadata-grid">
+          <section class="card editor-toolbar"><div><strong id="editor-title">Untitled set</strong><span id="editor-position">No question selected</span></div><span>Changes remain on this computer until exported.</span></section>
+          <details class="card collection-settings">
+            <summary>Collection settings</summary>
+            <section class="metadata-grid">
             <label>Collection ID<input id="set-id" required pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,127}" autocomplete="off"></label>
             <label>Title<input id="set-title" required></label>
             <label class="full">Description<textarea id="set-description" rows="2"></textarea></label>
-          </section>
-          <div class="question-heading"><h2>Questions</h2><button id="add-question" class="action-btn secondary" type="button">Add question</button></div>
-          <div id="question-list" class="editor-question-list"></div>
+            </section>
+          </details>
+          <div class="editor-layout">
+            <aside class="editor-sidebar card">
+              <label for="editor-question-select">Question</label>
+              <select id="editor-question-select" aria-label="Selected question"></select>
+              <div class="question-stepper">
+                <button id="previous-question" class="action-btn secondary" type="button">Previous</button>
+                <button id="next-question" class="action-btn secondary" type="button">Next</button>
+              </div>
+              <nav id="editor-field-nav" class="editor-field-nav" aria-label="Question fields">
+                <button type="button" data-editor-field="stem">Stem</button>
+                <button type="button" data-editor-field="choices">Choices</button>
+                <button type="button" data-editor-field="answer">Answer</button>
+                <button type="button" data-editor-field="analysis">Analysis</button>
+                <button type="button" data-editor-field="solution">Solution</button>
+              </nav>
+              <button id="add-question" class="action-btn secondary" type="button">Add question</button>
+            </aside>
+            <div id="question-list" class="editor-question-list"></div>
+          </div>
         </form>
       </main>
     </div>
@@ -99,18 +138,18 @@
     <template id="question-template">
       <article class="edit-question-card card">
         <header class="edit-question-heading"><strong class="question-number"></strong><button class="remove-question icon-button" type="button" title="Remove question" aria-label="Remove question">&times;</button></header>
-        <div class="question-grid">
+        <div class="question-grid" data-editor-section="metadata">
           <label>ID<input class="question-id" required autocomplete="off"></label>
           <label>Type<input class="question-type" readonly aria-label="Question type"></label>
           <label>Language<input class="question-language" required value="en"></label>
           <label>Subject<input class="question-subject"></label>
-          <label class="full">Stem<textarea class="question-stem" required rows="5"></textarea></label>
-          <div class="stem-preview full rendered-content" aria-label="Structured stem preview" hidden></div>
+          <section class="editor-field full" data-editor-section="stem"><div class="editor-field-heading"><strong>Stem</strong><span>Structured preview is retained until the source text changes.</span></div><textarea class="question-stem" required rows="6" aria-label="Stem"></textarea><div class="stem-preview rendered-content" aria-label="Structured stem preview" hidden></div></section>
         </div>
-        <div class="question-content" hidden>
-          <div class="choices-area" hidden><span class="field-label">Choices</span><div class="choice-list"></div></div>
-          <div class="answer-area" hidden><span class="field-label">Answer</span><p class="answer-text"></p></div>
-          <div class="solution-area" hidden><span class="field-label">Solution</span><p class="solution-text"></p></div>
+        <div class="question-content">
+          <section class="editor-field choices-area" data-editor-section="choices"><div class="editor-field-heading"><strong>Choices</strong><span>Structured choice editing is not available in this release.</span></div><div class="choice-list"></div><p class="field-empty">No choices for this question.</p></section>
+          <section class="editor-field answer-area" data-editor-section="answer"><div class="editor-field-heading"><strong>Answer</strong></div><textarea class="question-answer" rows="3" aria-label="Answer"></textarea></section>
+          <section class="editor-field analysis-area" data-editor-section="analysis"><div class="editor-field-heading"><strong>Analysis</strong></div><textarea class="question-analysis" rows="4" aria-label="Analysis"></textarea></section>
+          <section class="editor-field solution-area" data-editor-section="solution"><div class="editor-field-heading"><strong>Solution</strong><span>Structured solution blocks are retained until this text changes.</span></div><textarea class="question-solution" rows="7" aria-label="Solution"></textarea></section>
         </div>
       </article>
     </template>

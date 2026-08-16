@@ -8,6 +8,7 @@ const state = {
   view: "empty",
   subject: "",
   type: "",
+  sets: [],
 };
 
 const setList = document.querySelector("#set-list");
@@ -23,8 +24,12 @@ const loadCaseButton = document.querySelector("#load-case");
 const bankNav = document.querySelector("#question-bank-nav");
 const editorNav = document.querySelector("#editor-nav");
 const searchInput = document.querySelector("#question-search");
+const searchScope = document.querySelector("#question-search-scope");
+const yearInput = document.querySelector("#question-year");
+const collectionSearch = document.querySelector("#collection-search");
 const subjectFilter = document.querySelector("#subject-filter");
 const typeFilter = document.querySelector("#type-filter");
+const editorQuestionSelect = document.querySelector("#editor-question-select");
 
 function newQuestion(number) {
   return {
@@ -145,10 +150,22 @@ async function request(path, options = {}) {
   return body;
 }
 
-async function refreshList(selectId = state.selectedId) {
-  const { sets } = await request("/api/sets");
-  setCount.textContent = String(sets.length);
+function renderSetList(selectId = state.selectedId) {
+  const query = collectionSearch.value.trim().toLocaleLowerCase();
+  const sets = state.sets.filter((item) => !query || [item.title, item.id]
+    .filter(Boolean)
+    .join(" ")
+    .toLocaleLowerCase()
+    .includes(query));
+  setCount.textContent = query ? `${sets.length}/${state.sets.length}` : String(state.sets.length);
   setList.replaceChildren();
+  if (!sets.length) {
+    const message = document.createElement("p");
+    message.className = "set-list-empty";
+    message.textContent = "No collections match this search.";
+    setList.append(message);
+    return;
+  }
   for (const item of sets) {
     const button = document.createElement("button");
     button.className = `set-item${item.id === selectId ? " active" : ""}`;
@@ -161,6 +178,12 @@ async function refreshList(selectId = state.selectedId) {
     button.addEventListener("click", () => loadSet(item.id));
     setList.append(button);
   }
+}
+
+async function refreshList(selectId = state.selectedId) {
+  const { sets } = await request("/api/sets");
+  state.sets = sets;
+  renderSetList(selectId);
   return sets;
 }
 
@@ -203,18 +226,26 @@ function renderFilters() {
 
 function matchesFilters(question) {
   const search = searchInput.value.trim().toLocaleLowerCase();
+  const fields = {
+    id: [question.id],
+    source: [question.source?.title, question.source?.author, question.source?.attribution, question.source?.locator],
+    stem: [stemText(question)],
+    choices: (question.choices || []).flatMap((choice) => [choice.id, contentText(choice.content)]),
+    answer: [answerText(question.answer)],
+    analysis: [question.metadata?.analysis],
+    solution: [contentText(question.solution)],
+  };
+  const scopedValues = searchScope.value === "all"
+    ? Object.values(fields).flat()
+    : fields[searchScope.value] || [];
   const searchable = [
-    question.id,
-    question.subject,
-    question.type,
-    question.source?.title,
-    question.source?.attribution,
-    question.metadata?.question_category,
-    stemText(question),
-    answerText(question.answer),
-    contentText(question.solution),
+    ...scopedValues,
+    ...(searchScope.value === "all" ? [question.subject, question.type, question.metadata?.question_category] : []),
   ].filter(Boolean).join(" ").toLocaleLowerCase();
+  const year = yearInput.value.trim();
+  const questionYear = question.source?.year ?? question.metadata?.year ?? "";
   return (!search || searchable.includes(search))
+    && (!year || String(questionYear) === year)
     && (!state.subject || question.subject === state.subject)
     && (!state.type || question.type === state.type);
 }
@@ -363,6 +394,9 @@ function addQuestion(question, index = questionList.children.length) {
   card.dataset.questionIndex = String(index);
   card.dataset.original = JSON.stringify(question);
   card.dataset.originalStem = stemText(question);
+  card.dataset.originalAnswer = answerText(question.answer);
+  card.dataset.originalAnalysis = String(question.metadata?.analysis || "");
+  card.dataset.originalSolution = contentText(question.solution);
   fragment.querySelector(".question-number").textContent = `Question ${index + 1}`;
   fragment.querySelector(".question-id").value = question.id || "";
   fragment.querySelector(".question-type").value = question.type || "short_answer";
@@ -374,12 +408,10 @@ function addQuestion(question, index = questionList.children.length) {
     stemPreview.hidden = false;
     renderStructuredContent(stemPreview, question.stem);
   }
-  const contentArea = fragment.querySelector(".question-content");
   const choicesArea = fragment.querySelector(".choices-area");
   const choicesList = fragment.querySelector(".choice-list");
   if (question.choices?.length) {
-    contentArea.hidden = false;
-    choicesArea.hidden = false;
+    choicesArea.querySelector(".field-empty").hidden = true;
     for (const choice of question.choices) {
       const row = document.createElement("div");
       row.className = "choice-row";
@@ -389,20 +421,19 @@ function addQuestion(question, index = questionList.children.length) {
     }
   }
   const answer = answerText(question.answer);
-  if (answer) {
-    contentArea.hidden = false;
-    fragment.querySelector(".answer-area").hidden = false;
-    fragment.querySelector(".answer-text").textContent = answer;
-  }
+  fragment.querySelector(".question-answer").value = answer;
+  fragment.querySelector(".question-analysis").value = question.metadata?.analysis || "";
   const solution = contentText(question.solution);
-  if (solution) {
-    contentArea.hidden = false;
-    fragment.querySelector(".solution-area").hidden = false;
-    fragment.querySelector(".solution-text").textContent = solution;
-  }
+  fragment.querySelector(".question-solution").value = solution;
   fragment.querySelector(".remove-question").addEventListener("click", () => {
+    if (questionList.children.length === 1) {
+      setStatus("A collection must contain at least one question.", true);
+      return;
+    }
     card.remove();
+    state.selectedQuestionIndex = Math.min(state.selectedQuestionIndex, questionList.children.length - 1);
     renumberQuestions();
+    updateEditorSelection();
   });
   questionList.append(fragment);
 }
@@ -412,6 +443,30 @@ function renumberQuestions() {
     card.dataset.questionIndex = String(index);
     card.querySelector(".question-number").textContent = `Question ${index + 1}`;
   });
+  editorQuestionSelect.replaceChildren();
+  [...questionList.children].forEach((card, index) => {
+    const option = document.createElement("option");
+    option.value = String(index);
+    option.textContent = `${index + 1}. ${card.querySelector(".question-id").value || "Untitled question"}`;
+    editorQuestionSelect.append(option);
+  });
+}
+
+function updateEditorSelection() {
+  const cards = [...questionList.children];
+  state.selectedQuestionIndex = Math.min(Math.max(state.selectedQuestionIndex, 0), Math.max(cards.length - 1, 0));
+  cards.forEach((card, index) => {
+    const selected = index === state.selectedQuestionIndex;
+    card.hidden = !selected;
+    card.classList.toggle("target", selected);
+  });
+  editorQuestionSelect.value = String(state.selectedQuestionIndex);
+  document.querySelector("#editor-position").textContent = cards.length
+    ? `Question ${state.selectedQuestionIndex + 1} of ${cards.length}`
+    : "No question selected";
+  document.querySelector("#previous-question").disabled = state.selectedQuestionIndex === 0;
+  document.querySelector("#next-question").disabled = state.selectedQuestionIndex >= cards.length - 1;
+  for (const button of document.querySelectorAll(".remove-question")) button.disabled = cards.length === 1;
 }
 
 function populateEditor(payload) {
@@ -421,6 +476,8 @@ function populateEditor(payload) {
   document.querySelector("#set-description").value = payload.description || "";
   questionList.replaceChildren();
   payload.questions.forEach(addQuestion);
+  renumberQuestions();
+  updateEditorSelection();
 }
 
 function renderWorkspace(payload, persisted = true, view = "bank") {
@@ -432,6 +489,8 @@ function renderWorkspace(payload, persisted = true, view = "bank") {
   state.type = "";
   editorNav.disabled = false;
   searchInput.value = "";
+  searchScope.value = "all";
+  yearInput.value = "";
   populateEditor(payload);
   renderBank(payload);
   setView(view);
@@ -464,6 +523,31 @@ function collectPayload() {
     if (editedStem !== card.dataset.originalStem) {
       question.stem = { blocks: [{ type: "text", text: editedStem, language: question.language }] };
     }
+    const editedAnswer = card.querySelector(".question-answer").value;
+    if (editedAnswer !== card.dataset.originalAnswer) {
+      if (editedAnswer) {
+        question.answer = typeof question.answer === "object" && question.answer !== null
+          ? { ...question.answer, value: editedAnswer }
+          : { kind: "text", value: editedAnswer };
+      } else {
+        delete question.answer;
+      }
+    }
+    const editedAnalysis = card.querySelector(".question-analysis").value;
+    if (editedAnalysis !== card.dataset.originalAnalysis) {
+      question.metadata = { ...(question.metadata || {}) };
+      if (editedAnalysis) question.metadata.analysis = editedAnalysis;
+      else delete question.metadata.analysis;
+      if (!Object.keys(question.metadata).length) delete question.metadata;
+    }
+    const editedSolution = card.querySelector(".question-solution").value;
+    if (editedSolution !== card.dataset.originalSolution) {
+      if (editedSolution) {
+        question.solution = { blocks: [{ type: "text", text: editedSolution, language: question.language }] };
+      } else {
+        delete question.solution;
+      }
+    }
     return question;
   });
   return payload;
@@ -471,12 +555,8 @@ function collectPayload() {
 
 function editCurrentQuestion() {
   setView("editor");
-  document.querySelectorAll(".edit-question-card.target").forEach((card) => card.classList.remove("target"));
-  const target = document.querySelector(`.edit-question-card[data-question-index="${state.selectedQuestionIndex}"]`);
-  if (target) {
-    target.classList.add("target");
-    target.scrollIntoView({ behavior: "smooth", block: "center" });
-  }
+  updateEditorSelection();
+  document.querySelector(".edit-question-card:not([hidden])")?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function exportCurrentSet() {
@@ -518,6 +598,9 @@ document.querySelector("#new-set").addEventListener("click", () => {
 });
 document.querySelector("#add-question").addEventListener("click", () => {
   addQuestion(newQuestion(questionList.children.length + 1));
+  state.selectedQuestionIndex = questionList.children.length - 1;
+  renumberQuestions();
+  updateEditorSelection();
 });
 editorForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -570,9 +653,54 @@ bankNav.addEventListener("click", () => {
   if (state.current) setView("bank");
 });
 editorNav.addEventListener("click", () => {
-  if (state.current) setView("editor");
+  if (state.current) {
+    setView("editor");
+    updateEditorSelection();
+  }
 });
 searchInput.addEventListener("input", renderQuestionResults);
+searchScope.addEventListener("change", renderQuestionResults);
+yearInput.addEventListener("input", renderQuestionResults);
+collectionSearch.addEventListener("input", () => renderSetList());
+editorQuestionSelect.addEventListener("change", () => {
+  state.selectedQuestionIndex = Number(editorQuestionSelect.value);
+  updateEditorSelection();
+});
+document.querySelector("#previous-question").addEventListener("click", () => {
+  state.selectedQuestionIndex -= 1;
+  updateEditorSelection();
+});
+document.querySelector("#next-question").addEventListener("click", () => {
+  state.selectedQuestionIndex += 1;
+  updateEditorSelection();
+});
+document.querySelector("#editor-field-nav").addEventListener("click", (event) => {
+  const button = event.target.closest("[data-editor-field]");
+  if (!button) return;
+  const card = document.querySelector(".edit-question-card:not([hidden])");
+  card?.querySelector(`[data-editor-section="${button.dataset.editorField}"]`)
+    ?.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+questionList.addEventListener("input", (event) => {
+  if (!event.target.matches(".question-id")) return;
+  const selectedOption = editorQuestionSelect.options[state.selectedQuestionIndex];
+  if (selectedOption) selectedOption.textContent = `${state.selectedQuestionIndex + 1}. ${event.target.value || "Untitled question"}`;
+});
+
+const moreNavToggle = document.querySelector("#more-nav-toggle");
+const moreNavMenu = document.querySelector("#more-nav-menu");
+function setMoreMenu(open) {
+  moreNavMenu.hidden = !open;
+  moreNavToggle.setAttribute("aria-expanded", String(open));
+}
+moreNavToggle.addEventListener("click", () => setMoreMenu(moreNavMenu.hidden));
+document.addEventListener("click", (event) => {
+  if (!event.target.closest("#more-nav")) setMoreMenu(false);
+});
+document.querySelector("#theme-toggle").addEventListener("click", (event) => {
+  const dark = document.body.classList.toggle("dark-theme");
+  event.currentTarget.textContent = dark ? "Light theme" : "Dark theme";
+});
 
 async function initialize() {
   const [sets, caseInfo] = await Promise.all([refreshList(), request("/api/case")]);
