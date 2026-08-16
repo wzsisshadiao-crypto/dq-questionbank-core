@@ -76,6 +76,16 @@ class LocalServerTests(unittest.TestCase):
         connection.close()
         self.assertEqual(200, response.status)
         self.assertIn("DQ QuestionBank Local", page)
+        for required_control in (
+            'id="question-bank-nav"',
+            'id="editor-nav"',
+            'id="question-search"',
+            'id="subject-filter"',
+            'id="type-filter"',
+            'id="question-detail"',
+            'id="toggle-answer"',
+        ):
+            self.assertIn(required_control, page)
 
         connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
         connection.request("GET", "/app.js")
@@ -84,7 +94,27 @@ class LocalServerTests(unittest.TestCase):
         connection.close()
         self.assertEqual(200, response.status)
         self.assertIn('document.createElement("table")', script)
+        self.assertIn("globalThis.katex.render", script)
+        self.assertIn("function renderQuestionResults()", script)
+        self.assertIn("function renderQuestionPreview(question)", script)
+        self.assertIn('document.querySelector("#toggle-answer")', script)
         self.assertNotIn("innerHTML", script)
+
+        static_checks = (
+            ("/vendor/katex/katex.min.js", "javascript", b"KaTeX"),
+            ("/vendor/katex/katex.min.css", "text/css", b".katex"),
+            ("/vendor/katex/fonts/KaTeX_Main-Regular.woff2", "font/woff2", b"wOF2"),
+        )
+        for path, content_type, marker in static_checks:
+            with self.subTest(path=path):
+                connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+                connection.request("GET", path)
+                response = connection.getresponse()
+                content = response.read()
+                connection.close()
+                self.assertEqual(200, response.status)
+                self.assertIn(content_type, response.getheader("Content-Type"))
+                self.assertTrue(content.startswith(marker) or marker in content)
 
     def test_loads_bundled_database_case_into_workspace(self):
         status, info = self.request("GET", "/api/case")

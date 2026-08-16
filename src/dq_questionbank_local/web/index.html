@@ -3,56 +3,183 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A local visual workspace for structured question banks.">
     <title>DQ QuestionBank Local</title>
+    <link rel="stylesheet" href="/vendor/katex/katex.min.css">
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <header class="topbar">
-      <div>
-        <h1>DQ QuestionBank Local</h1>
-        <p>Local canonical JSON workspace</p>
+    <header class="app-header">
+      <div class="product-row">
+        <div class="brand-block">
+          <span class="brand-mark" aria-hidden="true">DQ</span>
+          <div>
+            <h1>DQ QuestionBank</h1>
+            <p>Local workspace</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <span class="local-status">Loopback only</span>
+          <button id="load-case" class="case-button" type="button">Open public case</button>
+          <label class="button secondary" for="import-file">Import JSON</label>
+          <input id="import-file" type="file" accept="application/json,.json" hidden>
+          <button id="new-set" type="button">New set</button>
+        </div>
       </div>
-      <div class="topbar-actions">
-        <button id="load-case" class="case-button" type="button">Open database case</button>
-        <label class="button secondary" for="import-file">Import JSON</label>
-        <input id="import-file" type="file" accept="application/json,.json" hidden>
-        <button id="new-set" type="button">New set</button>
-      </div>
+      <nav class="primary-nav" aria-label="Primary workspace">
+        <button id="question-bank-nav" class="nav-item active" type="button">Question bank</button>
+        <button class="nav-item" type="button" disabled title="Planned public migration">Review center</button>
+        <button id="editor-nav" class="nav-item" type="button" disabled>Editor center</button>
+        <button class="nav-item" type="button" disabled title="Planned public migration">Quality center</button>
+        <button class="nav-item" type="button" disabled title="Planned public migration">Paper center</button>
+        <button class="nav-item" type="button" disabled title="Planned public migration">Export center</button>
+      </nav>
     </header>
-    <main>
-      <aside class="sidebar" aria-label="Question sets">
+
+    <main class="app-shell">
+      <aside class="collection-sidebar" aria-label="Question sets">
         <section id="case-panel" class="case-panel" hidden>
-          <p class="eyebrow">DATABASE CASE</p>
+          <p class="eyebrow">PUBLIC DATABASE CASE</p>
           <strong id="case-title"></strong>
           <p id="case-detail"></p>
         </section>
-        <div class="section-heading"><h2>Question sets</h2><span id="set-count"></span></div>
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">LOCAL WORKSPACE</p>
+            <h2>Collections</h2>
+          </div>
+          <span id="set-count" class="count-badge">0</span>
+        </div>
         <div id="set-list" class="set-list"></div>
       </aside>
-      <section class="editor" aria-live="polite">
+
+      <section class="workspace" aria-live="polite">
         <p id="status" class="status" role="status"></p>
+
         <div id="empty-state" class="empty-state">
-          <h2>Start a local workspace</h2>
-          <p>Import canonical JSON or create a question set. Nothing leaves this computer.</p>
-        </div>
-        <form id="editor-form" hidden>
-          <div class="editor-heading">
-            <div><p class="eyebrow">Question set</p><h2 id="editor-title">Untitled set</h2></div>
-            <div class="editor-actions"><button id="export-set" class="secondary" type="button">Export JSON</button><button type="submit">Save</button></div>
+          <p class="eyebrow">QUESTION BANK</p>
+          <h2>No collection is open</h2>
+          <div class="empty-actions">
+            <button id="empty-load-case" type="button">Open public case</button>
+            <label class="button secondary" for="import-file">Import JSON</label>
           </div>
-          <div class="metadata-grid">
+        </div>
+
+        <section id="bank-view" class="bank-view" hidden>
+          <header class="workspace-heading">
+            <div>
+              <p class="eyebrow">QUESTION BANK</p>
+              <h2 id="bank-title">Untitled set</h2>
+              <p id="bank-description" class="workspace-description"></p>
+            </div>
+            <div class="workspace-actions">
+              <button id="edit-set" class="secondary" type="button">Edit collection</button>
+              <button id="export-set" type="button">Export JSON</button>
+            </div>
+          </header>
+
+          <div class="summary-strip" aria-label="Collection summary">
+            <div><strong id="summary-total">0</strong><span>Questions</span></div>
+            <div><strong id="summary-subjects">0</strong><span>Subjects</span></div>
+            <div><strong id="summary-types">0</strong><span>Question types</span></div>
+            <div><strong id="summary-schema">1.0</strong><span>Schema</span></div>
+          </div>
+
+          <section class="filter-bar" aria-label="Question filters">
+            <label class="search-field" for="question-search">
+              <span>Search</span>
+              <input id="question-search" type="search" placeholder="ID, source, or question text" autocomplete="off">
+            </label>
+            <label for="subject-filter">
+              <span>Subject</span>
+              <select id="subject-filter"><option value="">All subjects</option></select>
+            </label>
+            <label for="type-filter">
+              <span>Type</span>
+              <select id="type-filter"><option value="">All types</option></select>
+            </label>
+          </section>
+
+          <div class="bank-layout">
+            <section class="result-panel" aria-label="Questions">
+              <div class="result-heading">
+                <h3>Questions</h3>
+                <span id="result-count">0 results</span>
+              </div>
+              <div id="question-results" class="question-results"></div>
+            </section>
+
+            <article class="question-preview" aria-live="polite">
+              <div id="preview-empty" class="preview-empty">
+                <h3>No matching question</h3>
+              </div>
+              <div id="question-detail" hidden>
+                <header class="preview-heading">
+                  <div>
+                    <p id="preview-position" class="eyebrow">QUESTION</p>
+                    <h3 id="preview-id"></h3>
+                  </div>
+                  <button id="edit-current" class="secondary" type="button">Edit question</button>
+                </header>
+                <div id="preview-tags" class="preview-tags"></div>
+                <p id="preview-source" class="preview-source" hidden></p>
+                <section class="question-section">
+                  <h4>Question</h4>
+                  <div id="preview-stem" class="rendered-content"></div>
+                </section>
+                <section id="preview-choices-section" class="question-section" hidden>
+                  <h4>Choices</h4>
+                  <div id="preview-choices" class="preview-choices"></div>
+                </section>
+                <button id="toggle-answer" class="answer-toggle" type="button" aria-expanded="false">
+                  Show answer and solution
+                </button>
+                <div id="answer-panel" class="answer-panel" hidden>
+                  <section id="preview-answer-section" class="question-section" hidden>
+                    <h4>Answer</h4>
+                    <p id="preview-answer" class="answer-text"></p>
+                  </section>
+                  <section id="preview-solution-section" class="question-section" hidden>
+                    <h4>Solution</h4>
+                    <div id="preview-solution" class="rendered-content"></div>
+                  </section>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <form id="editor-form" class="editor-form" hidden>
+          <header class="workspace-heading">
+            <div>
+              <p class="eyebrow">EDITOR CENTER</p>
+              <h2 id="editor-title">Untitled set</h2>
+            </div>
+            <div class="workspace-actions">
+              <button id="back-to-bank" class="secondary" type="button">Back to question bank</button>
+              <button type="submit">Save changes</button>
+            </div>
+          </header>
+          <div class="metadata-grid edit-panel">
             <label>Set ID<input id="set-id" required pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,127}" autocomplete="off"></label>
             <label>Title<input id="set-title" required></label>
             <label class="full">Description<textarea id="set-description" rows="2"></textarea></label>
           </div>
-          <div class="question-heading"><h3>Questions</h3><button id="add-question" class="secondary" type="button">Add question</button></div>
+          <div class="question-heading">
+            <h3>Questions</h3>
+            <button id="add-question" class="secondary" type="button">Add question</button>
+          </div>
           <div id="question-list" class="question-list"></div>
         </form>
       </section>
     </main>
+
     <template id="question-template">
       <article class="question-card">
-        <div class="question-card-heading"><strong class="question-number"></strong><button class="remove-question icon-button" type="button" title="Remove question" aria-label="Remove question">&times;</button></div>
+        <div class="question-card-heading">
+          <strong class="question-number"></strong>
+          <button class="remove-question icon-button" type="button" title="Remove question" aria-label="Remove question">&times;</button>
+        </div>
         <div class="question-grid">
           <label>ID<input class="question-id" required autocomplete="off"></label>
           <label>Type<input class="question-type" readonly aria-label="Question type"></label>
@@ -68,6 +195,7 @@
         </div>
       </article>
     </template>
+    <script src="/vendor/katex/katex.min.js"></script>
     <script src="/app.js"></script>
   </body>
 </html>

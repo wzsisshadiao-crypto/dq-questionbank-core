@@ -18,7 +18,41 @@ from .validation import ValidationError
 
 _MAX_BODY_BYTES = 5 * 1024 * 1024
 _SET_ROUTE = re.compile(r"^/api/sets/([^/]+)$")
-_STATIC_FILES = {"/": "index.html", "/app.js": "app.js", "/styles.css": "styles.css"}
+_KATEX_FONT_FILES = {
+    "KaTeX_AMS-Regular.woff2",
+    "KaTeX_Caligraphic-Bold.woff2",
+    "KaTeX_Caligraphic-Regular.woff2",
+    "KaTeX_Fraktur-Bold.woff2",
+    "KaTeX_Fraktur-Regular.woff2",
+    "KaTeX_Main-Bold.woff2",
+    "KaTeX_Main-BoldItalic.woff2",
+    "KaTeX_Main-Italic.woff2",
+    "KaTeX_Main-Regular.woff2",
+    "KaTeX_Math-BoldItalic.woff2",
+    "KaTeX_Math-Italic.woff2",
+    "KaTeX_SansSerif-Bold.woff2",
+    "KaTeX_SansSerif-Italic.woff2",
+    "KaTeX_SansSerif-Regular.woff2",
+    "KaTeX_Script-Regular.woff2",
+    "KaTeX_Size1-Regular.woff2",
+    "KaTeX_Size2-Regular.woff2",
+    "KaTeX_Size3-Regular.woff2",
+    "KaTeX_Size4-Regular.woff2",
+    "KaTeX_Typewriter-Regular.woff2",
+}
+_STATIC_FILES = {
+    "/": "index.html",
+    "/app.js": "app.js",
+    "/styles.css": "styles.css",
+    "/vendor/katex/katex.min.css": "vendor/katex/katex.min.css",
+    "/vendor/katex/katex.min.js": "vendor/katex/katex.min.js",
+}
+_STATIC_FILES.update(
+    {
+        f"/vendor/katex/fonts/{filename}": f"vendor/katex/fonts/{filename}"
+        for filename in _KATEX_FONT_FILES
+    }
+)
 
 
 def create_server(
@@ -158,15 +192,24 @@ class _Handler(BaseHTTPRequestHandler):
         return payload
 
     def _serve_static(self, filename: str) -> None:
-        resource = files("dq_questionbank_local").joinpath("web", filename)
+        resource = files("dq_questionbank_local").joinpath("web", *filename.split("/"))
         try:
             content = resource.read_bytes()
         except FileNotFoundError:
             self._send_error(HTTPStatus.NOT_FOUND, "Not found.")
             return
-        content_type = mimetypes.guess_type(filename)[0] or "application/octet-stream"
+        content_type = (
+            "font/woff2"
+            if filename.endswith(".woff2")
+            else mimetypes.guess_type(filename)[0] or "application/octet-stream"
+        )
         self.send_response(HTTPStatus.OK)
-        self.send_header("Content-Type", f"{content_type}; charset=utf-8")
+        if content_type.startswith("text/") or content_type in {
+            "application/javascript",
+            "application/json",
+        }:
+            content_type = f"{content_type}; charset=utf-8"
+        self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(content)))
         self.send_header("Cache-Control", "no-store")
         self.end_headers()

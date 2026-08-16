@@ -6,10 +6,12 @@ but requires an independent publication review.
 
 ## User workflow
 
-Run `python run.py`, then choose **Open database case**. The application opens
+Run `python run.py`, then choose **Open public case**. The application opens
 the source database read-only, converts its public fields to canonical schema
 `1.0`, and saves a JSON copy in the selected workspace. Visual edits affect
-that JSON copy only.
+that JSON copy only. The Question Bank view supports collection and question
+navigation, text search, subject and type filters, offline math rendering,
+structured tables, answer and solution review, and basic question editing.
 
 To use a separately downloaded case:
 

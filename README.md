@@ -76,7 +76,7 @@ workflow, and the exact public migration boundary.
 |---|---|---|
 | Data model | Versioned canonical schema, validation, migrations, compatibility fixtures | Mapping more application fields without coupling to the production database |
 | Import | JSON, Markdown, LaTeX, and convention-based DOCX adapters | Process-based Word/PDF intake, source evidence, candidate sessions, bounded AI correction |
-| Visual frontend | Local workspace for opening the synthetic SQLite case and importing, editing, saving, and exporting canonical JSON | Review Center, paper assembly, full Editor Center, Question Quality Center, and Export Center |
+| Visual frontend | Question Bank view with collection browsing, search and filters, question details, offline math and table rendering, answer review, basic editing, and canonical JSON exchange | Review Center, paper assembly, full Editor Center, Question Quality Center, and Export Center |
 | Storage | Atomic filesystem adapter and read-only reviewed SQLite case adapter | User-selected local database adapters behind the same canonical boundary |
 | Export | JSON, Markdown, LaTeX, and conventional DOCX | High-fidelity Word macro/reference-box publishing workflow |
 | AI | Stable provider protocol; no bundled provider or credential | Provider-neutral candidate correction with explicit review and validation gates |
@@ -124,7 +124,7 @@ database table or one AI service the definition of the question.
 - Convention-based DOCX import/export with image extraction
 - `QuestionImporter`, `QuestionExporter`, `StorageAdapter`, and `AIProvider` interfaces
 - Reference local filesystem storage with atomic canonical JSON writes
-- English-language CLI, lightweight playground, and complete visual local workspace
+- English-language CLI, lightweight playground, and local Question Bank workspace
 - Reviewed read-only SQLite case adapter and bundled synthetic database case
 - No database, frontend framework, or AI provider lock-in
 
@@ -137,9 +137,11 @@ python run.py
 ```
 
 The command starts a loopback-only server, creates an ignored local workspace,
-and opens `http://127.0.0.1:8766`. Choose **Open database case** to view the
-bundled SQLite case with its questions, choices, answers, and solutions. Import,
-edit, save, and export operations stay on the local computer.
+and opens `http://127.0.0.1:8766`. Choose **Open public case** to enter the
+Question Bank with four original synthetic questions. The interface provides
+collection and question navigation, text search, subject and type filters,
+structured tables, offline KaTeX math, choices, answers, solutions, and a basic
+editor. Import, edit, save, and export operations stay on the local computer.
 
 To offer another independently reviewed case:
 

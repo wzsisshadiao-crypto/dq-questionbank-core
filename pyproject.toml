@@ -47,7 +47,12 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 dq_questionbank = ["web/*"]
-dq_questionbank_local = ["web/*", "data/*"]
+dq_questionbank_local = [
+  "web/*",
+  "web/vendor/katex/*",
+  "web/vendor/katex/fonts/*",
+  "data/*",
+]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
