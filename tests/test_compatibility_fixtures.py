@@ -47,6 +47,11 @@ class CompatibilityFixtureTests(unittest.TestCase):
         self.assertEqual([], validate_with_schema(fixture))
         self.assertEqual(fixture, QuestionSet.from_dict(fixture).to_dict())
 
+    def test_rich_choice_fixture_round_trips_without_issues(self):
+        fixture = read_fixture("schema-1.0/rich-choice.json")
+        self.assertEqual([], validate_with_schema(fixture))
+        self.assertEqual(fixture, QuestionSet.from_dict(fixture).to_dict())
+
     def test_migration_fixture_requires_explicit_registration(self):
         fixture = read_fixture("migrations/0.9-to-1.0.json")
         with self.assertRaises(SchemaVersionError):

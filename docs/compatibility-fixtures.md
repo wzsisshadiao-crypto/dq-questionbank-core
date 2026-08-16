@@ -5,6 +5,12 @@ The executable compatibility fixtures live under
 English-language synthetic data.
 
 - `schema-1.0/question-set.json` is a canonical schema 1.0 round-trip fixture.
+- `schema-1.0/rich-choice.json` is a canonical schema 1.0 round-trip fixture for
+  richer multiple-choice content: a `single_choice` question whose stem and
+  choices mix `text`, `math`, and `table` content blocks, with a `choice`
+  answer. It exercises math and structured content blocks without any private
+  data and is covered by a public-model round-trip test in
+  `tests/test_compatibility_fixtures.py`.
 - `migrations/0.9-to-1.0.json` defines an input and expected output for the
   migration-framework harness.
 

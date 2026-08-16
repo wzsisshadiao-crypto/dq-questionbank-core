@@ -1,0 +1,62 @@
+{
+  "schema_version": "1.0",
+  "id": "compatibility-rich-choice",
+  "title": "Rich-choice compatibility fixture",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "rich-choice-1",
+      "type": "single_choice",
+      "language": "en",
+      "subject": "Algebra",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Which expression equals the derivative shown below?"
+          },
+          {
+            "type": "math",
+            "latex": "\\frac{d}{dx}\\left(x^3 + 2x\\right)"
+          }
+        ]
+      },
+      "choices": [
+        {
+          "id": "a",
+          "content": {
+            "blocks": [
+              {
+                "type": "math",
+                "latex": "3x^2 + 2"
+              }
+            ]
+          }
+        },
+        {
+          "id": "b",
+          "content": {
+            "blocks": [
+              {
+                "type": "math",
+                "latex": "3x^2"
+              },
+              {
+                "type": "table",
+                "rows": [
+                  ["", "x = 0", "x = 1"],
+                  ["value", "0", "1"]
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "answer": {
+        "kind": "choice",
+        "value": "a"
+      }
+    }
+  ]
+}
