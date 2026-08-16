@@ -13,6 +13,7 @@ defined and tested in this repository.
 - Build adapters for documented format or storage interfaces.
 - Help migrate generic frontend, import, review, editor, quality, or Word
   publishing workflows without copying private code or data.
+- Update workspace screenshots following the [visual workspace screenshot workflow](docs/visual-workspace-screenshot-workflow.md).
 
 ## Development setup
 
