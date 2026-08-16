@@ -32,6 +32,14 @@ python scripts/audit_public_tree.py
 python -m build
 ```
 
+## Updating the workspace screenshot
+
+If you change the visual workspace intentionally, follow
+[`docs/visual-workspace-screenshot-workflow.md`](docs/visual-workspace-screenshot-workflow.md)
+to capture and update the README workspace screenshot and social-preview image
+using only the bundled synthetic case. Never capture private questions,
+production databases, credentials, or private application screenshots.
+
 ## Issues
 
 Search existing issues first. Use a minimal, synthetic example and include the Python version, operating system, input format, expected result, and actual result. Do not upload private or copyrighted question banks.
