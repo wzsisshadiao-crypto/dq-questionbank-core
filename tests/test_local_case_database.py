@@ -39,13 +39,23 @@ class LocalCaseDatabaseTests(unittest.TestCase):
         table = next(block for block in group_question["stem"]["blocks"] if block["type"] == "table")
         self.assertEqual(9, len(table["rows"]))
         self.assertTrue(all(len(row) == 9 for row in table["rows"]))
-        self.assertEqual(["*", "e", "p"], table["rows"][0][:3])
-        symbols = set(table["rows"][0][1:])
-        self.assertEqual(symbols, {row[0] for row in table["rows"][1:]})
+        self.assertEqual(["$\\ast$", "$e$", "$p$"], table["rows"][0][:3])
+        self.assertTrue(
+            all(
+                cell.startswith("$") and cell.endswith("$")
+                for row in table["rows"]
+                for cell in row
+            )
+        )
+        symbols = {cell[1:-1] for cell in table["rows"][0][1:]}
+        self.assertEqual(symbols, {row[0][1:-1] for row in table["rows"][1:]})
         for row in table["rows"][1:]:
-            self.assertEqual(symbols, set(row[1:]))
+            self.assertEqual(symbols, {cell[1:-1] for cell in row[1:]})
         for column in range(1, 9):
-            self.assertEqual(symbols, {row[column] for row in table["rows"][1:]})
+            self.assertEqual(symbols, {row[column][1:-1] for row in table["rows"][1:]})
+        self.assertIn("$(p^3q)(p^2)$", group_question["stem"]["blocks"][-1]["text"])
+        self.assertIn("$\\langle p\\rangle$", group_question["answer"]["value"])
+        self.assertIn("$C_2 \\times C_2$", group_question["solution"]["blocks"][0]["text"])
         self.assertEqual(before, path.read_bytes())
 
         with closing(sqlite3.connect(f"file:{path.as_posix()}?mode=ro", uri=True)) as connection:

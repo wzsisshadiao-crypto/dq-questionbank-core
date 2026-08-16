@@ -16,6 +16,13 @@ All notable changes will be documented here. The project follows semantic versio
 - Add a repository social-preview asset based on the real public workspace and
   route new issues through explicit workstream and public-data questions.
 
+### Fixed
+
+- Render explicitly delimited LaTeX safely across question text, table cells,
+  answers, and solutions, with readable fallback when a formula is invalid.
+- Mark every mathematical expression in the bundled group-theory case so the
+  public screenshot and workspace no longer expose raw `p^2`-style source.
+
 ## [0.3.0] - 2026-08-17
 
 ### Added

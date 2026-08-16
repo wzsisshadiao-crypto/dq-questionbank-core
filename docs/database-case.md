@@ -75,4 +75,6 @@ database. `scripts/build_case_database.py` creates
 their canonical meaning and verify that reading the database does not modify it.
 The bundled case includes an original group-theory question with a structured
 9-by-9 Cayley table to exercise rich database content and responsive rendering.
-All four bundled questions are presented in English.
+Its stem, table cells, answer, and solution use explicit LaTeX delimiters so the
+offline KaTeX renderer covers the complete question instead of guessing from
+bare symbols. All four bundled questions are presented in English.

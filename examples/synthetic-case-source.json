@@ -96,27 +96,27 @@
             "caption": "Cayley table for a synthetic eight-element group"
           },
           "rows": [
-            ["*", "e", "p", "p^2", "p^3", "q", "pq", "p^2q", "p^3q"],
-            ["e", "e", "p", "p^2", "p^3", "q", "pq", "p^2q", "p^3q"],
-            ["p", "p", "p^2", "p^3", "e", "pq", "p^2q", "p^3q", "q"],
-            ["p^2", "p^2", "p^3", "e", "p", "p^2q", "p^3q", "q", "pq"],
-            ["p^3", "p^3", "e", "p", "p^2", "p^3q", "q", "pq", "p^2q"],
-            ["q", "q", "p^3q", "p^2q", "pq", "e", "p^3", "p^2", "p"],
-            ["pq", "pq", "q", "p^3q", "p^2q", "p", "e", "p^3", "p^2"],
-            ["p^2q", "p^2q", "pq", "q", "p^3q", "p^2", "p", "e", "p^3"],
-            ["p^3q", "p^3q", "p^2q", "pq", "q", "p^3", "p^2", "p", "e"]
+            ["$\\ast$", "$e$", "$p$", "$p^2$", "$p^3$", "$q$", "$pq$", "$p^2q$", "$p^3q$"],
+            ["$e$", "$e$", "$p$", "$p^2$", "$p^3$", "$q$", "$pq$", "$p^2q$", "$p^3q$"],
+            ["$p$", "$p$", "$p^2$", "$p^3$", "$e$", "$pq$", "$p^2q$", "$p^3q$", "$q$"],
+            ["$p^2$", "$p^2$", "$p^3$", "$e$", "$p$", "$p^2q$", "$p^3q$", "$q$", "$pq$"],
+            ["$p^3$", "$p^3$", "$e$", "$p$", "$p^2$", "$p^3q$", "$q$", "$pq$", "$p^2q$"],
+            ["$q$", "$q$", "$p^3q$", "$p^2q$", "$pq$", "$e$", "$p^3$", "$p^2$", "$p$"],
+            ["$pq$", "$pq$", "$q$", "$p^3q$", "$p^2q$", "$p$", "$e$", "$p^3$", "$p^2$"],
+            ["$p^2q$", "$p^2q$", "$pq$", "$q$", "$p^3q$", "$p^2$", "$p$", "$e$", "$p^3$"],
+            ["$p^3q$", "$p^3q$", "$p^2q$", "$pq$", "$q$", "$p^3$", "$p^2$", "$p$", "$e$"]
           ]
         },
         {
           "type": "text",
           "language": "en",
-          "text": "(1) Compute (p^3q)(p^2). (2) Find every element of order two. (3) Determine the center of D. (4) Prove that {e, p^2, q, p^2q} is a subgroup and identify its isomorphism type. (5) List all left cosets of <p>."
+          "text": "(1) Compute $(p^3q)(p^2)$. (2) Find every element of order two. (3) Determine the center of $D$. (4) Prove that $\\{e,p^2,q,p^2q\\}$ is a subgroup and identify its isomorphism type. (5) List all left cosets of $\\langle p\\rangle$."
         }
       ],
       "answer_chinese": "(1) pq；(2) p^2、q、pq、p^2q、p^3q；(3) {e, p^2}；(4) 克莱因四元群；(5) <p> 与 q<p>。",
-      "answer_english": "(1) pq; (2) p^2, q, pq, p^2q, p^3q; (3) {e, p^2}; (4) the Klein four-group; (5) <p> and q<p>.",
+      "answer_english": "(1) $pq$; (2) $p^2$, $q$, $pq$, $p^2q$, $p^3q$; (3) $\\{e,p^2\\}$; (4) the Klein four-group; (5) $\\langle p\\rangle$ and $q\\langle p\\rangle$.",
       "solutions_chinese": "按 Cayley 表逐项读取乘积。p 与 p^3 的阶为 4，其余五个非单位元的平方为 e。只有 e 与 p^2 和每个元素可交换。给定四元集合对运算封闭，且三个非单位元均为二阶，所以同构于 C2 × C2。<p> 的指数为 2，因此恰有两个左陪集。",
-      "solutions_english": "Read products directly from the Cayley table. The elements p and p^3 have order four, while the other five non-identity elements square to e. Exactly e and p^2 commute with every element. The stated four-element set is closed and its three non-identity elements have order two, so it is isomorphic to C2 x C2. Since <p> has index two, it has exactly two left cosets."
+      "solutions_english": "Read products directly from the Cayley table. The elements $p$ and $p^3$ have order four, while the other five non-identity elements square to $e$. Exactly $e$ and $p^2$ commute with every element. The stated four-element set is closed and its three non-identity elements have order two, so it is isomorphic to $C_2 \\times C_2$. Since $\\langle p\\rangle$ has index two, it has exactly two left cosets."
     }
   ]
 }

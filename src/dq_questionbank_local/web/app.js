@@ -58,6 +58,78 @@ function hasStructuredBlocks(content) {
   return Boolean(content?.blocks?.some((block) => !["text", "line_break"].includes(block.type)));
 }
 
+function isEscaped(text, index) {
+  let slashCount = 0;
+  for (let cursor = index - 1; cursor >= 0 && text[cursor] === "\\"; cursor -= 1) {
+    slashCount += 1;
+  }
+  return slashCount % 2 === 1;
+}
+
+function mathDelimiterAt(text, index) {
+  if (text[index] !== "$" || isEscaped(text, index)) return "";
+  return text.startsWith("$$", index) ? "$$" : "$";
+}
+
+function findClosingDelimiter(text, start, delimiter) {
+  for (let cursor = start; cursor < text.length; cursor += 1) {
+    if (mathDelimiterAt(text, cursor) === delimiter) return cursor;
+  }
+  return -1;
+}
+
+function appendPlainText(container, text) {
+  if (text) container.append(document.createTextNode(text.replaceAll("\\$", "$")));
+}
+
+function renderMathElement(element, latex, displayMode = false, fallback = "") {
+  element.classList.add("content-math");
+  if (displayMode) element.classList.add("display");
+  if (globalThis.katex) {
+    try {
+      globalThis.katex.render(latex, element, {
+        displayMode,
+        output: "htmlAndMathml",
+        strict: "warn",
+        throwOnError: true,
+        trust: false,
+      });
+      return;
+    } catch (error) {
+      element.classList.add("math-fallback");
+      element.title = "Formula could not be rendered.";
+    }
+  }
+  element.textContent = fallback || (displayMode ? `\\[${latex}\\]` : `\\(${latex}\\)`);
+}
+
+function renderTextWithMath(container, value) {
+  const text = String(value ?? "");
+  let plainStart = 0;
+  let cursor = 0;
+  while (cursor < text.length) {
+    const delimiter = mathDelimiterAt(text, cursor);
+    if (!delimiter) {
+      cursor += 1;
+      continue;
+    }
+    const latexStart = cursor + delimiter.length;
+    const closing = findClosingDelimiter(text, latexStart, delimiter);
+    if (closing < 0 || !text.slice(latexStart, closing).trim()) {
+      cursor += delimiter.length;
+      continue;
+    }
+    appendPlainText(container, text.slice(plainStart, cursor));
+    const math = document.createElement("span");
+    const source = text.slice(cursor, closing + delimiter.length);
+    renderMathElement(math, text.slice(latexStart, closing), delimiter === "$$", source);
+    container.append(math);
+    cursor = closing + delimiter.length;
+    plainStart = cursor;
+  }
+  appendPlainText(container, text.slice(plainStart));
+}
+
 function renderTable(container, block) {
   const figure = document.createElement("figure");
   figure.className = "question-table-figure";
@@ -80,7 +152,7 @@ function renderTable(container, block) {
       const cell = document.createElement(isColumnHeader || isRowHeader ? "th" : "td");
       if (isColumnHeader) cell.scope = "col";
       else if (isRowHeader) cell.scope = "row";
-      cell.textContent = String(value);
+      renderTextWithMath(cell, value);
       row.append(cell);
     }
     table.append(row);
@@ -105,19 +177,12 @@ function renderStructuredContent(container, content) {
     } else {
       const element = document.createElement("span");
       element.className = `content-${block.type || "text"}`;
-      if (block.type === "math" && block.metadata?.display) element.classList.add("display");
-      if (block.type === "math" && globalThis.katex) {
-        globalThis.katex.render(block.latex || "", element, {
-          displayMode: Boolean(block.metadata?.display),
-          output: "htmlAndMathml",
-          strict: "warn",
-          throwOnError: false,
-          trust: false,
-        });
+      if (block.type === "math") {
+        renderMathElement(element, block.latex || "", Boolean(block.metadata?.display));
+      } else if (block.type === "text") {
+        renderTextWithMath(element, block.text || "");
       } else {
-        element.textContent = block.type === "math"
-          ? `\\(${block.latex || ""}\\)`
-          : block.text || block.alt_text || "";
+        element.textContent = block.text || block.alt_text || "";
       }
       container.append(element);
     }
@@ -319,7 +384,7 @@ function makeQuestionCard(question, index) {
       title.textContent = "Answer";
       const value = document.createElement("p");
       value.className = "answer-text";
-      value.textContent = answer;
+      renderTextWithMath(value, answer);
       section.append(title, value);
       details.append(section);
     }

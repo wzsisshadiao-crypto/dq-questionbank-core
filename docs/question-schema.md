@@ -33,6 +33,12 @@ Required fields are `schema_version`, `id`, `type`, `language`, and `stem`. Opti
 - `code`
 - `line_break`
 
+Use `math` blocks for canonical LaTeX whenever the field supports structured
+content. The visual workspace also recognizes `$...$` and `$$...$$` inside
+textual display fields, including string-valued answers and table cells. This
+compatibility notation is explicit: the renderer never guesses that bare text
+such as `p^2` is mathematics. Escaped `\$` remains a literal dollar sign.
+
 ### Answer
 
 `kind` describes how to interpret `value`. Built-in validation understands `choice` and `choices`; other answer kinds remain serializable for domain-specific evaluators.
