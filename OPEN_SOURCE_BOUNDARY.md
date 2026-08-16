@@ -10,6 +10,8 @@ This boundary protects the private product while allowing the public core to evo
 - Importer/exporter protocols and format registry
 - Generic JSON, Markdown, LaTeX, and DOCX adapters
 - CLI and local browser playground
+- Local-first visual workspace and reviewed SQLite case adapter
+- Auditable synthetic database case generated from original fixture data
 - Synthetic examples, tests, documentation, and CI
 
 These components have independent value, require no production database, and can be used by third parties without knowledge of the private application.
@@ -27,27 +29,28 @@ The private implementation currently mixes some of these capabilities with produ
 
 - Production SQLite databases and database backups
 - Uploaded question images and orphan-image archives
-- Real questions, papers, answers, solutions, sources, and customer content
+- Unreviewed real questions, papers, answers, solutions, sources, and customer content
 - Logs, request traces, cleanup state, and local runtime artifacts
 - AI configuration, credentials, prompts, repair pipeline, and provider wiring
 - Commercial review, quality-center, backup, recovery, and deployment workflows
 - Internal account, authorization, pricing, and operational code
 - One-off scraping, migration, forensic, and maintenance scripts
-- Private frontend behavior and product-specific interaction design
+- Private production frontend behavior and product-specific interaction design
 
 ## Dependency direction
 
-The private product may depend on `dq_questionbank`. The public core must never import the private product.
+The private product and public local application may depend on `dq_questionbank`. The public packages must never import the private product.
 
 ```text
 Private application --> private adapters --> DQ QuestionBank Core
                                            ^
 Third-party apps ----> third-party adapters-|
+Public local app ----> reviewed case adapter-|
 ```
 
 ## Data policy
 
-Only synthetic, original, public-domain, or clearly licensed fixtures may enter `examples/` or `tests/`. Source license and attribution belong in `SourceMetadata` when applicable. No production row, image, document, log excerpt, or database dump may be used as a fixture.
+Only synthetic, original, public-domain, or clearly licensed fixtures may enter `examples/` or `tests/`. Source license and attribution belong in `SourceMetadata` when applicable. A non-synthetic public case must be built as a new allowlisted artifact after a separate content, privacy, copyright, and SQLite stale-page review. No production row, image, document, log excerpt, or database dump may be used directly as a fixture.
 
 ## Release gate
 

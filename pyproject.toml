@@ -32,6 +32,7 @@ dev = ["pytest>=8,<9", "ruff>=0.6,<1", "build>=1.2,<2", "jsonschema>=4.23,<5"]
 
 [project.scripts]
 dq = "dq_questionbank.cli:main"
+dq-local = "dq_questionbank_local.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -46,6 +47,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 dq_questionbank = ["web/*"]
+dq_questionbank_local = ["web/*", "data/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

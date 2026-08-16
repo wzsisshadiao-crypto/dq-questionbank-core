@@ -7,7 +7,7 @@
 
 Open infrastructure for structured educational questions.
 
-DQ QuestionBank Core is a database-neutral Python library, CLI, and local browser playground for importing, validating, converting, and exchanging educational questions. Its versioned canonical model supports multilingual text, LaTeX math, images, tables, answer types, source provenance, taxonomy references, and composite questions.
+DQ QuestionBank Core is a database-neutral Python library, CLI, and local-first visual application for importing, validating, converting, editing, and exchanging educational questions. Its versioned canonical model supports multilingual text, LaTeX math, images, tables, answer types, source provenance, taxonomy references, and composite questions.
 
 This repository is an independent open-core extraction. It contains no production question bank, user data, private database, commercial workflow, or built-in AI provider.
 
@@ -44,10 +44,33 @@ JSON / Markdown / LaTeX / DOCX
 - Convention-based DOCX import/export with image extraction
 - `QuestionImporter`, `QuestionExporter`, `StorageAdapter`, and `AIProvider` interfaces
 - Reference local filesystem storage with atomic canonical JSON writes
-- English-language CLI and local browser playground
+- English-language CLI, lightweight playground, and complete visual local workspace
+- Reviewed read-only SQLite case adapter and bundled synthetic database case
 - No database, frontend framework, or AI provider lock-in
 
-## Installation
+## Visual quick start
+
+Python 3.10 or newer is the only requirement for a downloaded source archive:
+
+```bash
+python run.py
+```
+
+The command starts a loopback-only server, creates an ignored local workspace,
+and opens `http://127.0.0.1:8766`. Choose **Open database case** to view the
+bundled SQLite case with its questions, choices, answers, and solutions. Import,
+edit, save, and export operations stay on the local computer.
+
+To offer another independently reviewed case:
+
+```bash
+python run.py --case-database ./downloaded-case.sqlite3
+```
+
+See [`docs/database-case.md`](docs/database-case.md) for the supported schema and
+mandatory publication review.
+
+## Library installation
 
 From a clone:
 
@@ -64,7 +87,7 @@ python -m pip install -e ".[docx,dev]"
 
 Python 3.10, 3.11, and 3.12 are the supported versions.
 
-## Quick start
+## Core CLI quick start
 
 Validate the synthetic sample:
 
@@ -85,7 +108,7 @@ Import a DOCX document:
 dq import exam.docx -o questions.json --assets-dir imported_assets
 ```
 
-Launch the local, English-language playground:
+Launch the lightweight, English-language canonical JSON playground:
 
 ```bash
 dq serve
@@ -159,6 +182,7 @@ Human document formats are not lossless containers for every source-specific fea
 - `formats/`: JSON, Markdown, LaTeX, and DOCX adapters
 - `cli.py`: thin command wrapper over the library
 - `web/`: static local playground; no server-side data storage
+- `dq_questionbank_local/`: visual workspace, HTTP API, and reviewed case adapter
 
 See [`OPEN_SOURCE_BOUNDARY.md`](OPEN_SOURCE_BOUNDARY.md) for the public/private boundary and [`docs/oss-architecture-proposal.md`](docs/oss-architecture-proposal.md) for design rationale.
 
@@ -166,13 +190,13 @@ See [`OPEN_SOURCE_BOUNDARY.md`](OPEN_SOURCE_BOUNDARY.md) for the public/private 
 
 ```bash
 python -m unittest discover -s tests -v
-python -m ruff check src tests scripts
+python -m ruff check src tests scripts run.py
 python -m build
 python scripts/audit_public_tree.py
 python scripts/check_docs.py
 ```
 
-The test suite covers model serialization, schema conformance, validation, unsafe asset paths, CLI behavior, format round trips, DOCX conversion, composite questions, formulas, documentation links, English-only public interface, web playground smoke tests, and the exception hierarchy.
+The test suite covers model serialization, schema conformance, validation, unsafe asset paths, CLI behavior, format round trips, DOCX conversion, composite questions, formulas, documentation links, English-only public interface, both browser applications, SQLite case safety, and the exception hierarchy.
 
 ## Compatibility
 

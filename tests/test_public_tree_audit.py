@@ -30,3 +30,14 @@ class PublicTreeAuditTests(unittest.TestCase):
             root = Path(temporary)
             (root / "questions.sqlite3").write_bytes(b"")
             self.assertIn("forbidden file type", {rule for _, rule in MODULE.audit(root)})
+
+    def test_allowlisted_database_requires_a_real_sqlite_header(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            target = root / "src" / "dq_questionbank_local" / "data" / "synthetic-case.sqlite3"
+            target.parent.mkdir(parents=True)
+            target.write_bytes(b"not a database")
+            self.assertIn(
+                "reviewed database has an invalid SQLite header",
+                {rule for _, rule in MODULE.audit(root)},
+            )

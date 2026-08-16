@@ -15,12 +15,14 @@ venv/
 *.db
 *.sqlite
 *.sqlite3
+!src/dq_questionbank_local/data/synthetic-case.sqlite3
 *.db-wal
 *.db-shm
 *.log
 logs/
 uploads/
 backups/
+workspace/
 private/
 secrets/
 *_assets/

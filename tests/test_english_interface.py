@@ -30,13 +30,15 @@ class EnglishInterfaceTests(unittest.TestCase):
     def test_public_interface_contains_no_cjk_text(self):
         root = Path(__file__).resolve().parents[1]
         public_extensions = {".css", ".html", ".js", ".json", ".md", ".py", ".toml", ".yml"}
-        ignored_parts = {"build", "dist", ".git", "__pycache__", ".egg-info"}
+        ignored_parts = {"build", "dist", "workspace", ".git", "__pycache__", ".egg-info"}
+        multilingual_data_parts = {"examples", "fixtures"}
         targets = (
             path
             for path in root.rglob("*")
             if path.is_file()
             and path.suffix in public_extensions
             and not any(part in ignored_parts for part in path.parts)
+            and not any(part in multilingual_data_parts for part in path.parts)
         )
         for target in targets:
             text = target.read_text(encoding="utf-8")

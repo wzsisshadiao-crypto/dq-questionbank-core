@@ -1,0 +1,66 @@
+{
+  "case": {
+    "case_id": "synthetic-database-case",
+    "title": "Synthetic Bilingual Database Case",
+    "description": "A reviewed local SQLite case demonstrating the visual question-bank workflow.",
+    "language": "zh-Hans",
+    "license": "Apache-2.0",
+    "provenance": "Original synthetic content written for DQ QuestionBank Core"
+  },
+  "questions": [
+    {
+      "question_id": "DEMO_MATH_001",
+      "subject_attribute": "Mathematics",
+      "grade": "Demo",
+      "question_type": "Synthetic",
+      "question_format": "single_choice",
+      "question_category": "Linear equations",
+      "source_chinese": "DQ 原创建议题",
+      "source_english": "DQ original synthetic question",
+      "body_chinese": "若 x + 4 = 9，则 x 的值是多少？",
+      "body_english": "If x + 4 = 9, what is the value of x?",
+      "answer_chinese": "5",
+      "answer_english": "5",
+      "solutions_chinese": "等式两边同时减去 4，得到 x = 5。",
+      "solutions_english": "Subtract 4 from both sides to obtain x = 5.",
+      "options": [
+        {"option_label": "A", "option_chinese": "3", "option_english": "3", "is_correct": false},
+        {"option_label": "B", "option_chinese": "4", "option_english": "4", "is_correct": false},
+        {"option_label": "C", "option_chinese": "5", "option_english": "5", "is_correct": true},
+        {"option_label": "D", "option_chinese": "6", "option_english": "6", "is_correct": false}
+      ]
+    },
+    {
+      "question_id": "DEMO_MATH_002",
+      "subject_attribute": "Mathematics",
+      "grade": "Demo",
+      "question_type": "Synthetic",
+      "question_format": "short_answer",
+      "question_category": "Geometry",
+      "source_chinese": "DQ 原创建议题",
+      "source_english": "DQ original synthetic question",
+      "body_chinese": "一个长方形的长为 5，宽为 3。求它的面积。",
+      "body_english": "A rectangle has length 5 and width 3. Find its area.",
+      "answer_chinese": "15",
+      "answer_english": "15",
+      "solutions_chinese": "面积等于长乘以宽，所以 5 × 3 = 15。",
+      "solutions_english": "Area is length times width, so 5 × 3 = 15."
+    },
+    {
+      "question_id": "DEMO_MATH_003",
+      "subject_attribute": "Mathematics",
+      "grade": "Demo",
+      "question_type": "Synthetic",
+      "question_format": "true_false",
+      "question_category": "Integers",
+      "source_chinese": "DQ 原创建议题",
+      "source_english": "DQ original synthetic question",
+      "body_chinese": "任意负整数都小于零。",
+      "body_english": "Every negative integer is less than zero.",
+      "answer_chinese": "正确",
+      "answer_english": "True",
+      "solutions_chinese": "负整数的定义保证它位于数轴上零的左侧。",
+      "solutions_english": "By definition, a negative integer lies to the left of zero on the number line."
+    }
+  ]
+}

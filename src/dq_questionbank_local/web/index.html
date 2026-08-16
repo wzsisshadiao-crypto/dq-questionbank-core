@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DQ QuestionBank Local</title>
+    <link rel="stylesheet" href="/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>DQ QuestionBank Local</h1>
+        <p>Local canonical JSON workspace</p>
+      </div>
+      <div class="topbar-actions">
+        <button id="load-case" class="case-button" type="button">Open database case</button>
+        <label class="button secondary" for="import-file">Import JSON</label>
+        <input id="import-file" type="file" accept="application/json,.json" hidden>
+        <button id="new-set" type="button">New set</button>
+      </div>
+    </header>
+    <main>
+      <aside class="sidebar" aria-label="Question sets">
+        <section id="case-panel" class="case-panel" hidden>
+          <p class="eyebrow">DATABASE CASE</p>
+          <strong id="case-title"></strong>
+          <p id="case-detail"></p>
+        </section>
+        <div class="section-heading"><h2>Question sets</h2><span id="set-count"></span></div>
+        <div id="set-list" class="set-list"></div>
+      </aside>
+      <section class="editor" aria-live="polite">
+        <p id="status" class="status" role="status"></p>
+        <div id="empty-state" class="empty-state">
+          <h2>Start a local workspace</h2>
+          <p>Import canonical JSON or create a question set. Nothing leaves this computer.</p>
+        </div>
+        <form id="editor-form" hidden>
+          <div class="editor-heading">
+            <div><p class="eyebrow">Question set</p><h2 id="editor-title">Untitled set</h2></div>
+            <div class="editor-actions"><button id="export-set" class="secondary" type="button">Export JSON</button><button type="submit">Save</button></div>
+          </div>
+          <div class="metadata-grid">
+            <label>Set ID<input id="set-id" required pattern="[A-Za-z0-9][A-Za-z0-9._-]{0,127}" autocomplete="off"></label>
+            <label>Title<input id="set-title" required></label>
+            <label class="full">Description<textarea id="set-description" rows="2"></textarea></label>
+          </div>
+          <div class="question-heading"><h3>Questions</h3><button id="add-question" class="secondary" type="button">Add question</button></div>
+          <div id="question-list" class="question-list"></div>
+        </form>
+      </section>
+    </main>
+    <template id="question-template">
+      <article class="question-card">
+        <div class="question-card-heading"><strong class="question-number"></strong><button class="remove-question icon-button" type="button" title="Remove question" aria-label="Remove question">&times;</button></div>
+        <div class="question-grid">
+          <label>ID<input class="question-id" required autocomplete="off"></label>
+          <label>Type<input class="question-type" readonly aria-label="Question type"></label>
+          <label>Language<input class="question-language" required value="en"></label>
+          <label>Subject<input class="question-subject"></label>
+          <label class="full">Stem<textarea class="question-stem" required rows="4"></textarea></label>
+        </div>
+        <div class="question-content" hidden>
+          <div class="choices-area" hidden><span class="field-label">Choices</span><div class="choice-list"></div></div>
+          <div class="answer-area" hidden><span class="field-label">Answer</span><p class="answer-text"></p></div>
+          <div class="solution-area" hidden><span class="field-label">Solution</span><p class="solution-text"></p></div>
+        </div>
+      </article>
+    </template>
+    <script src="/app.js"></script>
+  </body>
+</html>

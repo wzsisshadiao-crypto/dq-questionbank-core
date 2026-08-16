@@ -19,6 +19,10 @@ IGNORED_PARTS = {
 }
 FORBIDDEN_PARTS = {"uploads", "backups", "logs", "private", "secrets"}
 FORBIDDEN_SUFFIXES = {".db", ".sqlite", ".sqlite3", ".log", ".pem", ".key", ".p12", ".pfx"}
+REVIEWED_DATABASE_FILES = {
+    Path("src/dq_questionbank_local/data/synthetic-case.sqlite3"),
+}
+MAX_REVIEWED_DATABASE_SIZE = 1024 * 1024
 MAX_FILE_SIZE = 5 * 1024 * 1024
 TEXT_SUFFIXES = {
     ".py",
@@ -55,7 +59,14 @@ def audit(root: Path = ROOT) -> list[tuple[Path, str]]:
                 findings.append((relative, "forbidden private-data directory"))
             continue
         if path.suffix.lower() in FORBIDDEN_SUFFIXES:
-            findings.append((relative, "forbidden file type"))
+            if relative not in REVIEWED_DATABASE_FILES:
+                findings.append((relative, "forbidden file type"))
+            elif path.is_symlink():
+                findings.append((relative, "reviewed database must not be a symbolic link"))
+            elif path.stat().st_size > MAX_REVIEWED_DATABASE_SIZE:
+                findings.append((relative, "reviewed database exceeds 1 MiB limit"))
+            elif path.read_bytes()[:16] != b"SQLite format 3\x00":
+                findings.append((relative, "reviewed database has an invalid SQLite header"))
         if path.stat().st_size > MAX_FILE_SIZE:
             findings.append((relative, "file exceeds 5 MiB review limit"))
         if path.suffix.lower() not in TEXT_SUFFIXES and path.name not in {"LICENSE", ".gitignore"}:
