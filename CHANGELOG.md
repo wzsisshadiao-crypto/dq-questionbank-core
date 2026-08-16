@@ -4,6 +4,16 @@ All notable changes will be documented here. The project follows semantic versio
 
 ## [Unreleased]
 
+### Changed
+
+- Reorder the README around a real visual-workspace screenshot, immediate local
+  quick start, current capabilities, and clear user/technical documentation
+  paths.
+- Clarify that contributors do not need access to the private application and
+  replace the stale release-gate reference with the checks actually required.
+- Organize the roadmap around foundation, visual workspace, import/review,
+  daily question work, Word publishing, and 1.0 readiness.
+
 ## [0.3.0] - 2026-08-17
 
 ### Added

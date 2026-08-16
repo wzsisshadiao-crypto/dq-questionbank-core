@@ -22,6 +22,49 @@ credentials, provider configuration, or operational records. Question content
 may be multilingual; the maintained public interface and documentation are
 English-only.
 
+![DQ QuestionBank Core visual workspace](docs/assets/question-bank-workspace.png)
+
+**Local-first · Canonical schema · Extensible imports · Reviewable workflows**
+
+## Visual quick start
+
+Python 3.10 or newer is the only requirement for a downloaded source archive:
+
+```bash
+python run.py
+```
+
+The command starts a loopback-only server, creates an ignored local workspace,
+and opens `http://127.0.0.1:8766`. Choose **Open public case** to enter the
+Question Bank with four original synthetic questions. The interface provides
+collection and question navigation, year, subject, type, and field-scoped
+search filters, structured tables, offline KaTeX math, in-card answer review,
+and a focused Editor Center. Import, edit, save, and export operations stay on
+the local computer.
+
+To offer another independently reviewed case:
+
+```bash
+python run.py --case-database ./downloaded-case.sqlite3
+```
+
+See [`docs/database-case.md`](docs/database-case.md) for the supported schema and
+mandatory publication review.
+
+## What is available now
+
+| Area | In this repository today | Mature application / public migration |
+|---|---|---|
+| Data model | Versioned canonical schema, validation, migrations, compatibility fixtures | Mapping more application fields without coupling to the production database |
+| Import | JSON, Markdown, LaTeX, and convention-based DOCX adapters | Process-based Word/PDF intake, source evidence, candidate sessions, bounded AI correction |
+| Visual frontend | Question Bank view with collection browsing, scoped search and filters, question details, offline math and table rendering, answer review, focused editing, and canonical JSON exchange | Review Center, paper assembly, full Editor Center, Question Quality Center, and Export Center |
+| Storage | Atomic filesystem adapter and read-only reviewed SQLite case adapter | User-selected local database adapters behind the same canonical boundary |
+| Export | JSON, Markdown, LaTeX, and conventional DOCX | High-fidelity Word macro/reference-box publishing workflow |
+| AI | Stable provider protocol; no bundled provider or credential | Provider-neutral candidate correction with explicit review and validation gates |
+
+The right column describes working product behavior that is being migrated; it
+is not a claim that those modules are already downloadable from this repository.
+
 ## The question lifecycle
 
 The project treats a question as a traceable object that moves through explicit
@@ -70,20 +113,6 @@ Read [Product Workflow and Public Migration](docs/product-workflow.md) for the
 detailed journey of one question, the import extension model, the Word macro
 workflow, and the exact public migration boundary.
 
-## What is available now
-
-| Area | In this repository today | Mature application / public migration |
-|---|---|---|
-| Data model | Versioned canonical schema, validation, migrations, compatibility fixtures | Mapping more application fields without coupling to the production database |
-| Import | JSON, Markdown, LaTeX, and convention-based DOCX adapters | Process-based Word/PDF intake, source evidence, candidate sessions, bounded AI correction |
-| Visual frontend | Question Bank view with collection browsing, search and filters, question details, offline math and table rendering, answer review, basic editing, and canonical JSON exchange | Review Center, paper assembly, full Editor Center, Question Quality Center, and Export Center |
-| Storage | Atomic filesystem adapter and read-only reviewed SQLite case adapter | User-selected local database adapters behind the same canonical boundary |
-| Export | JSON, Markdown, LaTeX, and conventional DOCX | High-fidelity Word macro/reference-box publishing workflow |
-| AI | Stable provider protocol; no bundled provider or credential | Provider-neutral candidate correction with explicit review and validation gates |
-
-The right column describes working product behavior that is being migrated; it
-is not a claim that those modules are already downloadable from this repository.
-
 ## Why it exists
 
 Question banks often become inseparable from one database schema, editor, document format, or AI service. This project provides a small interchange core that can sit between those systems:
@@ -127,30 +156,6 @@ database table or one AI service the definition of the question.
 - English-language CLI, lightweight playground, and local Question Bank workspace
 - Reviewed read-only SQLite case adapter and bundled synthetic database case
 - No database, frontend framework, or AI provider lock-in
-
-## Visual quick start
-
-Python 3.10 or newer is the only requirement for a downloaded source archive:
-
-```bash
-python run.py
-```
-
-The command starts a loopback-only server, creates an ignored local workspace,
-and opens `http://127.0.0.1:8766`. Choose **Open public case** to enter the
-Question Bank with four original synthetic questions. The interface provides
-collection and question navigation, text search, subject and type filters,
-structured tables, offline KaTeX math, choices, answers, solutions, and a basic
-editor. Import, edit, save, and export operations stay on the local computer.
-
-To offer another independently reviewed case:
-
-```bash
-python run.py --case-database ./downloaded-case.sqlite3
-```
-
-See [`docs/database-case.md`](docs/database-case.md) for the supported schema and
-mandatory publication review.
 
 ## Library installation
 
@@ -313,9 +318,31 @@ contract; it does not restrict multilingual question content. See
 
 See [`docs/roadmap.md`](docs/roadmap.md).
 
-## Contributing and security
+## Documentation
 
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening an issue or pull request. Report vulnerabilities according to [`SECURITY.md`](SECURITY.md); do not place secrets, personal data, or copyrighted exam banks in public issues.
+- [GitHub Wiki](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/wiki): installation, getting started, formats, CLI, schema, and plugin development.
+- [`docs/`](docs): technical architecture, compatibility, public API, storage, migration, and workflow references.
+
+The README is the project landing page, the Wiki is the user guide, and
+`docs/` is the repository-owned technical reference. Wiki pages are generated
+deterministically from [`docs/wiki/`](docs/wiki).
+
+## Contributing
+
+Contributions are welcome. You do not need access to the private application to
+contribute: public interfaces, synthetic fixtures, tests, and migration targets
+are fully defined in this repository.
+
+Good places to start:
+
+- browse [`good first issue`](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22);
+- improve synthetic examples and tests;
+- build format or storage adapters;
+- help migrate generic Review, Editor, Quality, import, and Word workflows.
+
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening an issue or pull request.
+Report vulnerabilities according to [`SECURITY.md`](SECURITY.md); do not place
+secrets, personal data, or copyrighted exam banks in public issues.
 
 ## License
 

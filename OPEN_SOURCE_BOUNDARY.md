@@ -68,5 +68,8 @@ Only synthetic, original, public-domain, or clearly licensed fixtures may enter 
 
 ## Release gate
 
-Every proposed release must pass `python scripts/audit_public_tree.py`, all tests, a manual diff review, a credential scan, a copyright/provenance review, and the checklist in `OSS_READINESS_REPORT.md`.
+Every proposed release must pass `python scripts/audit_public_tree.py`, all
+tests, a manual diff review, a credential scan, a copyright/provenance review,
+package build and isolated-install checks, and a review of the proposed release
+notes and rollback instructions.
 

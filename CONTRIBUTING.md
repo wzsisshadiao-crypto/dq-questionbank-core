@@ -2,6 +2,18 @@
 
 Thank you for helping build open infrastructure for educational questions.
 
+You do not need access to the private application to contribute. Public APIs,
+synthetic fixtures, expected behavior, and compatibility requirements are
+defined and tested in this repository.
+
+## Where to start
+
+- Browse issues labeled [`good first issue`](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
+- Improve synthetic examples, tests, and user documentation.
+- Build adapters for documented format or storage interfaces.
+- Help migrate generic frontend, import, review, editor, quality, or Word
+  publishing workflows without copying private code or data.
+
 ## Development setup
 
 ```bash
@@ -29,6 +41,9 @@ Search existing issues first. Use a minimal, synthetic example and include the P
 - Add meaningful tests for behavior changes.
 - Update documentation and compatibility notes when formats or schema behavior change.
 - Do not commit generated databases, logs, credentials, private URLs, or real exam content.
+- The reviewed bundled synthetic case at
+  `src/dq_questionbank_local/data/synthetic-case.sqlite3` is the only currently
+  allowlisted SQLite artifact. New generated databases remain prohibited.
 - Use concise imperative commit messages, such as `Preserve image references in Markdown export`.
 
 ## Language policy
