@@ -4,7 +4,26 @@ All notable changes will be documented here. The project follows semantic versio
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-08-17
+
+### Added
+
+- Operational Paper Center for selecting, ordering, and exporting an active
+  collection as canonical Question Set JSON.
+- Import Center, Bank Data coverage dashboard, and deterministic Quality Center
+  with direct Editor Center handoff.
+- Ten-question synthetic mathematics case spanning multiple subjects, source
+  years, question types, formulas, choices, and a structured Cayley table.
+
 ### Changed
+
+- Expand the public frontend from a Question Bank and editor demonstration into
+  a connected local workflow while retaining explicit boundaries around AI,
+  image repair, candidate review, persisted quality history, and Word macros.
+- Rebuild the public Editor Center as a dark, dense workbench with question
+  context, horizontal field navigation, rendered-first content, source toggles,
+  live math previews, save state, and a deterministic quality side panel.
+- Add public source-year support to the reviewed SQLite case adapter.
 
 - Reorder the README around a real visual-workspace screenshot, immediate local
   quick start, current capabilities, and clear user/technical documentation

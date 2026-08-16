@@ -21,9 +21,9 @@ class LocalCaseDatabaseTests(unittest.TestCase):
         case = CaseDatabase(path)
         info = case.info()
         payload = case.load()
-        self.assertEqual(4, info["question_count"])
+        self.assertEqual(10, info["question_count"])
         self.assertEqual("synthetic-database-case", payload["id"])
-        self.assertEqual(4, len(payload["questions"]))
+        self.assertEqual(10, len(payload["questions"]))
         self.assertEqual("single_choice", payload["questions"][0]["type"])
         self.assertEqual("en", payload["language"])
         self.assertTrue(all(question["language"] == "en" for question in payload["questions"]))
@@ -31,7 +31,10 @@ class LocalCaseDatabaseTests(unittest.TestCase):
         self.assertEqual("If x + 4 = 9, what is the value of x?", first_stem[0]["text"])
         self.assertNotIn("\u82e5", str(first_stem))
         self.assertEqual("C", payload["questions"][0]["answer"]["value"])
-        group_question = payload["questions"][3]
+        self.assertEqual(2023, payload["questions"][0]["source"]["year"])
+        group_question = next(
+            question for question in payload["questions"] if question["id"] == "DEMO_MATH_004"
+        )
         self.assertEqual("DEMO_MATH_004", group_question["id"])
         self.assertFalse(
             any(block.get("language") == "zh-Hans" for block in group_question["stem"]["blocks"])

@@ -8,24 +8,24 @@
     <link rel="stylesheet" href="/vendor/katex/katex.min.css">
     <link rel="stylesheet" href="/styles.css">
   </head>
-  <body>
+  <body class="dark-theme">
     <div class="app-shell">
       <aside class="sidebar">
         <div class="brand"><span class="brand-mark" aria-hidden="true">DQ</span><div><strong>QuestionBank</strong><small>Local workspace</small></div></div>
         <nav class="menu" aria-label="Primary workspace">
           <button id="question-bank-nav" class="menu-item active" type="button">Question Bank</button>
-          <button class="menu-item" type="button" disabled title="Planned public migration">Paper Center</button>
-          <button class="menu-item" type="button" disabled title="Planned public migration">Import Center</button>
+          <button id="paper-nav" class="menu-item" type="button" disabled>Paper Center</button>
+          <button id="import-nav" class="menu-item" type="button">Import Center</button>
           <button id="editor-nav" class="menu-item" type="button" disabled>Editor Center</button>
-          <button class="menu-item" type="button" disabled title="Planned public migration">Bank Data</button>
-          <button class="menu-item" type="button" disabled title="Planned public migration">Quality Center</button>
+          <button id="data-nav" class="menu-item" type="button" disabled>Bank Data</button>
+          <button id="quality-nav" class="menu-item" type="button" disabled>Quality Center</button>
           <div id="more-nav" class="more-nav">
             <button id="more-nav-toggle" class="menu-item" type="button" aria-expanded="false" aria-controls="more-nav-menu">More</button>
             <div id="more-nav-menu" class="more-nav-menu" hidden>
-              <button class="more-nav-item" type="button" disabled title="Planned public migration">Review Center</button>
-              <button class="more-nav-item" type="button" disabled title="Planned public migration">Image Repair</button>
-              <button class="more-nav-item" type="button" disabled title="Planned public migration">Export Center</button>
-              <button id="theme-toggle" class="more-nav-item" type="button">Dark theme</button>
+              <button id="review-nav" class="more-nav-item" type="button" disabled>Review Center</button>
+              <button class="more-nav-item" type="button" disabled title="Requires the public asset-evidence contract">Image Repair</button>
+              <button id="export-nav" class="more-nav-item" type="button" disabled>Export Center</button>
+              <button id="theme-toggle" class="more-nav-item" type="button">Light theme</button>
               <button class="more-nav-item recycle-nav-item" type="button" disabled title="Planned public migration">Recycle Bin</button>
             </div>
           </div>
@@ -94,15 +94,144 @@
           </div>
         </section>
 
-        <form id="editor-form" class="view editor-form" hidden>
+        <section id="paper-view" class="view" hidden>
           <header class="view-title-row">
-            <div><h1>Editor Center</h1><p class="view-subtitle">Edit canonical public fields and save them to the local workspace.</p></div>
+            <div><h1>Paper Center</h1><p class="view-subtitle">Select, order, review, and export a local paper from the active collection.</p></div>
             <div class="view-actions">
-              <button id="back-to-bank" class="action-btn secondary" type="button">Back to Question Bank</button>
-              <button class="action-btn primary" type="submit">Save changes</button>
+              <button id="clear-paper" class="action-btn secondary" type="button">Clear paper</button>
+              <button id="export-paper" class="action-btn primary" type="button">Export paper JSON</button>
             </div>
           </header>
-          <section class="card editor-toolbar"><div><strong id="editor-title">Untitled set</strong><span id="editor-position">No question selected</span></div><span>Changes remain on this computer until exported.</span></section>
+          <section class="paper-toolbar card">
+            <label for="paper-title"><span>Paper title</span><input id="paper-title" value="Untitled paper"></label>
+            <div class="paper-metric"><span>Source collection</span><strong id="paper-source-title">None</strong></div>
+            <div class="paper-metric"><span>Selected</span><strong id="paper-count">0 questions</strong></div>
+          </section>
+          <div class="paper-layout">
+            <section class="work-panel">
+              <div class="work-panel-heading"><div><h2>Question pool</h2><p>Questions from the active collection.</p></div><button id="add-all-to-paper" class="action-btn secondary" type="button">Add all</button></div>
+              <div id="paper-source-list" class="work-list"></div>
+            </section>
+            <aside class="paper-draft card" aria-label="Paper draft">
+              <div class="work-panel-heading"><div><h2>Paper draft</h2><p>Order used by the exported question set.</p></div></div>
+              <div id="paper-draft-list" class="work-list"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="import-view" class="view" hidden>
+          <header class="view-title-row">
+            <div><h1>Import Center</h1><p class="view-subtitle">Bring reviewed canonical JSON or the bundled public database case into this local workspace.</p></div>
+          </header>
+          <div class="import-workspace">
+            <section class="import-panel card">
+              <div class="import-stage-heading"><span class="stage-number">1</span><div><h2>Select source</h2><p>Files remain on this computer and are validated before persistence.</p></div></div>
+              <label class="import-drop-zone" for="import-file"><strong>Choose canonical JSON</strong><span>Question Set schema 1.0</span></label>
+              <div class="import-divider"><span>or</span></div>
+              <button id="import-load-case" class="action-btn secondary" type="button">Open bundled public case</button>
+            </section>
+            <section class="import-review card">
+              <div class="import-stage-heading"><span class="stage-number">2</span><div><h2>Validation result</h2><p id="import-result-note">No import has been processed in this session.</p></div></div>
+              <dl id="import-result" class="import-result"></dl>
+              <button id="review-import" class="action-btn primary" type="button" disabled>Review in Question Bank</button>
+            </section>
+          </div>
+        </section>
+
+        <section id="data-view" class="view" hidden>
+          <header class="view-title-row">
+            <div><h1>Bank Data</h1><p class="view-subtitle">Collection coverage and field completeness computed locally from canonical data.</p></div>
+          </header>
+          <div id="data-metrics" class="metric-strip"></div>
+          <div class="data-layout">
+            <section class="data-table-panel card">
+              <div class="work-panel-heading"><div><h2>Coverage</h2><p>Questions grouped by subject and type.</p></div></div>
+              <div class="table-scroll"><table class="data-table"><thead><tr><th>Subject</th><th>Questions</th><th>Answered</th><th>Solved</th><th>Types</th></tr></thead><tbody id="data-coverage-body"></tbody></table></div>
+            </section>
+            <aside class="collection-inventory card">
+              <div class="work-panel-heading"><div><h2>Collections</h2><p>Open another local collection.</p></div></div>
+              <div id="data-collection-list" class="work-list"></div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="quality-view" class="view" hidden>
+          <header class="view-title-row">
+            <div><h1>Quality Center</h1><p class="view-subtitle">Deterministic public checks for completeness, identifiers, and renderable mathematics.</p></div>
+            <div class="view-actions"><button id="run-quality" class="action-btn primary" type="button">Run checks</button></div>
+          </header>
+          <div id="quality-metrics" class="metric-strip"></div>
+          <div class="quality-layout">
+            <aside class="quality-sidebar card">
+              <strong>Severity</strong>
+              <button class="quality-filter active" type="button" data-quality-filter="all">All findings <span id="quality-all-count">0</span></button>
+              <button class="quality-filter" type="button" data-quality-filter="error">Errors <span id="quality-error-count">0</span></button>
+              <button class="quality-filter" type="button" data-quality-filter="warning">Warnings <span id="quality-warning-count">0</span></button>
+            </aside>
+            <section class="quality-queue card">
+              <div class="work-panel-heading"><div><h2>Review queue</h2><p id="quality-note">Run checks to build the queue.</p></div></div>
+              <div id="quality-findings" class="quality-findings"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="review-view" class="view" hidden>
+          <header class="view-title-row">
+            <div><h1>Review Center</h1><p class="view-subtitle">Inspect the active canonical collection and record a local session checklist before paper assembly.</p></div>
+            <div class="view-actions"><button id="review-all" class="action-btn secondary" type="button">Mark all reviewed</button><button id="review-to-paper" class="action-btn primary" type="button">Open Paper Center</button></div>
+          </header>
+          <div id="review-metrics" class="metric-strip"></div>
+          <section class="review-queue card">
+            <div class="work-panel-heading"><div><h2>Collection review</h2><p>Review state stays in this browser session and does not alter canonical data.</p></div></div>
+            <div id="review-question-list" class="work-list"></div>
+          </section>
+        </section>
+
+        <section id="export-view" class="view" hidden>
+          <header class="view-title-row">
+            <div><h1>Export Center</h1><p class="view-subtitle">Download canonical, portable artifacts from the active local collection.</p></div>
+          </header>
+          <div class="export-grid">
+            <article class="export-option card">
+              <span class="export-kicker">Complete collection</span>
+              <h2>Question Set JSON</h2>
+              <p>Preserves every public canonical field for migration, backup, or another adapter.</p>
+              <strong id="export-set-detail">No active collection</strong>
+              <button id="export-center-set" class="action-btn primary" type="button">Download collection JSON</button>
+            </article>
+            <article class="export-option card">
+              <span class="export-kicker">Assembled selection</span>
+              <h2>Paper JSON</h2>
+              <p>Preserves the current Paper Center order as a separate canonical question set.</p>
+              <strong id="export-paper-detail">0 questions selected</strong>
+              <button id="export-center-paper" class="action-btn primary" type="button">Download paper JSON</button>
+            </article>
+            <article class="export-option card export-reference">
+              <span class="export-kicker">Document formats</span>
+              <h2>Adapter exports</h2>
+              <p>Markdown, LaTeX, and conventional DOCX exports are available through the public CLI. The private Word macro bridge is not bundled.</p>
+              <code>dq convert collection.json --output-format docx -o paper.docx</code>
+            </article>
+          </div>
+        </section>
+
+        <form id="editor-form" class="view editor-form" hidden>
+          <header class="view-title-row">
+            <div class="editor-title-lockup"><h1>Editor Center</h1><span>Structured</span></div>
+          </header>
+          <section class="card editor-toolbar">
+            <div class="editor-context">
+              <span class="editor-context-pill">Current: <strong id="editor-context-id">Not loaded</strong></span>
+              <span class="editor-context-pill">Collection: <strong id="editor-title">Untitled set</strong></span>
+              <span class="editor-context-pill editor-context-source">Source: <strong id="editor-context-source">Not provided</strong></span>
+              <span class="editor-context-pill"><strong id="editor-position">No question selected</strong></span>
+            </div>
+            <div class="editor-toolbar-actions">
+              <span id="editor-save-state" class="editor-save-state"><i></i> Saved</span>
+              <button id="back-to-bank" class="action-btn secondary" type="button">Question Bank</button>
+              <button class="action-btn primary" type="submit">Save changes</button>
+            </div>
+          </section>
           <details class="card collection-settings">
             <summary>Collection settings</summary>
             <section class="metadata-grid">
@@ -129,6 +258,19 @@
               <button id="add-question" class="action-btn secondary" type="button">Add question</button>
             </aside>
             <div id="question-list" class="editor-question-list"></div>
+            <aside class="editor-audit-panel card">
+              <div class="editor-audit-heading"><h2>Correction Panel</h2><button id="editor-run-quality" class="action-btn secondary" type="button">Run checks</button></div>
+              <div class="editor-audit-score"><span>Attention</span><strong id="editor-quality-count">-</strong><small id="editor-quality-summary">Checks have not run.</small></div>
+              <section class="editor-audit-section">
+                <div><h3>Question Quality</h3><button id="editor-open-quality" type="button">Open Quality Center</button></div>
+                <p>Deterministic checks cover required fields, duplicate identifiers, delimiters, and KaTeX rendering.</p>
+                <strong id="editor-quality-state" class="editor-quality-state">Waiting for a local check</strong>
+              </section>
+              <section class="editor-boundary-note">
+                <strong>Public boundary</strong>
+                <p>AI correction rules and private provider workflows are not bundled.</p>
+              </section>
+            </aside>
           </div>
         </form>
       </main>
@@ -137,19 +279,20 @@
     <input id="import-file" type="file" accept="application/json,.json" hidden>
     <template id="question-template">
       <article class="edit-question-card card">
-        <header class="edit-question-heading"><strong class="question-number"></strong><button class="remove-question icon-button" type="button" title="Remove question" aria-label="Remove question">&times;</button></header>
+        <header class="edit-question-heading"><div><strong class="question-number"></strong><span class="question-editor-summary"></span></div><button class="remove-question icon-button" type="button" title="Remove question" aria-label="Remove question">&times;</button></header>
         <div class="question-grid" data-editor-section="metadata">
           <label>ID<input class="question-id" required autocomplete="off"></label>
           <label>Type<input class="question-type" readonly aria-label="Question type"></label>
           <label>Language<input class="question-language" required value="en"></label>
           <label>Subject<input class="question-subject"></label>
-          <section class="editor-field full" data-editor-section="stem"><div class="editor-field-heading"><strong>Stem</strong><span>Structured preview is retained until the source text changes.</span></div><textarea class="question-stem" required rows="6" aria-label="Stem"></textarea><div class="stem-preview rendered-content" aria-label="Structured stem preview" hidden></div></section>
+          <div class="editor-source-row full"><span>Source</span><strong class="question-source">Not provided</strong></div>
+          <section class="editor-field full" data-editor-section="stem"><div class="editor-field-heading"><strong>Stem</strong><div><span class="editor-check-badge">Structured preview</span><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-stem" required rows="6" aria-label="Stem"></textarea><div class="stem-preview rendered-content editor-live-preview" aria-label="Structured stem preview" hidden></div></section>
         </div>
         <div class="question-content">
           <section class="editor-field choices-area" data-editor-section="choices"><div class="editor-field-heading"><strong>Choices</strong><span>Structured choice editing is not available in this release.</span></div><div class="choice-list"></div><p class="field-empty">No choices for this question.</p></section>
-          <section class="editor-field answer-area" data-editor-section="answer"><div class="editor-field-heading"><strong>Answer</strong></div><textarea class="question-answer" rows="3" aria-label="Answer"></textarea></section>
-          <section class="editor-field analysis-area" data-editor-section="analysis"><div class="editor-field-heading"><strong>Analysis</strong></div><textarea class="question-analysis" rows="4" aria-label="Analysis"></textarea></section>
-          <section class="editor-field solution-area" data-editor-section="solution"><div class="editor-field-heading"><strong>Solution</strong><span>Structured solution blocks are retained until this text changes.</span></div><textarea class="question-solution" rows="7" aria-label="Solution"></textarea></section>
+          <section class="editor-field answer-area" data-editor-section="answer"><div class="editor-field-heading"><strong>Answer</strong><div><span class="editor-check-badge">Local preview</span><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-answer" rows="3" aria-label="Answer"></textarea><div class="answer-preview editor-live-preview rendered-content"></div></section>
+          <section class="editor-field analysis-area" data-editor-section="analysis"><div class="editor-field-heading"><strong>Analysis</strong><div><span class="editor-check-badge">Local preview</span><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-analysis" rows="4" aria-label="Analysis"></textarea><div class="analysis-preview editor-live-preview rendered-content"></div></section>
+          <section class="editor-field solution-area" data-editor-section="solution"><div class="editor-field-heading"><strong>Solution</strong><div><span class="editor-check-badge">Structured preview</span><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-solution" rows="7" aria-label="Solution"></textarea><div class="solution-preview editor-live-preview rendered-content"></div></section>
         </div>
       </article>
     </template>

@@ -231,6 +231,8 @@ class CaseDatabase:
                 "license": case_info["license"],
                 "attribution": case_info["provenance"],
             }
+            if row.get("source_year") is not None:
+                question["source"]["year"] = int(row["source_year"])
         return question
 
     @staticmethod
@@ -323,6 +325,7 @@ def _create_case_schema(connection: sqlite3.Connection) -> None:
             question_category TEXT,
             source_chinese TEXT,
             source_english TEXT,
+            source_year INTEGER,
             body_chinese TEXT NOT NULL,
             body_english TEXT,
             body_blocks_json TEXT,
@@ -357,8 +360,8 @@ def _insert_case_question(connection: sqlite3.Connection, question: Any) -> None
         raise CaseDatabaseError("A case question is missing a required public field.")
     columns = (
         "question_id", "subject_attribute", "grade", "question_type", "question_format",
-        "question_category", "source_chinese", "source_english", "body_chinese", "body_english",
-        "body_blocks_json",
+        "question_category", "source_chinese", "source_english", "source_year", "body_chinese",
+        "body_english", "body_blocks_json",
         "answer_chinese", "answer_english", "analysis_chinese", "analysis_english",
         "solutions_chinese", "solutions_english",
     )

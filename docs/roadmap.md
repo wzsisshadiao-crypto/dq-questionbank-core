@@ -17,12 +17,14 @@ Each batch must use synthetic data and preserve the public/private boundary.
 
 ## 2. Visual workspace
 
-**Status: first public workspace available in v0.3.0**
+**Status: operational public workspace available in v0.4.0**
 
 - Local-first Question Bank with collection browsing and scoped filters
 - Structured text, math, table, choice, answer, and solution rendering
 - Focused selected-question Editor Center
 - Canonical JSON import, local save, and export
+- Paper assembly with deterministic ordering and canonical JSON export
+- Collection metrics and deterministic local quality checks with editor handoff
 - Next: richer structured choice, image, formula, and metadata editing
 
 ## 3. Import and review
@@ -37,13 +39,17 @@ Each batch must use synthetic data and preserve the public/private boundary.
 
 ## 4. Daily question work
 
-**Status: planned after import/review boundaries stabilize**
+**Status: first local-only batch available in v0.4.0**
 
-- Paper and collection assembly
-- Field-level Editor Center workflows
-- Reviewable quality findings linked to exact fields and revisions
+- Paper and collection assembly is available for the active canonical set
+- Field-level Editor Center workflows are available for public canonical fields
+- Deterministic quality findings link back to the exact question and field
 - Recheck after save without silently rewriting question content
 - Synthetic browser fixtures for end-to-end contributor testing
+
+Revision-bound persisted findings and candidate review sessions remain separate
+architecture work; the current quality queue is computed locally and does not
+claim those contracts.
 
 ## 5. Word publishing
 

@@ -9,6 +9,12 @@ const state = {
   subject: "",
   type: "",
   sets: [],
+  paperQuestionIds: [],
+  qualityFindings: [],
+  qualityFilter: "all",
+  qualityHasRun: false,
+  reviewedQuestionIds: [],
+  importSummary: null,
 };
 
 const setList = document.querySelector("#set-list");
@@ -30,6 +36,40 @@ const collectionSearch = document.querySelector("#collection-search");
 const subjectFilter = document.querySelector("#subject-filter");
 const typeFilter = document.querySelector("#type-filter");
 const editorQuestionSelect = document.querySelector("#editor-question-select");
+const paperView = document.querySelector("#paper-view");
+const importView = document.querySelector("#import-view");
+const dataView = document.querySelector("#data-view");
+const qualityView = document.querySelector("#quality-view");
+const reviewView = document.querySelector("#review-view");
+const exportView = document.querySelector("#export-view");
+const paperNav = document.querySelector("#paper-nav");
+const importNav = document.querySelector("#import-nav");
+const dataNav = document.querySelector("#data-nav");
+const qualityNav = document.querySelector("#quality-nav");
+const reviewNav = document.querySelector("#review-nav");
+const exportNav = document.querySelector("#export-nav");
+
+const viewElements = {
+  bank: bankView,
+  paper: paperView,
+  import: importView,
+  editor: editorForm,
+  data: dataView,
+  quality: qualityView,
+  review: reviewView,
+  export: exportView,
+};
+
+const viewNavigation = {
+  bank: bankNav,
+  paper: paperNav,
+  import: importNav,
+  editor: editorNav,
+  data: dataNav,
+  quality: qualityNav,
+  review: reviewNav,
+  export: exportNav,
+};
 
 function newQuestion(number) {
   return {
@@ -68,6 +108,7 @@ function isEscaped(text, index) {
 
 function mathDelimiterAt(text, index) {
   if (text[index] !== "$" || isEscaped(text, index)) return "";
+  if (index > 0 && text[index - 1] === "$" && !isEscaped(text, index - 1)) return "";
   return text.startsWith("$$", index) ? "$$" : "$";
 }
 
@@ -255,10 +296,16 @@ async function refreshList(selectId = state.selectedId) {
 function setView(view) {
   state.view = view;
   emptyState.hidden = view !== "empty";
-  bankView.hidden = view !== "bank";
-  editorForm.hidden = view !== "editor";
-  bankNav.classList.toggle("active", view === "bank");
-  editorNav.classList.toggle("active", view === "editor");
+  for (const [name, element] of Object.entries(viewElements)) element.hidden = name !== view;
+  for (const [name, navigation] of Object.entries(viewNavigation)) {
+    navigation.classList.toggle("active", name === view);
+  }
+  if (view === "paper") renderPaperCenter();
+  else if (view === "import") renderImportCenter();
+  else if (view === "data") renderBankData();
+  else if (view === "quality") renderQualityCenter();
+  else if (view === "review") renderReviewCenter();
+  else if (view === "export") renderExportCenter();
 }
 
 function setFilterOptions(container, selected, values, onSelect) {
@@ -406,6 +453,14 @@ function makeQuestionCard(question, index) {
     });
     actions.append(toggle);
   }
+  const paper = document.createElement("button");
+  paper.className = "expand-btn";
+  paper.type = "button";
+  const inPaper = state.paperQuestionIds.includes(question.id);
+  paper.textContent = inPaper ? "In paper" : "Add to paper";
+  paper.disabled = inPaper;
+  paper.addEventListener("click", () => addQuestionToPaper(question.id));
+  actions.append(paper);
   const edit = document.createElement("button");
   edit.className = "expand-btn";
   edit.type = "button";
@@ -453,6 +508,462 @@ function renderBank(payload) {
   renderQuestionResults();
 }
 
+function allQuestions(questions = state.current?.questions || []) {
+  const result = [];
+  for (const question of questions) {
+    result.push(question);
+    result.push(...allQuestions(question.subquestions || []));
+  }
+  return result;
+}
+
+function downloadJson(payload, filename) {
+  const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], { type: "application/json" });
+  const link = Object.assign(document.createElement("a"), {
+    href: URL.createObjectURL(blob),
+    download: filename,
+  });
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+
+function createWorkRow(question, actionLabel, action) {
+  const row = document.createElement("article");
+  row.className = "work-row";
+  const copy = document.createElement("div");
+  const title = document.createElement("strong");
+  title.textContent = question.id;
+  const summary = document.createElement("p");
+  summary.textContent = stemText(question) || "Empty stem";
+  const meta = document.createElement("span");
+  meta.textContent = [question.subject, formatType(question.type)].filter(Boolean).join(" · ");
+  copy.append(title, summary, meta);
+  const button = document.createElement("button");
+  button.className = "action-btn secondary compact-action";
+  button.type = "button";
+  button.textContent = actionLabel;
+  button.addEventListener("click", action);
+  row.append(copy, button);
+  return row;
+}
+
+function addQuestionToPaper(questionId) {
+  if (!state.current || state.paperQuestionIds.includes(questionId)) return;
+  state.paperQuestionIds.push(questionId);
+  renderQuestionResults();
+  renderPaperCenter();
+  setStatus(`${questionId} added to the paper draft.`);
+}
+
+function movePaperQuestion(index, offset) {
+  const target = index + offset;
+  if (target < 0 || target >= state.paperQuestionIds.length) return;
+  [state.paperQuestionIds[index], state.paperQuestionIds[target]] = [
+    state.paperQuestionIds[target],
+    state.paperQuestionIds[index],
+  ];
+  renderPaperCenter();
+}
+
+function removePaperQuestion(questionId) {
+  state.paperQuestionIds = state.paperQuestionIds.filter((id) => id !== questionId);
+  renderQuestionResults();
+  renderPaperCenter();
+}
+
+function renderPaperCenter() {
+  const sourceList = document.querySelector("#paper-source-list");
+  const draftList = document.querySelector("#paper-draft-list");
+  sourceList.replaceChildren();
+  draftList.replaceChildren();
+  if (!state.current) return;
+  const questions = state.current.questions || [];
+  document.querySelector("#paper-source-title").textContent = state.current.title;
+  document.querySelector("#paper-count").textContent = `${state.paperQuestionIds.length} question${state.paperQuestionIds.length === 1 ? "" : "s"}`;
+  for (const question of questions) {
+    const selected = state.paperQuestionIds.includes(question.id);
+    const row = createWorkRow(question, selected ? "Added" : "Add", () => addQuestionToPaper(question.id));
+    row.querySelector("button").disabled = selected;
+    sourceList.append(row);
+  }
+  const byId = new Map(questions.map((question) => [question.id, question]));
+  state.paperQuestionIds.forEach((questionId, index) => {
+    const question = byId.get(questionId);
+    if (!question) return;
+    const row = createWorkRow(question, "Remove", () => removePaperQuestion(questionId));
+    const controls = document.createElement("div");
+    controls.className = "row-controls";
+    for (const [label, title, offset] of [["\u2191", "Move up", -1], ["\u2193", "Move down", 1]]) {
+      const button = document.createElement("button");
+      button.className = "icon-control";
+      button.type = "button";
+      button.textContent = label;
+      button.title = title;
+      button.setAttribute("aria-label", title);
+      button.disabled = offset < 0 ? index === 0 : index === state.paperQuestionIds.length - 1;
+      button.addEventListener("click", () => movePaperQuestion(index, offset));
+      controls.append(button);
+    }
+    controls.append(row.lastElementChild);
+    row.append(controls);
+    draftList.append(row);
+  });
+  if (!questions.length) appendEmptyState(sourceList, "The collection has no questions.");
+  if (!state.paperQuestionIds.length) appendEmptyState(draftList, "Add questions from the pool to build a paper.");
+}
+
+function paperPayload() {
+  const questions = state.current?.questions || [];
+  const byId = new Map(questions.map((question) => [question.id, question]));
+  const title = document.querySelector("#paper-title").value.trim() || "Untitled paper";
+  return {
+    schema_version: "1.0",
+    id: `paper-${state.current.id}`,
+    title,
+    description: `Paper assembled from ${state.current.title}.`,
+    language: state.current.language,
+    questions: state.paperQuestionIds.map((id) => structuredClone(byId.get(id))).filter(Boolean),
+    metadata: { "org.dqquestionbank.paper": { source_set_id: state.current.id } },
+  };
+}
+
+function appendDefinition(list, term, value) {
+  const wrapper = document.createElement("div");
+  const label = document.createElement("dt");
+  label.textContent = term;
+  const detail = document.createElement("dd");
+  detail.textContent = value;
+  wrapper.append(label, detail);
+  list.append(wrapper);
+}
+
+function renderImportCenter() {
+  const result = document.querySelector("#import-result");
+  const note = document.querySelector("#import-result-note");
+  const review = document.querySelector("#review-import");
+  result.replaceChildren();
+  if (!state.importSummary) {
+    note.textContent = "No import has been processed in this session.";
+    review.disabled = !state.current;
+    return;
+  }
+  note.textContent = state.importSummary.message;
+  appendDefinition(result, "Source", state.importSummary.source);
+  appendDefinition(result, "Collection", state.importSummary.title);
+  appendDefinition(result, "Questions", String(state.importSummary.questionCount));
+  appendDefinition(result, "Schema", state.importSummary.schemaVersion);
+  review.disabled = false;
+}
+
+function appendMetric(container, label, value, detail) {
+  const metric = document.createElement("div");
+  metric.className = "metric-item";
+  const name = document.createElement("span");
+  name.textContent = label;
+  const count = document.createElement("strong");
+  count.textContent = String(value);
+  const note = document.createElement("small");
+  note.textContent = detail;
+  metric.append(name, count, note);
+  container.append(metric);
+}
+
+function renderBankData() {
+  const metrics = document.querySelector("#data-metrics");
+  const coverage = document.querySelector("#data-coverage-body");
+  const collections = document.querySelector("#data-collection-list");
+  metrics.replaceChildren();
+  coverage.replaceChildren();
+  collections.replaceChildren();
+  if (!state.current) return;
+  const questions = allQuestions();
+  const answered = questions.filter((question) => answerText(question.answer)).length;
+  const solved = questions.filter((question) => contentText(question.solution)).length;
+  const blocks = questions.flatMap((question) => question.stem?.blocks || []);
+  appendMetric(metrics, "Questions", questions.length, "including subquestions");
+  appendMetric(metrics, "Answered", answered, `${percentage(answered, questions.length)}% coverage`);
+  appendMetric(metrics, "Solutions", solved, `${percentage(solved, questions.length)}% coverage`);
+  appendMetric(metrics, "Rich blocks", blocks.filter((block) => !["text", "line_break"].includes(block.type)).length, "math, tables, images, and code");
+  const subjectGroups = new Map();
+  for (const question of questions) {
+    const subject = question.subject || "Unassigned";
+    if (!subjectGroups.has(subject)) subjectGroups.set(subject, []);
+    subjectGroups.get(subject).push(question);
+  }
+  for (const [subject, items] of [...subjectGroups.entries()].sort(([left], [right]) => left.localeCompare(right))) {
+    const row = document.createElement("tr");
+    const values = [
+      subject,
+      items.length,
+      items.filter((question) => answerText(question.answer)).length,
+      items.filter((question) => contentText(question.solution)).length,
+      new Set(items.map((question) => formatType(question.type))).size,
+    ];
+    for (const value of values) {
+      const cell = document.createElement("td");
+      cell.textContent = String(value);
+      row.append(cell);
+    }
+    coverage.append(row);
+  }
+  for (const item of state.sets) {
+    const row = document.createElement("button");
+    row.className = `inventory-row${item.id === state.current.id ? " active" : ""}`;
+    row.type = "button";
+    const title = document.createElement("strong");
+    title.textContent = item.title;
+    const detail = document.createElement("span");
+    detail.textContent = `${item.question_count} questions`;
+    row.append(title, detail);
+    row.addEventListener("click", () => loadSet(item.id));
+    collections.append(row);
+  }
+}
+
+function percentage(value, total) {
+  return total ? Math.round((value / total) * 100) : 0;
+}
+
+function inspectDelimitedMath(value) {
+  const text = String(value || "");
+  const expressions = [];
+  let cursor = 0;
+  while (cursor < text.length) {
+    const delimiter = mathDelimiterAt(text, cursor);
+    if (!delimiter) {
+      cursor += 1;
+      continue;
+    }
+    const start = cursor + delimiter.length;
+    const closing = findClosingDelimiter(text, start, delimiter);
+    if (closing < 0) return { expressions, unclosed: true };
+    expressions.push({ latex: text.slice(start, closing), display: delimiter === "$$" });
+    cursor = closing + delimiter.length;
+  }
+  return { expressions, unclosed: false };
+}
+
+function addMathFindings(findings, question, questionIndex, field, value, explicit = false) {
+  const inspected = explicit
+    ? { expressions: [{ latex: String(value || ""), display: false }], unclosed: false }
+    : inspectDelimitedMath(value);
+  if (inspected.unclosed) {
+    findings.push(makeFinding("error", question, questionIndex, field, "Unclosed math delimiter."));
+  }
+  for (const expression of inspected.expressions) {
+    if (!expression.latex.trim()) {
+      findings.push(makeFinding("error", question, questionIndex, field, "Empty math expression."));
+      continue;
+    }
+    try {
+      globalThis.katex?.renderToString(expression.latex, {
+        displayMode: expression.display,
+        strict: "warn",
+        throwOnError: true,
+        trust: false,
+      });
+    } catch (error) {
+      findings.push(makeFinding("error", question, questionIndex, field, "KaTeX cannot render this expression."));
+    }
+  }
+}
+
+function inspectContentMath(findings, question, questionIndex, field, content) {
+  for (const block of content?.blocks || []) {
+    if (block.type === "math") addMathFindings(findings, question, questionIndex, field, block.latex, true);
+    else if (block.type === "text") addMathFindings(findings, question, questionIndex, field, block.text);
+    else if (block.type === "table") {
+      for (const row of block.rows || []) {
+        for (const cell of row) addMathFindings(findings, question, questionIndex, field, cell);
+      }
+    }
+  }
+}
+
+function makeFinding(severity, question, questionIndex, field, message) {
+  return { severity, questionId: question.id, questionIndex, field, message };
+}
+
+function runQualityChecks() {
+  const findings = [];
+  const seen = new Set();
+  for (const [questionIndex, question] of (state.current?.questions || []).entries()) {
+    if (seen.has(question.id)) findings.push(makeFinding("error", question, questionIndex, "metadata", "Duplicate question ID."));
+    seen.add(question.id);
+    if (!stemText(question).trim()) findings.push(makeFinding("error", question, questionIndex, "stem", "Question stem is empty."));
+    if (!question.subject) findings.push(makeFinding("warning", question, questionIndex, "metadata", "Subject is not assigned."));
+    if (!answerText(question.answer)) findings.push(makeFinding("warning", question, questionIndex, "answer", "Answer is missing."));
+    if (!contentText(question.solution)) findings.push(makeFinding("warning", question, questionIndex, "solution", "Solution is missing."));
+    inspectContentMath(findings, question, questionIndex, "stem", question.stem);
+    for (const choice of question.choices || []) inspectContentMath(findings, question, questionIndex, "choices", choice.content);
+    inspectContentMath(findings, question, questionIndex, "solution", question.solution);
+    addMathFindings(findings, question, questionIndex, "answer", answerText(question.answer));
+  }
+  state.qualityFindings = findings;
+  state.qualityHasRun = true;
+  renderQualityCenter();
+  updateEditorAudit();
+  setStatus(`Quality checks completed with ${findings.length} finding${findings.length === 1 ? "" : "s"}.`);
+}
+
+function updateEditorAudit() {
+  const count = document.querySelector("#editor-quality-count");
+  const summary = document.querySelector("#editor-quality-summary");
+  const qualityState = document.querySelector("#editor-quality-state");
+  if (!count || !summary || !qualityState) return;
+  if (!state.qualityHasRun) {
+    count.textContent = "-";
+    summary.textContent = "Checks have not run.";
+    qualityState.textContent = "Waiting for a local check";
+    qualityState.classList.remove("warning");
+    return;
+  }
+  count.textContent = String(state.qualityFindings.length);
+  summary.textContent = state.qualityFindings.length
+    ? `${new Set(state.qualityFindings.map((finding) => finding.questionId)).size} questions need attention`
+    : "Current local checks passed";
+  qualityState.textContent = state.qualityFindings.length
+    ? "Review findings before saving"
+    : "Latest deterministic check passed";
+  qualityState.classList.toggle("warning", Boolean(state.qualityFindings.length));
+}
+
+function setEditorDirty(dirty) {
+  const saveState = document.querySelector("#editor-save-state");
+  saveState.classList.toggle("unsaved", dirty);
+  saveState.lastChild.textContent = dirty ? " Unsaved" : " Saved";
+}
+
+function renderEditorTextPreview(container, value) {
+  container.replaceChildren();
+  if (String(value || "").trim()) renderTextWithMath(container, value);
+}
+
+function renderQualityCenter() {
+  const metrics = document.querySelector("#quality-metrics");
+  const queue = document.querySelector("#quality-findings");
+  metrics.replaceChildren();
+  queue.replaceChildren();
+  const errors = state.qualityFindings.filter((finding) => finding.severity === "error");
+  const warnings = state.qualityFindings.filter((finding) => finding.severity === "warning");
+  const affected = new Set(state.qualityFindings.map((finding) => finding.questionId)).size;
+  appendMetric(metrics, "Errors", errors.length, "rendering or structural blockers");
+  appendMetric(metrics, "Warnings", warnings.length, "fields requiring review");
+  appendMetric(metrics, "Affected", affected, "unique questions");
+  appendMetric(metrics, "Checked", state.current?.questions?.length || 0, "questions in this collection");
+  document.querySelector("#quality-all-count").textContent = String(state.qualityFindings.length);
+  document.querySelector("#quality-error-count").textContent = String(errors.length);
+  document.querySelector("#quality-warning-count").textContent = String(warnings.length);
+  const visible = state.qualityFindings.filter((finding) => state.qualityFilter === "all" || finding.severity === state.qualityFilter);
+  document.querySelector("#quality-note").textContent = !state.qualityHasRun
+    ? "Run checks to build the queue."
+    : state.qualityFindings.length
+      ? `${visible.length} of ${state.qualityFindings.length} findings shown.`
+      : "All deterministic checks passed.";
+  for (const finding of visible) {
+    const item = document.createElement("article");
+    item.className = `quality-finding ${finding.severity}`;
+    const copy = document.createElement("div");
+    const heading = document.createElement("strong");
+    heading.textContent = `${finding.questionId} · ${finding.field}`;
+    const message = document.createElement("p");
+    message.textContent = finding.message;
+    copy.append(heading, message);
+    const action = document.createElement("button");
+    action.className = "action-btn secondary compact-action";
+    action.type = "button";
+    action.textContent = "Open in Editor";
+    action.addEventListener("click", () => openQualityFinding(finding));
+    item.append(copy, action);
+    queue.append(item);
+  }
+  if (!visible.length) {
+    appendEmptyState(
+      queue,
+      state.qualityHasRun ? "No findings match this filter." : "No checks have run yet.",
+    );
+  }
+}
+
+function appendEmptyState(container, message) {
+  const empty = document.createElement("p");
+  empty.className = "work-empty";
+  empty.textContent = message;
+  container.append(empty);
+}
+
+function openQualityFinding(finding) {
+  state.selectedQuestionIndex = finding.questionIndex;
+  setView("editor");
+  updateEditorSelection();
+  const card = document.querySelector(".edit-question-card:not([hidden])");
+  const target = finding.field === "metadata" ? card : card?.querySelector(`[data-editor-section="${finding.field}"]`);
+  target?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function toggleQuestionReviewed(questionId) {
+  state.reviewedQuestionIds = state.reviewedQuestionIds.includes(questionId)
+    ? state.reviewedQuestionIds.filter((id) => id !== questionId)
+    : [...state.reviewedQuestionIds, questionId];
+  renderReviewCenter();
+}
+
+function openQuestionInEditor(index) {
+  state.selectedQuestionIndex = index;
+  setView("editor");
+  updateEditorSelection();
+}
+
+function renderReviewCenter() {
+  const metrics = document.querySelector("#review-metrics");
+  const list = document.querySelector("#review-question-list");
+  metrics.replaceChildren();
+  list.replaceChildren();
+  if (!state.current) return;
+  const questions = state.current.questions || [];
+  const reviewed = questions.filter((question) => state.reviewedQuestionIds.includes(question.id));
+  const answered = questions.filter((question) => answerText(question.answer));
+  appendMetric(metrics, "Questions", questions.length, "active collection");
+  appendMetric(metrics, "Reviewed", reviewed.length, `${percentage(reviewed.length, questions.length)}% complete`);
+  appendMetric(metrics, "Remaining", questions.length - reviewed.length, "session checklist");
+  appendMetric(metrics, "Answered", answered.length, `${percentage(answered.length, questions.length)}% coverage`);
+  questions.forEach((question, index) => {
+    const row = createWorkRow(
+      question,
+      state.reviewedQuestionIds.includes(question.id) ? "Reviewed" : "Mark reviewed",
+      () => toggleQuestionReviewed(question.id),
+    );
+    const controls = document.createElement("div");
+    controls.className = "row-controls";
+    const edit = document.createElement("button");
+    edit.className = "action-btn secondary compact-action";
+    edit.type = "button";
+    edit.textContent = "Open in Editor";
+    edit.addEventListener("click", () => openQuestionInEditor(index));
+    controls.append(edit, row.lastElementChild);
+    row.append(controls);
+    if (state.reviewedQuestionIds.includes(question.id)) row.classList.add("reviewed");
+    list.append(row);
+  });
+}
+
+function renderExportCenter() {
+  if (!state.current) return;
+  document.querySelector("#export-set-detail").textContent = `${state.current.questions.length} questions · schema ${state.current.schema_version}`;
+  document.querySelector("#export-paper-detail").textContent = `${state.paperQuestionIds.length} question${state.paperQuestionIds.length === 1 ? "" : "s"} selected`;
+  document.querySelector("#export-center-paper").disabled = !state.paperQuestionIds.length;
+}
+
+function exportPaperDraft() {
+  if (!state.current || !state.paperQuestionIds.length) {
+    setStatus("Add at least one question before exporting a paper.", true);
+    return;
+  }
+  const payload = paperPayload();
+  downloadJson(payload, `${payload.id}.json`);
+  setStatus("Paper draft exported as canonical JSON.");
+}
+
 function addQuestion(question, index = questionList.children.length) {
   const fragment = questionTemplate.content.cloneNode(true);
   const card = fragment.querySelector(".edit-question-card");
@@ -463,15 +974,23 @@ function addQuestion(question, index = questionList.children.length) {
   card.dataset.originalAnalysis = String(question.metadata?.analysis || "");
   card.dataset.originalSolution = contentText(question.solution);
   fragment.querySelector(".question-number").textContent = `Question ${index + 1}`;
+  fragment.querySelector(".question-editor-summary").textContent = [
+    question.subject,
+    formatType(question.type),
+    question.metadata?.grade,
+  ].filter(Boolean).join(" · ");
+  fragment.querySelector(".question-source").textContent = question.source?.title || "Not provided";
   fragment.querySelector(".question-id").value = question.id || "";
   fragment.querySelector(".question-type").value = question.type || "short_answer";
   fragment.querySelector(".question-language").value = question.language || "en";
   fragment.querySelector(".question-subject").value = question.subject || "";
   fragment.querySelector(".question-stem").value = stemText(question);
   const stemPreview = fragment.querySelector(".stem-preview");
+  stemPreview.hidden = false;
   if (hasStructuredBlocks(question.stem)) {
-    stemPreview.hidden = false;
     renderStructuredContent(stemPreview, question.stem);
+  } else {
+    renderEditorTextPreview(stemPreview, stemText(question));
   }
   const choicesArea = fragment.querySelector(".choices-area");
   const choicesList = fragment.querySelector(".choice-list");
@@ -487,9 +1006,17 @@ function addQuestion(question, index = questionList.children.length) {
   }
   const answer = answerText(question.answer);
   fragment.querySelector(".question-answer").value = answer;
+  renderEditorTextPreview(fragment.querySelector(".answer-preview"), answer);
   fragment.querySelector(".question-analysis").value = question.metadata?.analysis || "";
+  renderEditorTextPreview(
+    fragment.querySelector(".analysis-preview"),
+    question.metadata?.analysis || "",
+  );
   const solution = contentText(question.solution);
   fragment.querySelector(".question-solution").value = solution;
+  const solutionPreview = fragment.querySelector(".solution-preview");
+  if (hasStructuredBlocks(question.solution)) renderStructuredContent(solutionPreview, question.solution);
+  else renderEditorTextPreview(solutionPreview, solution);
   fragment.querySelector(".remove-question").addEventListener("click", () => {
     if (questionList.children.length === 1) {
       setStatus("A collection must contain at least one question.", true);
@@ -532,6 +1059,9 @@ function updateEditorSelection() {
   document.querySelector("#previous-question").disabled = state.selectedQuestionIndex === 0;
   document.querySelector("#next-question").disabled = state.selectedQuestionIndex >= cards.length - 1;
   for (const button of document.querySelectorAll(".remove-question")) button.disabled = cards.length === 1;
+  const question = state.current?.questions?.[state.selectedQuestionIndex];
+  document.querySelector("#editor-context-id").textContent = question?.id || "Not loaded";
+  document.querySelector("#editor-context-source").textContent = question?.source?.title || "Not provided";
 }
 
 function populateEditor(payload) {
@@ -543,16 +1073,27 @@ function populateEditor(payload) {
   payload.questions.forEach(addQuestion);
   renumberQuestions();
   updateEditorSelection();
+  setEditorDirty(false);
+  updateEditorAudit();
 }
 
 function renderWorkspace(payload, persisted = true, view = "bank") {
+  const collectionChanged = state.selectedId !== payload.id;
   state.current = payload;
   state.selectedId = payload.id;
   state.selectedQuestionIndex = Math.min(state.selectedQuestionIndex, Math.max(payload.questions.length - 1, 0));
   state.persisted = persisted;
   state.subject = "";
   state.type = "";
-  editorNav.disabled = false;
+  state.qualityFindings = [];
+  state.qualityHasRun = false;
+  if (collectionChanged) {
+    state.paperQuestionIds = [];
+    state.reviewedQuestionIds = [];
+  }
+  for (const navigation of [paperNav, editorNav, dataNav, qualityNav]) navigation.disabled = false;
+  document.querySelector("#review-nav").disabled = false;
+  document.querySelector("#export-nav").disabled = false;
   searchInput.value = "";
   searchScope.value = "all";
   yearInput.value = "";
@@ -621,19 +1162,14 @@ function collectPayload() {
 function editCurrentQuestion() {
   setView("editor");
   updateEditorSelection();
-  document.querySelector(".edit-question-card:not([hidden])")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  runQualityChecks();
+  editorForm.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 function exportCurrentSet() {
   if (!state.current) return;
   const payload = state.view === "editor" ? collectPayload() : state.current;
-  const blob = new Blob([`${JSON.stringify(payload, null, 2)}\n`], { type: "application/json" });
-  const link = Object.assign(document.createElement("a"), {
-    href: URL.createObjectURL(blob),
-    download: `${payload.id || "question-set"}.json`,
-  });
-  link.click();
-  URL.revokeObjectURL(link.href);
+  downloadJson(payload, `${payload.id || "question-set"}.json`);
 }
 
 async function loadDatabaseCase() {
@@ -641,8 +1177,17 @@ async function loadDatabaseCase() {
   document.querySelector("#empty-load-case").disabled = true;
   try {
     const payload = await request("/api/case/load", { method: "POST" });
-    renderWorkspace(payload);
+    const targetView = state.view === "import" ? "import" : "bank";
+    renderWorkspace(payload, true, targetView);
     await refreshList(payload.id);
+    state.importSummary = {
+      source: "Bundled public SQLite case",
+      title: payload.title,
+      questionCount: payload.questions.length,
+      schemaVersion: payload.schema_version,
+      message: "The reviewed public case passed adapter and schema validation.",
+    };
+    if (targetView === "import") renderImportCenter();
     setStatus("Public database case loaded into the question bank.");
   } catch (error) {
     setStatus(error.message, true);
@@ -691,13 +1236,22 @@ document.querySelector("#import-file").addEventListener("change", async (event) 
   if (!file) return;
   try {
     const payload = JSON.parse(await file.text());
+    const targetView = state.view === "import" ? "import" : "bank";
     const saved = await request("/api/import", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    renderWorkspace(saved);
+    renderWorkspace(saved, true, targetView);
     await refreshList(saved.id);
+    state.importSummary = {
+      source: file.name,
+      title: saved.title,
+      questionCount: saved.questions.length,
+      schemaVersion: saved.schema_version,
+      message: "Canonical JSON passed schema and semantic validation and was saved locally.",
+    };
+    if (targetView === "import") renderImportCenter();
     setStatus("JSON imported into the question bank.");
   } catch (error) {
     setStatus(error.message, true);
@@ -717,11 +1271,69 @@ document.querySelector("#back-to-bank").addEventListener("click", () => {
 bankNav.addEventListener("click", () => {
   if (state.current) setView("bank");
 });
+paperNav.addEventListener("click", () => {
+  if (state.current) setView("paper");
+});
+importNav.addEventListener("click", () => setView("import"));
 editorNav.addEventListener("click", () => {
   if (state.current) {
     setView("editor");
     updateEditorSelection();
+    runQualityChecks();
   }
+});
+dataNav.addEventListener("click", () => {
+  if (state.current) setView("data");
+});
+qualityNav.addEventListener("click", () => {
+  if (state.current) {
+    setView("quality");
+    runQualityChecks();
+  }
+});
+reviewNav.addEventListener("click", () => {
+  if (state.current) setView("review");
+  setMoreMenu(false);
+});
+exportNav.addEventListener("click", () => {
+  if (state.current) setView("export");
+  setMoreMenu(false);
+});
+document.querySelector("#import-load-case").addEventListener("click", loadDatabaseCase);
+document.querySelector("#review-import").addEventListener("click", () => {
+  if (state.current) setView("bank");
+});
+document.querySelector("#add-all-to-paper").addEventListener("click", () => {
+  if (!state.current) return;
+  state.paperQuestionIds = state.current.questions.map((question) => question.id);
+  renderQuestionResults();
+  renderPaperCenter();
+});
+document.querySelector("#clear-paper").addEventListener("click", () => {
+  state.paperQuestionIds = [];
+  renderQuestionResults();
+  renderPaperCenter();
+});
+document.querySelector("#export-paper").addEventListener("click", () => {
+  exportPaperDraft();
+});
+document.querySelector("#review-all").addEventListener("click", () => {
+  if (!state.current) return;
+  state.reviewedQuestionIds = state.current.questions.map((question) => question.id);
+  renderReviewCenter();
+});
+document.querySelector("#review-to-paper").addEventListener("click", () => setView("paper"));
+document.querySelector("#export-center-set").addEventListener("click", exportCurrentSet);
+document.querySelector("#export-center-paper").addEventListener("click", exportPaperDraft);
+document.querySelector("#run-quality").addEventListener("click", runQualityChecks);
+document.querySelector("#quality-view").addEventListener("click", (event) => {
+  const filter = event.target.closest("[data-quality-filter]");
+  if (!filter) return;
+  state.qualityFilter = filter.dataset.qualityFilter;
+  for (const button of document.querySelectorAll("[data-quality-filter]")) {
+    button.classList.toggle("active", button === filter);
+  }
+  renderQualityCenter();
 });
 searchInput.addEventListener("input", renderQuestionResults);
 searchScope.addEventListener("change", renderQuestionResults);
@@ -746,10 +1358,38 @@ document.querySelector("#editor-field-nav").addEventListener("click", (event) =>
   card?.querySelector(`[data-editor-section="${button.dataset.editorField}"]`)
     ?.scrollIntoView({ behavior: "smooth", block: "start" });
 });
+editorForm.addEventListener("click", (event) => {
+  const toggle = event.target.closest(".editor-source-toggle");
+  if (!toggle) return;
+  const field = toggle.closest(".editor-field");
+  const open = field.classList.toggle("source-open");
+  toggle.textContent = open ? "Show preview" : "Edit source";
+  if (open) field.querySelector("textarea")?.focus();
+});
 questionList.addEventListener("input", (event) => {
-  if (!event.target.matches(".question-id")) return;
-  const selectedOption = editorQuestionSelect.options[state.selectedQuestionIndex];
-  if (selectedOption) selectedOption.textContent = `${state.selectedQuestionIndex + 1}. ${event.target.value || "Untitled question"}`;
+  setEditorDirty(true);
+  const card = event.target.closest(".edit-question-card");
+  if (event.target.matches(".question-id")) {
+    const selectedOption = editorQuestionSelect.options[state.selectedQuestionIndex];
+    if (selectedOption) selectedOption.textContent = `${state.selectedQuestionIndex + 1}. ${event.target.value || "Untitled question"}`;
+    document.querySelector("#editor-context-id").textContent = event.target.value || "Untitled question";
+  } else if (event.target.matches(".question-stem")) {
+    renderEditorTextPreview(card.querySelector(".stem-preview"), event.target.value);
+  } else if (event.target.matches(".question-answer")) {
+    renderEditorTextPreview(card.querySelector(".answer-preview"), event.target.value);
+  } else if (event.target.matches(".question-analysis")) {
+    renderEditorTextPreview(card.querySelector(".analysis-preview"), event.target.value);
+  } else if (event.target.matches(".question-solution")) {
+    renderEditorTextPreview(card.querySelector(".solution-preview"), event.target.value);
+  }
+});
+editorForm.addEventListener("input", (event) => {
+  if (!event.target.closest("#question-list")) setEditorDirty(true);
+});
+document.querySelector("#editor-run-quality").addEventListener("click", runQualityChecks);
+document.querySelector("#editor-open-quality").addEventListener("click", () => {
+  setView("quality");
+  runQualityChecks();
 });
 
 const moreNavToggle = document.querySelector("#more-nav-toggle");

@@ -82,6 +82,7 @@ class EnglishInterfaceTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         document = root / "src" / "dq_questionbank_local" / "web" / "index.html"
         text = document.read_text(encoding="utf-8")
+        self.assertIn('<body class="dark-theme">', text)
         for label in (
             "Question Bank",
             "Paper Center",
@@ -96,6 +97,12 @@ class EnglishInterfaceTests(unittest.TestCase):
         ):
             self.assertIn(label, text)
         for control_id in (
+            "paper-nav",
+            "import-nav",
+            "data-nav",
+            "quality-nav",
+            "review-nav",
+            "export-nav",
             "question-year",
             "question-search",
             "question-search-scope",
@@ -104,3 +111,24 @@ class EnglishInterfaceTests(unittest.TestCase):
             "editor-field-nav",
         ):
             self.assertIn(f'id="{control_id}"', text)
+        self.assertNotRegex(
+            text,
+            r'<button[^>]+id="import-nav"[^>]+disabled',
+        )
+        for view_id in (
+            "paper-view",
+            "import-view",
+            "data-view",
+            "quality-view",
+            "review-view",
+            "export-view",
+        ):
+            self.assertIn(f'id="{view_id}"', text)
+        for editor_control in (
+            "editor-context-id",
+            "editor-context-source",
+            "editor-save-state",
+            "editor-run-quality",
+            "editor-open-quality",
+        ):
+            self.assertIn(f'id="{editor_control}"', text)

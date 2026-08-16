@@ -78,7 +78,13 @@ class LocalServerTests(unittest.TestCase):
         self.assertIn("DQ QuestionBank Local", page)
         for required_control in (
             'id="question-bank-nav"',
+            'id="paper-nav"',
+            'id="import-nav"',
             'id="editor-nav"',
+            'id="data-nav"',
+            'id="quality-nav"',
+            'id="review-nav"',
+            'id="export-nav"',
             'id="question-search"',
             'id="question-year"',
             'id="question-search-scope"',
@@ -89,6 +95,12 @@ class LocalServerTests(unittest.TestCase):
             'id="question-list"',
             'id="editor-question-select"',
             'id="editor-field-nav"',
+            'id="paper-view"',
+            'id="import-view"',
+            'id="data-view"',
+            'id="quality-view"',
+            'id="review-view"',
+            'id="export-view"',
         ):
             self.assertIn(required_control, page)
 
@@ -107,6 +119,13 @@ class LocalServerTests(unittest.TestCase):
         self.assertIn("function renderQuestionResults()", script)
         self.assertIn("function makeQuestionCard(question, index)", script)
         self.assertIn("function updateEditorSelection()", script)
+        self.assertIn("function renderPaperCenter()", script)
+        self.assertIn("function renderImportCenter()", script)
+        self.assertIn("function renderBankData()", script)
+        self.assertIn("function runQualityChecks()", script)
+        self.assertIn("function renderReviewCenter()", script)
+        self.assertIn("function renderExportCenter()", script)
+        self.assertIn("function paperPayload()", script)
         self.assertIn('searchScope.value === "all"', script)
         self.assertIn("question.source?.year ?? question.metadata?.year", script)
         self.assertIn("Expand answer and solution", script)
@@ -131,12 +150,13 @@ class LocalServerTests(unittest.TestCase):
     def test_loads_bundled_database_case_into_workspace(self):
         status, info = self.request("GET", "/api/case")
         self.assertEqual(200, status)
-        self.assertEqual(4, info["question_count"])
+        self.assertEqual(10, info["question_count"])
         status, payload = self.request("POST", "/api/case/load")
         self.assertEqual(200, status)
         self.assertEqual("synthetic-database-case", payload["id"])
         self.assertEqual("en", payload["language"])
         self.assertTrue(all(item["language"] == "en" for item in payload["questions"]))
+        self.assertEqual(2023, payload["questions"][0]["source"]["year"])
         group_question = next(item for item in payload["questions"] if item["id"] == "DEMO_MATH_004")
         self.assertIn("table", [block["type"] for block in group_question["stem"]["blocks"]])
         status, listing = self.request("GET", "/api/sets")

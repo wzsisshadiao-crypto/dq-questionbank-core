@@ -10,8 +10,9 @@ Run `python run.py`, then choose **Open public case**. The application opens
 the source database read-only, converts its public fields to canonical schema
 `1.0`, and saves a JSON copy in the selected workspace. Visual edits affect
 that JSON copy only. The Question Bank view supports collection and question
-navigation, text search, subject and type filters, offline math rendering,
-structured tables, answer and solution review, and basic question editing.
+navigation, text search, year, subject and type filters, offline math rendering,
+structured tables, answer and solution review, editing, paper assembly, local
+quality checks, collection metrics, and canonical paper export.
 
 To use a separately downloaded case:
 
@@ -30,7 +31,7 @@ The `questions` table requires `question_id`, `subject_attribute`,
 `question_type`, and `body_chinese`. The adapter also reads these optional
 public columns when present:
 
-- `grade`, `question_format`, and `question_category`
+- `grade`, `question_format`, `question_category`, and `source_year`
 - `source_chinese` and `source_english`
 - `body_english`
 - `body_blocks_json`, an optional canonical content-block array for formulas,
@@ -73,8 +74,10 @@ appears to contain only a few public rows.
 database. `scripts/build_case_database.py` creates
 `src/dq_questionbank_local/data/synthetic-case.sqlite3` atomically. Tests compare
 their canonical meaning and verify that reading the database does not modify it.
-The bundled case includes an original group-theory question with a structured
-9-by-9 Cayley table to exercise rich database content and responsive rendering.
-Its stem, table cells, answer, and solution use explicit LaTeX delimiters so the
-offline KaTeX renderer covers the complete question instead of guessing from
-bare symbols. All four bundled questions are presented in English.
+The bundled case contains ten original synthetic questions across seven
+mathematics subject labels, six canonical question types, and several source years.
+It includes a structured 9-by-9 Cayley table, inline and block-ready LaTeX,
+single- and multiple-choice questions, and complete answers and solutions. This
+provides enough variation to exercise the workspace filters, metrics, paper
+assembly, editor, deterministic quality checks, and responsive rendering. All
+bundled questions are presented in English.
