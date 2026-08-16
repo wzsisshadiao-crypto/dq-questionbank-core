@@ -22,11 +22,23 @@ class LocalCaseDatabaseTests(unittest.TestCase):
         case = CaseDatabase(path)
         info = case.info()
         payload = case.load()
-        self.assertEqual(3, info["question_count"])
+        self.assertEqual(4, info["question_count"])
         self.assertEqual("synthetic-database-case", payload["id"])
-        self.assertEqual(3, len(payload["questions"]))
+        self.assertEqual(4, len(payload["questions"]))
         self.assertEqual("single_choice", payload["questions"][0]["type"])
         self.assertEqual("C", payload["questions"][0]["answer"]["value"])
+        group_question = payload["questions"][3]
+        self.assertEqual("DEMO_MATH_004", group_question["id"])
+        table = next(block for block in group_question["stem"]["blocks"] if block["type"] == "table")
+        self.assertEqual(9, len(table["rows"]))
+        self.assertTrue(all(len(row) == 9 for row in table["rows"]))
+        self.assertEqual(["*", "e", "p"], table["rows"][0][:3])
+        symbols = set(table["rows"][0][1:])
+        self.assertEqual(symbols, {row[0] for row in table["rows"][1:]})
+        for row in table["rows"][1:]:
+            self.assertEqual(symbols, set(row[1:]))
+        for column in range(1, 9):
+            self.assertEqual(symbols, {row[column] for row in table["rows"][1:]})
         self.assertEqual(before, path.read_bytes())
 
         with closing(sqlite3.connect(f"file:{path.as_posix()}?mode=ro", uri=True)) as connection:
@@ -69,3 +81,16 @@ class LocalCaseDatabaseTests(unittest.TestCase):
                 connection.commit()
             with self.assertRaisesRegex(CaseDatabaseError, "license and provenance"):
                 CaseDatabase(target).info()
+
+    def test_rejects_malformed_structured_question_content(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            target = Path(temporary_directory) / "case.sqlite3"
+            build_case_database(ROOT / "examples" / "synthetic-case-source.json", target)
+            with closing(sqlite3.connect(target)) as connection:
+                connection.execute(
+                    "UPDATE questions SET body_blocks_json = ? WHERE question_id = ?",
+                    ("not-json", "DEMO_MATH_004"),
+                )
+                connection.commit()
+            with self.assertRaisesRegex(CaseDatabaseError, "not valid JSON"):
+                CaseDatabase(target).load()

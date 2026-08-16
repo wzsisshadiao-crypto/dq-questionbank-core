@@ -177,7 +177,7 @@ class CaseDatabase:
             "type": question_type,
             "language": "zh-Hans" if row.get("body_chinese") else "en",
             "subject": str(row.get("subject_attribute") or "General"),
-            "stem": _bilingual_content(row.get("body_chinese"), row.get("body_english")),
+            "stem": _question_content(row),
             "metadata": {
                 "database_case": True,
                 "original_question_type": row.get("question_type"),
@@ -274,7 +274,7 @@ def build_case_database(source: Path, target: Path) -> None:
         try:
             connection.execute("PRAGMA foreign_keys = ON")
             connection.execute("PRAGMA application_id = 0x44514342")
-            connection.execute("PRAGMA user_version = 1")
+            connection.execute("PRAGMA user_version = 2")
             _create_case_schema(connection)
             metadata_columns = (
                 "case_id", "title", "description", "language", "license", "provenance"
@@ -318,6 +318,7 @@ def _create_case_schema(connection: sqlite3.Connection) -> None:
             source_english TEXT,
             body_chinese TEXT NOT NULL,
             body_english TEXT,
+            body_blocks_json TEXT,
             answer_chinese TEXT,
             answer_english TEXT,
             analysis_chinese TEXT,
@@ -350,13 +351,19 @@ def _insert_case_question(connection: sqlite3.Connection, question: Any) -> None
     columns = (
         "question_id", "subject_attribute", "grade", "question_type", "question_format",
         "question_category", "source_chinese", "source_english", "body_chinese", "body_english",
+        "body_blocks_json",
         "answer_chinese", "answer_english", "analysis_chinese", "analysis_english",
         "solutions_chinese", "solutions_english",
     )
     placeholders = ", ".join("?" for _ in columns)
     connection.execute(
         f"INSERT INTO questions ({', '.join(columns)}) VALUES ({placeholders})",
-        tuple(question.get(column) for column in columns),
+        tuple(
+            _canonical_blocks_json(question.get("body_blocks"))
+            if column == "body_blocks_json"
+            else question.get(column)
+            for column in columns
+        ),
     )
     for option in question.get("options", []):
         connection.execute(
@@ -381,4 +388,25 @@ def _bilingual_content(chinese: Any, english: Any) -> dict[str, list[dict[str, A
         blocks.append({"type": "line_break"})
     if english and english != chinese:
         blocks.append({"type": "text", "text": str(english), "language": "en"})
+    return {"blocks": blocks}
+
+
+def _canonical_blocks_json(blocks: Any) -> str | None:
+    if blocks is None:
+        return None
+    if not isinstance(blocks, list) or any(not isinstance(block, dict) for block in blocks):
+        raise CaseDatabaseError("Structured question content must be a list of content blocks.")
+    return json.dumps(blocks, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
+
+
+def _question_content(row: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
+    raw = row.get("body_blocks_json")
+    if raw in (None, ""):
+        return _bilingual_content(row.get("body_chinese"), row.get("body_english"))
+    try:
+        blocks = json.loads(str(raw))
+    except json.JSONDecodeError as exc:
+        raise CaseDatabaseError("Structured question content is not valid JSON.") from exc
+    if not isinstance(blocks, list) or any(not isinstance(block, dict) for block in blocks):
+        raise CaseDatabaseError("Structured question content must be a list of content blocks.")
     return {"blocks": blocks}

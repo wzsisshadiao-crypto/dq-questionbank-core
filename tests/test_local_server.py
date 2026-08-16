@@ -77,13 +77,24 @@ class LocalServerTests(unittest.TestCase):
         self.assertEqual(200, response.status)
         self.assertIn("DQ QuestionBank Local", page)
 
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+        connection.request("GET", "/app.js")
+        response = connection.getresponse()
+        script = response.read().decode("utf-8")
+        connection.close()
+        self.assertEqual(200, response.status)
+        self.assertIn('document.createElement("table")', script)
+        self.assertNotIn("innerHTML", script)
+
     def test_loads_bundled_database_case_into_workspace(self):
         status, info = self.request("GET", "/api/case")
         self.assertEqual(200, status)
-        self.assertEqual(3, info["question_count"])
+        self.assertEqual(4, info["question_count"])
         status, payload = self.request("POST", "/api/case/load")
         self.assertEqual(200, status)
         self.assertEqual("synthetic-database-case", payload["id"])
+        group_question = next(item for item in payload["questions"] if item["id"] == "DEMO_MATH_004")
+        self.assertIn("table", [block["type"] for block in group_question["stem"]["blocks"]])
         status, listing = self.request("GET", "/api/sets")
         self.assertEqual(["synthetic-database-case"], [item["id"] for item in listing["sets"]])
 

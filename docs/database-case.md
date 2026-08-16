@@ -31,6 +31,8 @@ public columns when present:
 - `grade`, `question_format`, and `question_category`
 - `source_chinese` and `source_english`
 - `body_english`
+- `body_blocks_json`, an optional canonical content-block array for formulas,
+  tables, code, and mixed-language question stems
 - `answer_chinese` and `answer_english`
 - `analysis_chinese` and `analysis_english`
 - `solutions_chinese` and `solutions_english`
@@ -66,3 +68,5 @@ appears to contain only a few public rows.
 database. `scripts/build_case_database.py` creates
 `src/dq_questionbank_local/data/synthetic-case.sqlite3` atomically. Tests compare
 their canonical meaning and verify that reading the database does not modify it.
+The bundled case includes an original group-theory question with a structured
+9-by-9 Cayley table to exercise rich database content and responsive rendering.

@@ -18,8 +18,64 @@ function contentText(content) {
   return content.blocks.map((block) => {
     if (block.type === "line_break") return "\n";
     if (block.type === "math") return `$${block.latex || ""}$`;
+    if (block.type === "table") {
+      return (block.rows || []).map((row) => row.join("\t")).join("\n");
+    }
     return block.text || block.latex || block.alt_text || "";
   }).join("");
+}
+
+function hasStructuredBlocks(content) {
+  return Boolean(content?.blocks?.some((block) => !["text", "line_break"].includes(block.type)));
+}
+
+function renderStructuredContent(container, content) {
+  container.replaceChildren();
+  for (const block of content?.blocks || []) {
+    if (block.type === "line_break") {
+      container.append(document.createElement("br"));
+      continue;
+    }
+    if (block.type === "table") {
+      const figure = document.createElement("figure");
+      figure.className = "question-table-figure";
+      const captionText = block.metadata?.caption;
+      if (captionText) {
+        const caption = document.createElement("figcaption");
+        caption.textContent = captionText;
+        figure.append(caption);
+      }
+      const scroller = document.createElement("div");
+      scroller.className = "question-table-scroll";
+      const table = document.createElement("table");
+      table.className = "question-table";
+      const headerRows = Number(block.metadata?.header_rows || 0);
+      const headerColumns = Number(block.metadata?.header_columns || 0);
+      for (const [rowIndex, values] of (block.rows || []).entries()) {
+        const row = document.createElement("tr");
+        for (const [columnIndex, value] of values.entries()) {
+          const isColumnHeader = rowIndex < headerRows;
+          const isRowHeader = columnIndex < headerColumns;
+          const cell = document.createElement(isColumnHeader || isRowHeader ? "th" : "td");
+          if (isColumnHeader) cell.scope = "col";
+          else if (isRowHeader) cell.scope = "row";
+          cell.textContent = String(value);
+          row.append(cell);
+        }
+        table.append(row);
+      }
+      scroller.append(table);
+      figure.append(scroller);
+      container.append(figure);
+      continue;
+    }
+    const element = document.createElement(block.type === "code" ? "pre" : "p");
+    element.className = `content-block content-${block.type || "text"}`;
+    element.textContent = block.type === "math"
+      ? `$${block.latex || ""}$`
+      : block.text || block.alt_text || "";
+    container.append(element);
+  }
 }
 
 function stemText(question) {
@@ -71,6 +127,11 @@ function addQuestion(question) {
   fragment.querySelector(".question-language").value = question.language || "en";
   fragment.querySelector(".question-subject").value = question.subject || "";
   fragment.querySelector(".question-stem").value = stemText(question);
+  const stemPreview = fragment.querySelector(".stem-preview");
+  if (hasStructuredBlocks(question.stem)) {
+    stemPreview.hidden = false;
+    renderStructuredContent(stemPreview, question.stem);
+  }
   const contentArea = fragment.querySelector(".question-content");
   const choicesArea = fragment.querySelector(".choices-area");
   const choicesList = fragment.querySelector(".choice-list");
