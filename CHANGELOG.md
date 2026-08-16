@@ -4,6 +4,8 @@ All notable changes will be documented here. The project follows semantic versio
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-08-17
+
 ### Added
 
 - Opt-in, deterministic discovery for third-party format plugins through the
@@ -15,6 +17,26 @@ All notable changes will be documented here. The project follows semantic versio
 - Executable synthetic schema and migration-framework compatibility fixtures.
 - Reference `FilesystemStorageAdapter` with deterministic paths, atomic writes,
   and path-traversal rejection.
+- Local-first visual question-bank workspace with canonical JSON import, local
+  persistence, search and filters, structured question cards, in-card answer
+  review, editing, and JSON export.
+- Reviewed synthetic SQLite database case with an English group-theory question,
+  KaTeX formulas, and a responsive 9-by-9 Cayley table.
+
+### Changed
+
+- Align the public Question Bank and Editor Center layouts with the mature
+  private application's navigation, filters, question cards, and collection
+  directory while keeping private APIs and operational data out of the public
+  repository.
+- Select database-case stems, choices, answers, solutions, and sources using the
+  case language; the bundled case now renders English-only question content.
+
+### Security
+
+- Keep the local workspace bound to loopback and reject cross-origin writes.
+- Audit the public tree in CI and open reviewed SQLite cases read-only with
+  immutable and query-only SQLite settings.
 
 ## [0.2.1] - 2026-08-12
 
