@@ -4,7 +4,7 @@ This guide explains how to update the README workspace screenshot after an inten
 
 ## Prerequisites
 
-- Python 3.8+
+- Python 3.10–3.12
 - A clean source checkout
 - No private questions, production databases, credentials, or private application screenshots
 
@@ -20,11 +20,16 @@ pip install -e ".[docx,dev]"
 
 ### 2. Launch with a temporary workspace directory
 
+Use a temporary workspace directory so no personal data is written into your
+checkout. The command below resolves an OS-provided temp path on Linux, macOS,
+and Windows alike:
+
 ```bash
-python run.py --workspace /tmp/screenshot-workspace
+python run.py --workspace "$(python -c "import tempfile; print(tempfile.mkdtemp())")"
 ```
 
-This creates a temporary directory for the workspace session.
+This creates a temporary directory for the workspace session (for example
+`/tmp/...` on Linux/macOS or `%TEMP%\...` on Windows).
 
 ### 3. Open the bundled synthetic case
 
@@ -50,7 +55,8 @@ This creates a temporary directory for the workspace session.
 ### 7. Capture the desktop screenshot
 
 - Use your OS screenshot tool to capture the application window
-- Recommended viewport: 1280x720 or 1920x1080
+- Match the existing `docs/assets/question-bank-workspace.png` (1425×990) so the
+  README screenshot stays consistent with the repository's current convention
 - Ensure the screenshot shows:
   - The question view with rendered KaTeX
   - The Editor Center quality panel
@@ -58,6 +64,8 @@ This creates a temporary directory for the workspace session.
 
 ### 8. Update the social-preview composition
 
+- Compose the social preview at 1280×640 to match the existing
+  `docs/assets/social-preview.png` (the repository's documented convention)
 - Place the screenshot in `docs/assets/`
 - Update `README.md` to reference the new screenshot
 - Ensure no private content is visible in the composition
@@ -92,8 +100,9 @@ After updating the screenshot:
 ## Troubleshooting
 
 ### KaTeX not rendering
-- Ensure you have an internet connection for KaTeX CDN
-- Check browser console for errors
+- KaTeX is vendored and rendered offline from `src/dq_questionbank_local/web/vendor/katex/`; no internet connection or CDN is required
+- Hard-refresh the browser and clear its cache for the local workspace origin
+- Check the browser console for errors
 
 ### Editor Center panel not showing
 - Verify the synthetic case is loaded correctly
