@@ -6,12 +6,11 @@ The default registry deliberately remains limited to built-in adapters.
 
 from __future__ import annotations
 
+from collections.abc import Callable, Iterable
 from importlib.metadata import EntryPoint, entry_points
-from typing import Callable, Iterable
 
 from .exceptions import PluginDiscoveryError
 from .registry import FormatRegistry
-
 
 PLUGIN_ENTRY_POINT_GROUP = "dq_questionbank.plugins"
 PluginRegistrar = Callable[[FormatRegistry], None]

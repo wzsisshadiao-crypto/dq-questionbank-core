@@ -8,7 +8,6 @@ import json
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[1]
 WIKI_SOURCE = ROOT / "docs" / "wiki"
 MANIFEST_PATH = WIKI_SOURCE / "manifest.json"

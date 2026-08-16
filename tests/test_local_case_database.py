@@ -11,7 +11,6 @@ from dq_questionbank_local.case_database import (
     bundled_case_database,
 )
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

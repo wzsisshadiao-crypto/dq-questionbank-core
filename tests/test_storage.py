@@ -8,7 +8,6 @@ from unittest.mock import patch
 
 from dq_questionbank import FilesystemStorageAdapter, QuestionSet, StorageAdapter
 
-
 FIXTURE = (
     Path(__file__).resolve().parent / "fixtures" / "compatibility" / "schema-1.0" / "question-set.json"
 )

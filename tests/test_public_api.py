@@ -6,7 +6,6 @@ import tempfile
 import unittest
 from pathlib import Path
 
-
 SCRIPT = Path(__file__).resolve().parents[1] / "scripts" / "check_public_api.py"
 SPEC = importlib.util.spec_from_file_location("check_public_api", SCRIPT)
 MODULE = importlib.util.module_from_spec(SPEC)

@@ -15,7 +15,6 @@ from dq_questionbank import (
     validate_with_schema,
 )
 
-
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "compatibility"
 
 

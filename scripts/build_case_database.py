@@ -4,7 +4,6 @@ from pathlib import Path
 
 from dq_questionbank_local.case_database import build_case_database
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 

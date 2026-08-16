@@ -32,7 +32,10 @@ class FakeEntryPoints(list):
 class PluginDiscoveryTests(unittest.TestCase):
     def test_available_plugins_is_sorted_without_loading(self):
         entries = FakeEntryPoints(
-            [FakeEntryPoint("zeta", lambda registry: None), FakeEntryPoint("alpha", lambda registry: None)]
+            [
+                FakeEntryPoint("zeta", lambda registry: None),
+                FakeEntryPoint("alpha", lambda registry: None),
+            ]
         )
         with patch("dq_questionbank.plugins.entry_points", return_value=entries):
             self.assertEqual(available_plugins(), ("alpha", "zeta"))
@@ -56,7 +59,11 @@ class PluginDiscoveryTests(unittest.TestCase):
         self.assertEqual(calls, ["alpha", "zeta"])
 
     def test_discovery_wraps_load_and_registration_failures(self):
-        for registrar in (RuntimeError("load failed"), lambda registry: (_ for _ in ()).throw(ValueError("bad"))):
+        registrars = (
+            RuntimeError("load failed"),
+            lambda registry: (_ for _ in ()).throw(ValueError("bad")),
+        )
+        for registrar in registrars:
             with self.subTest(registrar=registrar):
                 entries = FakeEntryPoints([FakeEntryPoint("broken", registrar)])
                 with patch("dq_questionbank.plugins.entry_points", return_value=entries):
@@ -65,7 +72,10 @@ class PluginDiscoveryTests(unittest.TestCase):
 
     def test_duplicate_names_and_invalid_registries_fail_closed(self):
         entries = FakeEntryPoints(
-            [FakeEntryPoint("same", lambda registry: None), FakeEntryPoint("same", lambda registry: None)]
+            [
+                FakeEntryPoint("same", lambda registry: None),
+                FakeEntryPoint("same", lambda registry: None),
+            ]
         )
         with patch("dq_questionbank.plugins.entry_points", return_value=entries):
             with self.assertRaises(PluginDiscoveryError):
