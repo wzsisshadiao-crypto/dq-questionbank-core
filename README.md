@@ -5,11 +5,84 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 [![Release](https://img.shields.io/badge/release-v0.2.1-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 
-Open infrastructure for structured educational questions.
+An open, local-first question-bank workspace built around the complete life of a
+question, from source document to reviewed Word paper.
 
-DQ QuestionBank Core is a database-neutral Python library, CLI, and local-first visual application for importing, validating, converting, editing, and exchanging educational questions. Its versioned canonical model supports multilingual text, LaTeX math, images, tables, answer types, source provenance, taxonomy references, and composite questions.
+DQ QuestionBank Core is the public foundation and migration home of a mature
+question-bank application. Today this repository provides a database-neutral
+Python library, CLI, visual local workspace, canonical schema, format adapters,
+and a synthetic SQLite case. The larger application already exercises a much
+broader workflow: process-based document intake, bounded AI correction, a Review
+Center, paper assembly, field-level editing, continuous quality inspection, and
+Word-centered publishing. Those product modules are being extracted here in
+reviewable stages.
 
-This repository is an independent open-core extraction. It contains no production question bank, user data, private database, commercial workflow, or built-in AI provider.
+The repository never includes the production question bank, private user data,
+credentials, provider configuration, or operational records. Question content
+may be multilingual; the maintained public interface and documentation are
+English-only.
+
+## The question lifecycle
+
+The project treats a question as a traceable object that moves through explicit
+states, not as text copied from one editor into another.
+
+```mermaid
+flowchart LR
+    A["Source files"] --> B["Adapted import pipeline"]
+    B --> C["Deterministic extraction"]
+    C --> D["AI-assisted correction"]
+    D --> E["Review Center"]
+    E --> F["Paper assembly"]
+    E --> G["Editor Center"]
+    G --> H["Question Quality Center"]
+    H --> G
+    F --> I["Export Center"]
+    G --> I
+    I --> J["Word-native paper"]
+```
+
+1. **Import:** a source-specific pipeline reads Word, structured files, or other
+   inputs and preserves source evidence before normalization. Import behavior is
+   intentionally adaptable: a school, publisher, or individual can implement a
+   pipeline for its own document conventions instead of rewriting the question
+   bank.
+2. **Structure and AI correction:** deterministic parsing identifies question
+   boundaries, fields, formulas, images, and tables. AI may then propose bounded
+   repairs, but it does not replace the source evidence or silently write into
+   storage.
+3. **Review and assemble:** candidates enter the Review Center for human
+   acceptance. Reviewers can inspect a question in context, classify it, and
+   assemble questions, including questions sharing a source, into a paper.
+4. **Edit and inspect:** the Editor Center provides field-level work on the stem,
+   options, answer, analysis, solution, formulas, images, tables, and metadata.
+   The Question Quality Center detects issues across the bank, sends a finding
+   directly to the editor, and rechecks the saved result.
+5. **Export:** canonical JSON, Markdown, LaTeX, and conventional DOCX are portable
+   interchange paths. In the mature application, the primary high-fidelity path
+   is a local Word macro workflow: questions are inserted as refreshable Word
+   reference boxes, formulas become native Word math (OMML), and images, tables,
+   option layout, answers, analysis, and solutions can be rendered into an
+   editable paper. Reference-box borders can be shown while composing and hidden
+   for the final document.
+
+Read [Product Workflow and Public Migration](docs/product-workflow.md) for the
+detailed journey of one question, the import extension model, the Word macro
+workflow, and the exact public migration boundary.
+
+## What is available now
+
+| Area | In this repository today | Mature application / public migration |
+|---|---|---|
+| Data model | Versioned canonical schema, validation, migrations, compatibility fixtures | Mapping more application fields without coupling to the production database |
+| Import | JSON, Markdown, LaTeX, and convention-based DOCX adapters | Process-based Word/PDF intake, source evidence, candidate sessions, bounded AI correction |
+| Visual frontend | Local workspace for opening the synthetic SQLite case and importing, editing, saving, and exporting canonical JSON | Review Center, paper assembly, full Editor Center, Question Quality Center, and Export Center |
+| Storage | Atomic filesystem adapter and read-only reviewed SQLite case adapter | User-selected local database adapters behind the same canonical boundary |
+| Export | JSON, Markdown, LaTeX, and conventional DOCX | High-fidelity Word macro/reference-box publishing workflow |
+| AI | Stable provider protocol; no bundled provider or credential | Provider-neutral candidate correction with explicit review and validation gates |
+
+The right column describes working product behavior that is being migrated; it
+is not a claim that those modules are already downloadable from this repository.
 
 ## Why it exists
 
@@ -32,6 +105,13 @@ JSON / Markdown / LaTeX / DOCX
                 v
 JSON / Markdown / LaTeX / DOCX
 ```
+
+The core is only the first layer. The broader design keeps five concerns
+independent: source extraction, canonical question meaning, review state,
+storage, and document presentation. This separation is what allows the same
+question to be re-parsed, AI-corrected, manually reviewed, quality-checked,
+assembled into different papers, and refreshed inside Word without making one
+database table or one AI service the definition of the question.
 
 ## Features
 
@@ -185,6 +265,22 @@ Human document formats are not lossless containers for every source-specific fea
 - `dq_questionbank_local/`: visual workspace, HTTP API, and reviewed case adapter
 
 See [`OPEN_SOURCE_BOUNDARY.md`](OPEN_SOURCE_BOUNDARY.md) for the public/private boundary and [`docs/oss-architecture-proposal.md`](docs/oss-architecture-proposal.md) for design rationale.
+
+### Distinctive design choices
+
+- **Evidence before inference:** deterministic extraction and retained source
+  context come before AI suggestions.
+- **Candidates before persistence:** parsing, correction, review, and storage are
+  separate transitions, so a plausible parse is not automatically trusted.
+- **One canonical meaning, many surfaces:** the visual editor, quality rules,
+  storage adapters, CLI, and exporters exchange the same versioned model.
+- **Replaceable intake:** importer protocols, explicit plugin discovery, and
+  source-specific profiles allow independently designed ingestion workflows.
+- **Quality as a loop:** findings can open the exact question and field in the
+  editor, then be re-evaluated against the saved revision.
+- **Word as a first-class publishing surface:** the planned public macro bridge
+  treats a paper as refreshable document blocks with native Word formulas, not a
+  one-time text dump.
 
 ## Development
 

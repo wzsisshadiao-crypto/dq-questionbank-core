@@ -13,6 +13,8 @@ This boundary protects the private product while allowing the public core to evo
 - Local-first visual workspace and reviewed SQLite case adapter
 - Auditable synthetic database case generated from original fixture data
 - Synthetic examples, tests, documentation, and CI
+- Generic visual workflows rebuilt against the canonical model and synthetic data
+- Generic review, editor, quality, paper-assembly, and Word publishing contracts
 
 These components have independent value, require no production database, and can be used by third parties without knowledge of the private application.
 
@@ -22,8 +24,16 @@ These components have independent value, require no production database, and can
 - Generic OMML-to-LaTeX conversion helpers
 - Generic DOCX layout heuristics
 - Generic image-placement utilities
+- Generic process-based import orchestration and source-evidence records
+- Generic candidate review and paper-assembly behavior
+- Generic editor and quality-inspection behavior
+- Loopback-only Word macro helpers and refreshable reference blocks
 
-The private implementation currently mixes some of these capabilities with product-specific assumptions, language-specific cleanup rules, local paths, database fields, and historical patches. Any future contribution must be extracted by a narrow, reviewed change with synthetic tests. Copying an entire private module is prohibited.
+The private implementation currently mixes some of these capabilities with
+product-specific assumptions, language-specific cleanup rules, local paths,
+database fields, private source material, and historical patches. Any future
+contribution must be extracted by a narrow, reviewed change with synthetic
+tests. Copying an entire private module is prohibited.
 
 ## Private-only
 
@@ -31,11 +41,15 @@ The private implementation currently mixes some of these capabilities with produ
 - Uploaded question images and orphan-image archives
 - Unreviewed real questions, papers, answers, solutions, sources, and customer content
 - Logs, request traces, cleanup state, and local runtime artifacts
-- AI configuration, credentials, prompts, repair pipeline, and provider wiring
-- Commercial review, quality-center, backup, recovery, and deployment workflows
+- AI configuration, credentials, private prompts, learned correction history, and provider wiring
+- Production backup, recovery, authorization, billing, and deployment workflows
 - Internal account, authorization, pricing, and operational code
 - One-off scraping, migration, forensic, and maintenance scripts
 - Private production frontend behavior and product-specific interaction design
+
+The last item does not make the product category private. Generic workflow and
+interaction behavior may be independently implemented in the public application;
+production-specific code, assumptions, and private data must not be copied.
 
 ## Dependency direction
 
