@@ -82,8 +82,8 @@ class LocalServerTests(unittest.TestCase):
             'id="question-search"',
             'id="subject-filter"',
             'id="type-filter"',
-            'id="question-detail"',
-            'id="toggle-answer"',
+            'id="question-results"',
+            'id="question-list"',
         ):
             self.assertIn(required_control, page)
 
@@ -96,8 +96,8 @@ class LocalServerTests(unittest.TestCase):
         self.assertIn('document.createElement("table")', script)
         self.assertIn("globalThis.katex.render", script)
         self.assertIn("function renderQuestionResults()", script)
-        self.assertIn("function renderQuestionPreview(question)", script)
-        self.assertIn('document.querySelector("#toggle-answer")', script)
+        self.assertIn("function makeQuestionCard(question, index)", script)
+        self.assertIn("Expand answer and solution", script)
         self.assertNotIn("innerHTML", script)
 
         static_checks = (
@@ -123,6 +123,8 @@ class LocalServerTests(unittest.TestCase):
         status, payload = self.request("POST", "/api/case/load")
         self.assertEqual(200, status)
         self.assertEqual("synthetic-database-case", payload["id"])
+        self.assertEqual("en", payload["language"])
+        self.assertTrue(all(item["language"] == "en" for item in payload["questions"]))
         group_question = next(item for item in payload["questions"] if item["id"] == "DEMO_MATH_004")
         self.assertIn("table", [block["type"] for block in group_question["stem"]["blocks"]])
         status, listing = self.request("GET", "/api/sets")

@@ -6,6 +6,8 @@ const state = {
   selectedQuestionIndex: 0,
   persisted: false,
   view: "empty",
+  subject: "",
+  type: "",
 };
 
 const setList = document.querySelector("#set-list");
@@ -30,7 +32,7 @@ function newQuestion(number) {
     id: `q-${number}`,
     type: "short_answer",
     language: "en",
-    stem: { blocks: [{ type: "text", text: "Write a synthetic answer." }] },
+    stem: { blocks: [{ type: "text", text: "Write a synthetic answer.", language: "en" }] },
   };
 }
 
@@ -109,7 +111,7 @@ function renderStructuredContent(container, content) {
         });
       } else {
         element.textContent = block.type === "math"
-          ? `\(${block.latex || ""}\)`
+          ? `\\(${block.latex || ""}\\)`
           : block.text || block.alt_text || "";
       }
       container.append(element);
@@ -171,20 +173,32 @@ function setView(view) {
   editorNav.classList.toggle("active", view === "editor");
 }
 
-function setFilterOptions(control, label, values) {
-  const selected = control.value;
-  control.replaceChildren();
-  const all = document.createElement("option");
-  all.value = "";
-  all.textContent = label;
-  control.append(all);
-  for (const value of [...new Set(values.filter(Boolean))].sort()) {
-    const option = document.createElement("option");
-    option.value = value;
-    option.textContent = formatType(value);
-    control.append(option);
+function setFilterOptions(container, selected, values, onSelect) {
+  container.replaceChildren();
+  const entries = ["", ...new Set(values.filter(Boolean).sort())];
+  for (const value of entries) {
+    const button = document.createElement("button");
+    button.className = `chip${value === selected ? " active" : ""}`;
+    button.type = "button";
+    button.dataset.value = value;
+    button.textContent = value ? formatType(value) : "All";
+    button.addEventListener("click", () => onSelect(value));
+    container.append(button);
   }
-  control.value = [...control.options].some((option) => option.value === selected) ? selected : "";
+}
+
+function renderFilters() {
+  const questions = state.current?.questions || [];
+  setFilterOptions(subjectFilter, state.subject, questions.map((item) => item.subject), (value) => {
+    state.subject = value;
+    renderFilters();
+    renderQuestionResults();
+  });
+  setFilterOptions(typeFilter, state.type, questions.map((item) => item.type), (value) => {
+    state.type = value;
+    renderFilters();
+    renderQuestionResults();
+  });
 }
 
 function matchesFilters(question) {
@@ -195,15 +209,120 @@ function matchesFilters(question) {
     question.type,
     question.source?.title,
     question.source?.attribution,
+    question.metadata?.question_category,
     stemText(question),
+    answerText(question.answer),
+    contentText(question.solution),
   ].filter(Boolean).join(" ").toLocaleLowerCase();
   return (!search || searchable.includes(search))
-    && (!subjectFilter.value || question.subject === subjectFilter.value)
-    && (!typeFilter.value || question.type === typeFilter.value);
+    && (!state.subject || question.subject === state.subject)
+    && (!state.type || question.type === state.type);
 }
 
-function resultExcerpt(question) {
-  return stemText(question).replace(/\s+/g, " ").trim() || "Question content is empty.";
+function appendTextElement(container, className, text) {
+  if (!text) return;
+  const element = document.createElement("span");
+  element.className = className;
+  element.textContent = text;
+  container.append(element);
+}
+
+function makeQuestionCard(question, index) {
+  const card = document.createElement("article");
+  card.className = "question-card";
+  card.dataset.questionIndex = String(index);
+
+  const header = document.createElement("header");
+  header.className = "question-header";
+  appendTextElement(header, "question-source", question.source?.title || "Local collection");
+  appendTextElement(header, "question-number", question.id || `Question ${index + 1}`);
+  appendTextElement(header, "question-type", formatType(question.type));
+  appendTextElement(header, "question-category", question.metadata?.question_category || "");
+
+  const body = document.createElement("div");
+  body.className = "question-body";
+  const stem = document.createElement("div");
+  stem.className = "question-text rendered-content";
+  renderStructuredContent(stem, question.stem);
+  body.append(stem);
+  if (question.choices?.length) {
+    const options = document.createElement("div");
+    options.className = "question-options";
+    for (const choice of question.choices) {
+      const option = document.createElement("div");
+      option.className = "option-item";
+      appendTextElement(option, "option-label", choice.id);
+      const content = document.createElement("div");
+      content.className = "rendered-content";
+      renderStructuredContent(content, choice.content);
+      option.append(content);
+      options.append(option);
+    }
+    body.append(options);
+  }
+
+  const footer = document.createElement("footer");
+  footer.className = "question-footer";
+  const meta = document.createElement("span");
+  meta.className = "question-meta";
+  meta.textContent = [question.subject, question.metadata?.grade, question.language]
+    .filter(Boolean).join(" · ");
+  const actions = document.createElement("div");
+  actions.className = "question-actions";
+  const answer = answerText(question.answer);
+  const hasDetails = Boolean(answer || question.solution);
+  let details = null;
+  if (hasDetails) {
+    const toggle = document.createElement("button");
+    toggle.className = "expand-btn";
+    toggle.type = "button";
+    toggle.textContent = "Expand answer and solution";
+    toggle.setAttribute("aria-expanded", "false");
+    details = document.createElement("div");
+    details.className = "question-details";
+    details.hidden = true;
+    if (answer) {
+      const section = document.createElement("section");
+      section.className = "detail-section";
+      const title = document.createElement("h4");
+      title.textContent = "Answer";
+      const value = document.createElement("p");
+      value.className = "answer-text";
+      value.textContent = answer;
+      section.append(title, value);
+      details.append(section);
+    }
+    if (question.solution) {
+      const section = document.createElement("section");
+      section.className = "detail-section";
+      const title = document.createElement("h4");
+      title.textContent = "Solution";
+      const value = document.createElement("div");
+      value.className = "rendered-content";
+      renderStructuredContent(value, question.solution);
+      section.append(title, value);
+      details.append(section);
+    }
+    toggle.addEventListener("click", () => {
+      details.hidden = !details.hidden;
+      toggle.setAttribute("aria-expanded", String(!details.hidden));
+      toggle.textContent = details.hidden ? "Expand answer and solution" : "Collapse answer and solution";
+    });
+    actions.append(toggle);
+  }
+  const edit = document.createElement("button");
+  edit.className = "expand-btn";
+  edit.type = "button";
+  edit.textContent = "Edit question";
+  edit.addEventListener("click", () => {
+    state.selectedQuestionIndex = index;
+    editCurrentQuestion();
+  });
+  actions.append(edit);
+  footer.append(meta, actions);
+  card.append(header, body, footer);
+  if (details) card.append(details);
+  return card;
 }
 
 function renderQuestionResults() {
@@ -218,115 +337,29 @@ function renderQuestionResults() {
     message.className = "no-results";
     message.textContent = "No questions match these filters.";
     questionResults.append(message);
-    renderQuestionPreview(null);
     return;
   }
-  if (!matches.some(({ index }) => index === state.selectedQuestionIndex)) {
-    state.selectedQuestionIndex = matches[0].index;
-  }
-  for (const { question, index } of matches) {
-    const button = document.createElement("button");
-    button.className = `question-result${index === state.selectedQuestionIndex ? " active" : ""}`;
-    button.type = "button";
-    const meta = document.createElement("span");
-    meta.className = "result-meta";
-    const id = document.createElement("strong");
-    id.textContent = question.id || `Question ${index + 1}`;
-    const type = document.createElement("span");
-    type.textContent = formatType(question.type);
-    meta.append(id, type);
-    const excerpt = document.createElement("p");
-    excerpt.textContent = resultExcerpt(question);
-    button.append(meta, excerpt);
-    button.addEventListener("click", () => {
-      state.selectedQuestionIndex = index;
-      renderQuestionResults();
-    });
-    questionResults.append(button);
-  }
-  renderQuestionPreview(questions[state.selectedQuestionIndex]);
-}
-
-function addPreviewTag(value, className = "") {
-  if (!value) return;
-  const tag = document.createElement("span");
-  tag.className = `preview-tag${className ? ` ${className}` : ""}`;
-  tag.textContent = formatType(value);
-  document.querySelector("#preview-tags").append(tag);
-}
-
-function renderQuestionPreview(question) {
-  const empty = document.querySelector("#preview-empty");
-  const detail = document.querySelector("#question-detail");
-  empty.hidden = Boolean(question);
-  detail.hidden = !question;
-  if (!question) return;
-
-  const index = state.current.questions.indexOf(question);
-  document.querySelector("#preview-position").textContent = `QUESTION ${index + 1} OF ${state.current.questions.length}`;
-  document.querySelector("#preview-id").textContent = question.id || `Question ${index + 1}`;
-  const tags = document.querySelector("#preview-tags");
-  tags.replaceChildren();
-  addPreviewTag(question.subject || "General");
-  addPreviewTag(question.type, "type");
-  addPreviewTag(question.language);
-  if (question.metadata?.grade) addPreviewTag(question.metadata.grade);
-  if (question.metadata?.question_category) addPreviewTag(question.metadata.question_category);
-
-  const source = document.querySelector("#preview-source");
-  source.hidden = !question.source?.title;
-  source.textContent = question.source?.title ? `Source: ${question.source.title}` : "";
-  renderStructuredContent(document.querySelector("#preview-stem"), question.stem);
-
-  const choicesSection = document.querySelector("#preview-choices-section");
-  const choices = document.querySelector("#preview-choices");
-  choices.replaceChildren();
-  choicesSection.hidden = !question.choices?.length;
-  for (const choice of question.choices || []) {
-    const row = document.createElement("div");
-    row.className = "preview-choice";
-    const label = document.createElement("strong");
-    label.textContent = choice.id;
-    const content = document.createElement("div");
-    content.className = "rendered-content";
-    renderStructuredContent(content, choice.content);
-    row.append(label, content);
-    choices.append(row);
-  }
-
-  const answer = answerText(question.answer);
-  const answerSection = document.querySelector("#preview-answer-section");
-  answerSection.hidden = !answer;
-  document.querySelector("#preview-answer").textContent = answer;
-  const solutionSection = document.querySelector("#preview-solution-section");
-  solutionSection.hidden = !question.solution;
-  if (question.solution) renderStructuredContent(document.querySelector("#preview-solution"), question.solution);
-  document.querySelector("#answer-panel").hidden = true;
-  const answerToggle = document.querySelector("#toggle-answer");
-  answerToggle.hidden = !answer && !question.solution;
-  answerToggle.setAttribute("aria-expanded", "false");
-  answerToggle.textContent = "Show answer and solution";
+  for (const { question, index } of matches) questionResults.append(makeQuestionCard(question, index));
 }
 
 function renderBank(payload) {
   document.querySelector("#bank-title").textContent = payload.title;
   document.querySelector("#bank-description").textContent = payload.description || "";
-  document.querySelector("#summary-total").textContent = String(payload.questions.length);
-  document.querySelector("#summary-subjects").textContent = String(
-    new Set(payload.questions.map((item) => item.subject).filter(Boolean)).size,
-  );
-  document.querySelector("#summary-types").textContent = String(
-    new Set(payload.questions.map((item) => item.type).filter(Boolean)).size,
-  );
-  document.querySelector("#summary-schema").textContent = payload.schema_version || "1.0";
-  setFilterOptions(subjectFilter, "All subjects", payload.questions.map((item) => item.subject));
-  setFilterOptions(typeFilter, "All types", payload.questions.map((item) => item.type));
+  const subjectCount = new Set(payload.questions.map((item) => item.subject).filter(Boolean)).size;
+  const typeCount = new Set(payload.questions.map((item) => item.type).filter(Boolean)).size;
+  document.querySelector("#collection-meta").textContent = [
+    `${payload.questions.length} questions`,
+    `${subjectCount} subjects`,
+    `${typeCount} types`,
+    `schema ${payload.schema_version || "1.0"}`,
+  ].join(" · ");
+  renderFilters();
   renderQuestionResults();
 }
 
 function addQuestion(question, index = questionList.children.length) {
   const fragment = questionTemplate.content.cloneNode(true);
-  const card = fragment.querySelector(".question-card");
+  const card = fragment.querySelector(".edit-question-card");
   card.dataset.questionIndex = String(index);
   card.dataset.original = JSON.stringify(question);
   card.dataset.originalStem = stemText(question);
@@ -344,17 +377,14 @@ function addQuestion(question, index = questionList.children.length) {
   const contentArea = fragment.querySelector(".question-content");
   const choicesArea = fragment.querySelector(".choices-area");
   const choicesList = fragment.querySelector(".choice-list");
-  if (Array.isArray(question.choices) && question.choices.length) {
+  if (question.choices?.length) {
     contentArea.hidden = false;
     choicesArea.hidden = false;
     for (const choice of question.choices) {
       const row = document.createElement("div");
       row.className = "choice-row";
-      const label = document.createElement("strong");
-      label.textContent = choice.id;
-      const value = document.createElement("span");
-      value.textContent = contentText(choice.content);
-      row.append(label, value);
+      appendTextElement(row, "", choice.id);
+      appendTextElement(row, "", contentText(choice.content));
       choicesList.append(row);
     }
   }
@@ -396,15 +426,12 @@ function populateEditor(payload) {
 function renderWorkspace(payload, persisted = true, view = "bank") {
   state.current = payload;
   state.selectedId = payload.id;
-  state.selectedQuestionIndex = Math.min(
-    state.selectedQuestionIndex,
-    Math.max(payload.questions.length - 1, 0),
-  );
+  state.selectedQuestionIndex = Math.min(state.selectedQuestionIndex, Math.max(payload.questions.length - 1, 0));
   state.persisted = persisted;
+  state.subject = "";
+  state.type = "";
   editorNav.disabled = false;
   searchInput.value = "";
-  subjectFilter.value = "";
-  typeFilter.value = "";
   populateEditor(payload);
   renderBank(payload);
   setView(view);
@@ -435,7 +462,7 @@ function collectPayload() {
     else delete question.subject;
     const editedStem = card.querySelector(".question-stem").value;
     if (editedStem !== card.dataset.originalStem) {
-      question.stem = { blocks: [{ type: "text", text: editedStem }] };
+      question.stem = { blocks: [{ type: "text", text: editedStem, language: question.language }] };
     }
     return question;
   });
@@ -444,8 +471,8 @@ function collectPayload() {
 
 function editCurrentQuestion() {
   setView("editor");
-  document.querySelectorAll(".question-card.target").forEach((card) => card.classList.remove("target"));
-  const target = document.querySelector(`[data-question-index="${state.selectedQuestionIndex}"]`);
+  document.querySelectorAll(".edit-question-card.target").forEach((card) => card.classList.remove("target"));
+  const target = document.querySelector(`.edit-question-card[data-question-index="${state.selectedQuestionIndex}"]`);
   if (target) {
     target.classList.add("target");
     target.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -492,12 +519,12 @@ document.querySelector("#new-set").addEventListener("click", () => {
 document.querySelector("#add-question").addEventListener("click", () => {
   addQuestion(newQuestion(questionList.children.length + 1));
 });
-document.querySelector("#editor-form").addEventListener("submit", async (event) => {
+editorForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   try {
     const payload = collectPayload();
     if (state.persisted && state.selectedId !== payload.id) {
-      throw new Error("Set ID cannot be changed after saving. Create a new set to use a different ID.");
+      throw new Error("Collection ID cannot be changed after saving. Create a new collection to use a different ID.");
     }
     const saved = await request(`/api/sets/${encodeURIComponent(payload.id)}`, {
       method: "PUT",
@@ -534,7 +561,6 @@ loadCaseButton.addEventListener("click", loadDatabaseCase);
 document.querySelector("#empty-load-case").addEventListener("click", loadDatabaseCase);
 document.querySelector("#export-set").addEventListener("click", exportCurrentSet);
 document.querySelector("#edit-set").addEventListener("click", () => setView("editor"));
-document.querySelector("#edit-current").addEventListener("click", editCurrentQuestion);
 document.querySelector("#back-to-bank").addEventListener("click", () => {
   populateEditor(state.current);
   setView("bank");
@@ -546,17 +572,7 @@ bankNav.addEventListener("click", () => {
 editorNav.addEventListener("click", () => {
   if (state.current) setView("editor");
 });
-for (const control of [searchInput, subjectFilter, typeFilter]) {
-  control.addEventListener(control === searchInput ? "input" : "change", renderQuestionResults);
-}
-document.querySelector("#toggle-answer").addEventListener("click", (event) => {
-  const panel = document.querySelector("#answer-panel");
-  panel.hidden = !panel.hidden;
-  event.currentTarget.setAttribute("aria-expanded", String(!panel.hidden));
-  event.currentTarget.textContent = panel.hidden
-    ? "Show answer and solution"
-    : "Hide answer and solution";
-});
+searchInput.addEventListener("input", renderQuestionResults);
 
 async function initialize() {
   const [sets, caseInfo] = await Promise.all([refreshList(), request("/api/case")]);

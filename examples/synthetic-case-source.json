@@ -1,9 +1,9 @@
 {
   "case": {
     "case_id": "synthetic-database-case",
-    "title": "Synthetic Bilingual Database Case",
+    "title": "Synthetic Mathematics Database Case",
     "description": "A reviewed local SQLite case demonstrating the visual question-bank workflow.",
-    "language": "zh-Hans",
+    "language": "en",
     "license": "Apache-2.0",
     "provenance": "Original synthetic content written for DQ QuestionBank Core"
   },
@@ -76,8 +76,8 @@
       "body_blocks": [
         {
           "type": "text",
-          "language": "zh-Hans",
-          "text": "设 D 是满足下列关系的八元群："
+          "language": "en",
+          "text": "Let D be the eight-element group with presentation"
         },
         {
           "type": "math",
@@ -85,16 +85,8 @@
         },
         {
           "type": "text",
-          "language": "zh-Hans",
-          "text": "其 Cayley 表如下。"
-        },
-        {
-          "type": "line_break"
-        },
-        {
-          "type": "text",
           "language": "en",
-          "text": "Let D be the eight-element group with the presentation above. Its Cayley table is:"
+          "text": ". Its Cayley table is:"
         },
         {
           "type": "table",
@@ -114,14 +106,6 @@
             ["p^2q", "p^2q", "pq", "q", "p^3q", "p^2", "p", "e", "p^3"],
             ["p^3q", "p^3q", "p^2q", "pq", "q", "p^3", "p^2", "p", "e"]
           ]
-        },
-        {
-          "type": "text",
-          "language": "zh-Hans",
-          "text": "(1) 计算 (p^3q)(p^2)。(2) 找出所有二阶元素。(3) 求 D 的中心。(4) 证明 {e, p^2, q, p^2q} 是子群并判断其同构类型。(5) 写出 <p> 的全部左陪集。"
-        },
-        {
-          "type": "line_break"
         },
         {
           "type": "text",

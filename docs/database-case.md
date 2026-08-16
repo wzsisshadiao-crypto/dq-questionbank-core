@@ -44,7 +44,10 @@ An optional `question_options` table must contain `question_id`, `option_label`,
 
 A case database must include one `dq_case_metadata` row with `case_id`, `title`,
 `description`, `language`, `license`, and `provenance`. These values are shown
-in the UI and carried into canonical metadata.
+in the UI and carried into canonical metadata. The adapter selects localized
+question, option, answer, solution, and source fields using this language. The
+bundled case is English-first, so its visual workspace never mixes the legacy
+Chinese compatibility columns into the displayed questions.
 
 ## Publication checklist
 
@@ -72,3 +75,4 @@ database. `scripts/build_case_database.py` creates
 their canonical meaning and verify that reading the database does not modify it.
 The bundled case includes an original group-theory question with a structured
 9-by-9 Cayley table to exercise rich database content and responsive rendering.
+All four bundled questions are presented in English.

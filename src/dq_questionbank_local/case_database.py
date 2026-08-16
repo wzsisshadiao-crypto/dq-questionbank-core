@@ -175,9 +175,9 @@ class CaseDatabase:
             "schema_version": "1.0",
             "id": str(row["question_id"]),
             "type": question_type,
-            "language": "zh-Hans" if row.get("body_chinese") else "en",
+            "language": case_info["language"],
             "subject": str(row.get("subject_attribute") or "General"),
-            "stem": _question_content(row),
+            "stem": _question_content(row, case_info["language"]),
             "metadata": {
                 "database_case": True,
                 "original_question_type": row.get("question_type"),
@@ -190,8 +190,10 @@ class CaseDatabase:
         choices = [
             {
                 "id": str(option["option_label"]),
-                "content": _bilingual_content(
-                    option.get("option_chinese"), option.get("option_english")
+                "content": _localized_content(
+                    option.get("option_chinese"),
+                    option.get("option_english"),
+                    case_info["language"],
                 ),
             }
             for option in option_rows
@@ -206,18 +208,23 @@ class CaseDatabase:
                 "value": correct if len(correct) > 1 else correct[0],
             }
         elif row.get("answer_chinese") or row.get("answer_english"):
-            answer = str(row.get("answer_chinese") or row.get("answer_english"))
-            alternatives = [str(row["answer_english"])] if row.get("answer_english") else []
+            answer = str(
+                _localized_value(
+                    row.get("answer_chinese"), row.get("answer_english"), case_info["language"]
+                )
+            )
             question["answer"] = {"kind": "text", "value": answer}
-            if alternatives and alternatives[0] != answer:
-                question["answer"]["alternatives"] = alternatives
 
         solution_chinese = row.get("solutions_chinese") or row.get("analysis_chinese")
         solution_english = row.get("solutions_english") or row.get("analysis_english")
         if solution_chinese or solution_english:
-            question["solution"] = _bilingual_content(solution_chinese, solution_english)
+            question["solution"] = _localized_content(
+                solution_chinese, solution_english, case_info["language"]
+            )
 
-        source_title = row.get("source_chinese") or row.get("source_english")
+        source_title = _localized_value(
+            row.get("source_chinese"), row.get("source_english"), case_info["language"]
+        )
         if source_title:
             question["source"] = {
                 "title": str(source_title),
@@ -391,6 +398,25 @@ def _bilingual_content(chinese: Any, english: Any) -> dict[str, list[dict[str, A
     return {"blocks": blocks}
 
 
+def _localized_value(chinese: Any, english: Any, language: str) -> Any:
+    if language.lower().startswith("en"):
+        return english or chinese
+    if language.lower().startswith("zh"):
+        return chinese or english
+    return english or chinese
+
+
+def _localized_content(
+    chinese: Any, english: Any, language: str
+) -> dict[str, list[dict[str, Any]]]:
+    value = _localized_value(chinese, english, language)
+    return {
+        "blocks": [{"type": "text", "text": str(value), "language": language}]
+        if value
+        else []
+    }
+
+
 def _canonical_blocks_json(blocks: Any) -> str | None:
     if blocks is None:
         return None
@@ -399,14 +425,25 @@ def _canonical_blocks_json(blocks: Any) -> str | None:
     return json.dumps(blocks, ensure_ascii=False, separators=(",", ":"), sort_keys=True)
 
 
-def _question_content(row: dict[str, Any]) -> dict[str, list[dict[str, Any]]]:
+def _question_content(
+    row: dict[str, Any], language: str
+) -> dict[str, list[dict[str, Any]]]:
     raw = row.get("body_blocks_json")
     if raw in (None, ""):
-        return _bilingual_content(row.get("body_chinese"), row.get("body_english"))
+        return _localized_content(row.get("body_chinese"), row.get("body_english"), language)
     try:
         blocks = json.loads(str(raw))
     except json.JSONDecodeError as exc:
         raise CaseDatabaseError("Structured question content is not valid JSON.") from exc
     if not isinstance(blocks, list) or any(not isinstance(block, dict) for block in blocks):
         raise CaseDatabaseError("Structured question content must be a list of content blocks.")
-    return {"blocks": blocks}
+    localized = [
+        block
+        for block in blocks
+        if not block.get("language") or block.get("language") == language
+    ]
+    while localized and localized[0].get("type") == "line_break":
+        localized.pop(0)
+    while localized and localized[-1].get("type") == "line_break":
+        localized.pop()
+    return {"blocks": localized}
