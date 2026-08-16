@@ -13,6 +13,21 @@ body:
       description: What happened, and what did you expect?
     validations:
       required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Core model and validation
+        - Frontend workspace
+        - Storage
+        - Import or export
+        - Editor or quality workflow
+        - Word or DOCX processing
+        - Documentation
+        - CI, packaging, or tests
+    validations:
+      required: true
   - type: textarea
     id: reproduction
     attributes:
@@ -26,4 +41,11 @@ body:
       label: Package and Python versions
     validations:
       required: true
+  - type: checkboxes
+    id: public_data
+    attributes:
+      label: Public-data confirmation
+      options:
+        - label: I used only synthetic or clearly licensed data and removed credentials, private paths, and personal information.
+          required: true
 

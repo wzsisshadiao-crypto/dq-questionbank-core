@@ -1,5 +1,5 @@
 name: Feature request
-description: Propose an interoperable schema or format capability.
+description: Propose a bounded public capability or workflow improvement.
 title: "[Feature]: "
 labels: ["enhancement"]
 body:
@@ -10,10 +10,35 @@ body:
       description: Describe the user need without private implementation details.
     validations:
       required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Public workstream
+      description: Choose the primary area this proposal changes.
+      options:
+        - Architecture and public API
+        - Frontend workspace
+        - Storage
+        - Import and review
+        - Quality
+        - Editor
+        - Word publishing
+        - Formats and document processing
+        - Documentation
+        - Tests and compatibility fixtures
+    validations:
+      required: true
   - type: textarea
     id: proposal
     attributes:
       label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: public_boundary
+    attributes:
+      label: Synthetic fixture and public boundary
+      description: Explain how this can be implemented and tested without private code, production data, credentials, or copyrighted question banks.
     validations:
       required: true
   - type: textarea

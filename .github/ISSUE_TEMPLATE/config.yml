@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: User documentation
+    url: https://github.com/wzsisshadiao-crypto/dq-questionbank-core/wiki
+    about: Start with installation, formats, CLI, schema, and plugin guides.
+  - name: Security report
+    url: https://github.com/wzsisshadiao-crypto/dq-questionbank-core/security/policy
+    about: Do not disclose vulnerabilities, credentials, or private data in a public issue.

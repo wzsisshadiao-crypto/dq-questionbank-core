@@ -13,6 +13,8 @@ All notable changes will be documented here. The project follows semantic versio
   replace the stale release-gate reference with the checks actually required.
 - Organize the roadmap around foundation, visual workspace, import/review,
   daily question work, Word publishing, and 1.0 readiness.
+- Add a repository social-preview asset based on the real public workspace and
+  route new issues through explicit workstream and public-data questions.
 
 ## [0.3.0] - 2026-08-17
 
