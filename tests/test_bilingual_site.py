@@ -6,7 +6,6 @@ from pathlib import Path
 
 from scripts.build_site import build_site
 
-
 ROOT = Path(__file__).resolve().parents[1]
 
 
