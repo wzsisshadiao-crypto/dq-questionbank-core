@@ -1,5 +1,7 @@
 # DQ QuestionBank Core
 
+**English** | [简体中文](README.zh-CN.md) | [Product site](https://wzsisshadiao-crypto.github.io/dq-questionbank-core/en/)
+
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
@@ -19,8 +21,9 @@ reviewable stages.
 
 The repository never includes the production question bank, private user data,
 credentials, provider configuration, or operational records. Question content
-may be multilingual; the maintained public interface and documentation are
-English-only.
+may be multilingual. English remains normative for the public technical
+contract; maintained English and Chinese product pages provide localized entry
+points without creating a second API or schema specification.
 
 ![DQ QuestionBank Core visual workspace](docs/assets/question-bank-workspace.png)
 
@@ -311,8 +314,9 @@ Python 3.10-3.12. See [`docs/compatibility.md`](docs/compatibility.md) for forma
 ## Language policy
 
 English is the single normative language for the public API, CLI, playground,
-documentation, and repository-maintained Wiki. This keeps one reviewable public
-contract; it does not restrict multilingual question content. See
+technical documentation, and repository-maintained Wiki. Localized product
+pages are informational entry points, not competing specifications. This keeps
+one reviewable public contract and does not restrict multilingual question content. See
 [`docs/language-policy.md`](docs/language-policy.md).
 
 ## Roadmap

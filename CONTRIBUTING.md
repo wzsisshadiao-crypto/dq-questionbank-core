@@ -40,6 +40,12 @@ to capture and update the README workspace screenshot and social-preview image
 using only the bundled synthetic case. Never capture private questions,
 production databases, credentials, or private application screenshots.
 
+The owner-reviewed `docs/assets/question-bank-workspace-zh.png` is a fixed
+public product-migration preview, not a contributor screenshot source. Replacing
+it requires renewed project-owner approval of the displayed question's
+publication rights and a privacy review; the synthetic screenshot workflow
+remains mandatory for ordinary contributions.
+
 ## Issues
 
 Search existing issues first. Use a minimal, synthetic example and include the Python version, operating system, input format, expected result, and actual result. Do not upload private or copyrighted question banks.
@@ -57,12 +63,14 @@ Search existing issues first. Use a minimal, synthetic example and include the P
 
 ## Language policy
 
-The maintained public API, CLI, browser playground, documentation, issue
-templates, release notes, and Wiki source are English-only. This is an
+The maintained public API, CLI, browser playground, technical documentation,
+issue templates, release notes, and Wiki source are English-only. This is an
 intentional product boundary, not a restriction on multilingual question data.
-Submit English changes to the normative documentation. Community translations
-may live independently when they identify the English upstream version and do
-not become a competing specification. See
+The repository also maintains localized product and quick-start pages; these
+must link to, and must not redefine, the English technical contract. Submit
+English changes to normative documentation. Community translations may live
+independently when they identify the English upstream version and do not become
+a competing specification. See
 [`docs/language-policy.md`](docs/language-policy.md).
 
 ## Adding an importer or exporter

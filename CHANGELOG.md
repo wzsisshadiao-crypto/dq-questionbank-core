@@ -4,6 +4,21 @@ All notable changes will be documented here. The project follows semantic versio
 
 ## [Unreleased]
 
+### Added
+
+- Bilingual English and Simplified Chinese product site with deterministic
+  GitHub Pages deployment, language-aware entry routing, and shared real
+  workspace visuals.
+- Chinese GitHub landing README featuring the mature Editor Center view for
+  `DX_SX_154` while keeping the production database and private implementation
+  outside the public repository.
+
+### Changed
+
+- Keep English normative for APIs, schemas, CLI, technical documentation, and
+  contribution contracts while allowing maintained localized product and
+  quick-start pages.
+
 ## [0.4.0] - 2026-08-17
 
 ### Added

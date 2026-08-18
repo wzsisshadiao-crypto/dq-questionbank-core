@@ -14,6 +14,7 @@ IGNORED_PARTS = {
     "__pycache__",
     "build",
     "dist",
+    "_site",
     ".pytest_cache",
     ".ruff_cache",
 }

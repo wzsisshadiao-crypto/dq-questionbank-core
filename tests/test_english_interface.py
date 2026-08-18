@@ -43,11 +43,21 @@ class EnglishInterfaceTests(unittest.TestCase):
                         re.search(r"[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]", text)
                     )
 
-    def test_public_interface_contains_no_cjk_text(self):
+    def test_normative_public_interface_contains_no_unreviewed_cjk_text(self):
         root = Path(__file__).resolve().parents[1]
         public_extensions = {".css", ".html", ".js", ".json", ".md", ".py", ".toml", ".yml"}
-        ignored_parts = {"build", "dist", "workspace", ".git", "__pycache__", ".egg-info"}
+        ignored_parts = {
+            "build",
+            "dist",
+            "_site",
+            "workspace",
+            ".git",
+            "__pycache__",
+            ".egg-info",
+        }
         multilingual_data_parts = {"examples", "fixtures"}
+        localized_files = {Path("README.zh-CN.md")}
+        localized_directories = {Path("site/zh-CN")}
         targets = (
             path
             for path in root.rglob("*")
@@ -55,9 +65,15 @@ class EnglishInterfaceTests(unittest.TestCase):
             and path.suffix in public_extensions
             and not any(part in ignored_parts for part in path.parts)
             and not any(part in multilingual_data_parts for part in path.parts)
+            and path.relative_to(root) not in localized_files
+            and not any(
+                path.relative_to(root).is_relative_to(directory)
+                for directory in localized_directories
+            )
         )
         for target in targets:
             text = target.read_text(encoding="utf-8")
+            text = text.replace("简体中文", "")
             self.assertIsNone(
                 re.search(r"[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]", text), target
             )

@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="本地优先的可视化题库，支持可扩展导入、结构化编辑、数学公式、质检、组卷与 DOCX 导出。">
+    <meta property="og:title" content="DQ QuestionBank Core">
+    <meta property="og:description" content="从来源文档到经过核对的题目与可编辑试卷，全部运行在你的电脑上。">
+    <meta property="og:image" content="../assets/question-bank-workspace-zh.png">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#090d16">
+    <title>DQ QuestionBank Core · 本地优先的可视化题库</title>
+    <link rel="canonical" href="https://wzsisshadiao-crypto.github.io/dq-questionbank-core/zh-CN/">
+    <link rel="alternate" hreflang="en" href="https://wzsisshadiao-crypto.github.io/dq-questionbank-core/en/">
+    <link rel="alternate" hreflang="zh-CN" href="https://wzsisshadiao-crypto.github.io/dq-questionbank-core/zh-CN/">
+    <link rel="stylesheet" href="../assets/site.css">
+  </head>
+  <body>
+    <nav class="site-nav" aria-label="主导航">
+      <a class="brand" href="./">
+        <span class="brand-mark">DQ</span>
+        <span>QuestionBank Core</span>
+      </a>
+      <div class="nav-actions">
+        <a class="nav-link" href="#workflow">题目流程</a>
+        <a class="nav-link" href="../en/" lang="en">English</a>
+        <a class="nav-link" href="https://github.com/wzsisshadiao-crypto/dq-questionbank-core">GitHub</a>
+      </div>
+    </nav>
+
+    <header class="hero" style="--hero-image: url('../assets/question-bank-workspace-zh.png')">
+      <div class="hero-content">
+        <p class="eyebrow">本地优先 · 开放 · 可扩展</p>
+        <h1>DQ QuestionBank Core</h1>
+        <p class="hero-copy">
+          面向真实题目工作的可视化题库：支持可定制导入、结构化编辑、离线数学公式、
+          人工核对、题库质检、组卷和可移植 DOCX 导出。
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#quick-start">运行可视化题库</a>
+          <a class="button" href="https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases/latest">查看最新版本</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="band" id="workflow">
+        <div class="container">
+          <div class="section-heading">
+            <h2>一道题的完整生命周期</h2>
+            <p>
+              题目通过明确、可复核的阶段逐步进入题库。原始依据、中间结果和人工判断不会被隐藏在一次不可解释的导入操作之后。
+            </p>
+          </div>
+          <ol class="workflow">
+            <li><span class="step">01</span><strong>导入</strong><span>接入 JSON、Markdown、LaTeX、DOCX，或针对特定文档设计导入流程。</span></li>
+            <li><span class="step">02</span><strong>结构化</strong><span>统一整理题干、公式、表格、选项、答案、解析和元数据。</span></li>
+            <li><span class="step">03</span><strong>人工核对</strong><span>在候选题进入正式题库前检查来源、字段和修正建议。</span></li>
+            <li><span class="step">04</span><strong>编辑与质检</strong><span>按字段修改题目，再运行确定性的本地质量检查。</span></li>
+            <li><span class="step">05</span><strong>组卷与导出</strong><span>将题目编排成试卷，导出规范 JSON 或常规 DOCX。</span></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="band band-alt">
+        <div class="container">
+          <div class="section-heading">
+            <h2>成熟工作界面，稳定公共内核</h2>
+            <p>
+              可下载的可视化应用与 Python 公共接口共享同一套规范题目模型。普通用户可以直接操作，贡献者则可以扩展格式、存储和工作流。
+            </p>
+          </div>
+          <div class="capabilities">
+            <article class="capability">
+              <h3>面向日常题目工作</h3>
+              <p>题库、编辑、组卷、导入、数据和质检中心，支持离线 KaTeX、结构化表格以及答案与解析。</p>
+            </article>
+            <article class="capability">
+              <h3>可替换的扩展边界</h3>
+              <p>规范 Schema、格式注册表、插件发现、存储适配器、兼容 fixtures 和稳定公共 API。</p>
+            </article>
+            <article class="capability">
+              <h3>先核对，再持久化</h3>
+              <p>AI 与后续文档流水线只产生可审阅候选结果；仓库不捆绑密钥，也不允许静默写入生产题库。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="band" id="quick-start">
+        <div class="container quick-start">
+          <div>
+            <p class="eyebrow">可视化快速开始</p>
+            <h2>一条命令打开公开题库。</h2>
+            <p>
+              只需要 Python 3.10 或更新版本。服务仅绑定本机回环地址，创建被 Git 忽略的本地工作区，并打开经过审查的合成案例。
+            </p>
+            <p class="status-note">
+              上方实景图展示仓库所有者批准公开的示例题 DX_SX_154；公开仓库不附带生产数据库、其他私有题目、私有纠错规则、密钥、供应商配置或维护记录。
+            </p>
+          </div>
+          <pre><code>git clone https://github.com/wzsisshadiao-crypto/dq-questionbank-core.git
+cd dq-questionbank-core
+python run.py</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <span>DQ QuestionBank Core · Apache-2.0</span>
+        <span>公共 API、CLI 与技术规范以英文版本为准。</span>
+      </div>
+    </footer>
+  </body>
+</html>

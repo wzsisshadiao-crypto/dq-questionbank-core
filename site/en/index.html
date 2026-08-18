@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A local-first visual question bank for extensible imports, structured editing, math-rich review, paper assembly, and DOCX export.">
+    <meta property="og:title" content="DQ QuestionBank Core">
+    <meta property="og:description" content="From source document to reviewed question and portable paper, on your own computer.">
+    <meta property="og:image" content="../assets/question-bank-workspace.png">
+    <meta property="og:type" content="website">
+    <meta name="theme-color" content="#090d16">
+    <title>DQ QuestionBank Core · Local-first visual question bank</title>
+    <link rel="canonical" href="https://wzsisshadiao-crypto.github.io/dq-questionbank-core/en/">
+    <link rel="alternate" hreflang="en" href="https://wzsisshadiao-crypto.github.io/dq-questionbank-core/en/">
+    <link rel="alternate" hreflang="zh-CN" href="https://wzsisshadiao-crypto.github.io/dq-questionbank-core/zh-CN/">
+    <link rel="stylesheet" href="../assets/site.css">
+  </head>
+  <body>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a class="brand" href="./">
+        <span class="brand-mark">DQ</span>
+        <span>QuestionBank Core</span>
+      </a>
+      <div class="nav-actions">
+        <a class="nav-link" href="#workflow">Workflow</a>
+        <a class="nav-link" href="../zh-CN/" lang="zh-CN">简体中文</a>
+        <a class="nav-link" href="https://github.com/wzsisshadiao-crypto/dq-questionbank-core">GitHub</a>
+      </div>
+    </nav>
+
+    <header class="hero" style="--hero-image: url('../assets/question-bank-workspace.png')">
+      <div class="hero-content">
+        <p class="eyebrow">Local-first · Open · Extensible</p>
+        <h1>DQ QuestionBank Core</h1>
+        <p class="hero-copy">
+          A visual question-bank workspace for structured editing, extensible imports,
+          offline mathematics, quality review, paper assembly, and portable DOCX export.
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#quick-start">Run the workspace</a>
+          <a class="button" href="https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases/latest">Latest release</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="band" id="workflow">
+        <div class="container">
+          <div class="section-heading">
+            <h2>The complete life of a question</h2>
+            <p>
+              Questions move through explicit, reviewable stages. Source evidence and human
+              decisions remain visible instead of disappearing behind one opaque import action.
+            </p>
+          </div>
+          <ol class="workflow">
+            <li><span class="step">01</span><strong>Import</strong><span>Adapt JSON, Markdown, LaTeX, DOCX, or a source-specific pipeline.</span></li>
+            <li><span class="step">02</span><strong>Structure</strong><span>Normalize text, formulas, tables, choices, answers, and metadata.</span></li>
+            <li><span class="step">03</span><strong>Review</strong><span>Inspect candidates and preserve an explicit human acceptance boundary.</span></li>
+            <li><span class="step">04</span><strong>Edit and check</strong><span>Work field by field, then run deterministic local quality checks.</span></li>
+            <li><span class="step">05</span><strong>Assemble and export</strong><span>Build a paper and export canonical JSON or conventional DOCX.</span></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="band band-alt">
+        <div class="container">
+          <div class="section-heading">
+            <h2>Product workspace, stable core</h2>
+            <p>
+              The downloadable application and the Python contracts share one canonical model.
+              Users can start visually while contributors extend formats, storage, and workflows.
+            </p>
+          </div>
+          <div class="capabilities">
+            <article class="capability">
+              <h3>Visual daily work</h3>
+              <p>Question Bank, Editor, Paper, Import, Data, and Quality workspaces with offline KaTeX and structured tables.</p>
+            </article>
+            <article class="capability">
+              <h3>Replaceable boundaries</h3>
+              <p>Canonical schema, format registry, plugin discovery, storage adapters, compatibility fixtures, and stable public APIs.</p>
+            </article>
+            <article class="capability">
+              <h3>Review before persistence</h3>
+              <p>AI providers and future document pipelines produce reviewable candidates; credentials and silent production writes are not bundled.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="band" id="quick-start">
+        <div class="container quick-start">
+          <div>
+            <p class="eyebrow">Visual quick start</p>
+            <h2>Open the public workspace with one command.</h2>
+            <p>
+              Python 3.10 or newer is the only requirement. The server binds to loopback,
+              creates an ignored local workspace, and opens the reviewed synthetic case.
+            </p>
+            <p class="status-note">
+              The repository ships no production question bank, private correction rules,
+              credentials, provider configuration, or operational records.
+            </p>
+          </div>
+          <pre><code>git clone https://github.com/wzsisshadiao-crypto/dq-questionbank-core.git
+cd dq-questionbank-core
+python run.py</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <span>DQ QuestionBank Core · Apache-2.0</span>
+        <span>English is normative for the public technical contract.</span>
+      </div>
+    </footer>
+  </body>
+</html>
