@@ -1,0 +1,33 @@
+{
+  "envelope_version": "0.1",
+  "document_id": "synthetic-paper-001",
+  "mode": "compose",
+  "service_origin": "http://127.0.0.1:8766",
+  "blocks": [
+    {
+      "block_id": "block-q-001",
+      "question_id": "synthetic-q-001",
+      "question_fingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "roles": ["stem", "choices", "answer", "solution"],
+      "display": {
+        "show_border": true,
+        "math": "native-when-supported",
+        "tables": "preserve-structure"
+      }
+    }
+  ],
+  "refresh": {
+    "strategy": "explicit",
+    "on_missing": "stale",
+    "on_revision_mismatch": "stale"
+  },
+  "rollback": {
+    "scope": "single-block",
+    "on_failure": "restore-previous-block"
+  },
+  "security": {
+    "allowed_origins": ["http://127.0.0.1:8766"],
+    "remote_origins": [],
+    "credentials": "never"
+  }
+}
