@@ -242,7 +242,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--blue); outline: 
 .question-stepper .action-btn { font-size: 10px; padding: 5px; }
 .editor-field-nav { border-bottom: 1px solid var(--soft-line); border-top: 1px solid var(--soft-line); display: grid; padding: 6px 0; }
 .editor-field-nav button { background: transparent; border: 0; border-radius: 4px; color: #526174; cursor: pointer; font-size: 11px; min-height: 30px; padding: 6px 8px; text-align: left; }
+.editor-field-nav button.active { background: #edf2ff; color: var(--blue-dark); font-weight: 700; }
 .editor-field-nav button:hover { background: #edf2ff; color: var(--blue-dark); }
+.editor-field-nav button:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px; }
 .editor-question-list { display: grid; gap: 9px; }
 .edit-question-card { min-width: 0; padding: 13px; }
 .edit-question-card.target { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(47, 91, 234, .12); }
