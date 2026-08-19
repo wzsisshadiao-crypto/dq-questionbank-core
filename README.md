@@ -7,6 +7,14 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 [![Release](https://img.shields.io/badge/release-v0.5.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 
+
+> **Community fixture call: help us test every legal question format.**
+>
+> We are actively collecting small, legally redistributable question specimens for import, rendering, editing, validation, and export testing. Original/synthetic, public-domain, openly licensed, and contributor-owned material are welcome across text, structured data, LaTeX/MathML, DOCX/ODT, PDF/scans, tables, images, QTI, malformed, Unicode, multilingual, and mixed-format inputs.
+>
+> **Start here:** [propose a fixture in the pinned community Issue #28](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/28) · [read the provenance and format guide](docs/test-fixture-contributions.md)
+>
+> Do not upload private data, production database extracts, credentials, or content whose redistribution rights are unclear. A public URL alone is not permission to copy.
 An open-source, local-first visual question bank workspace for LaTeX authoring,
 importing, reviewing, editing, and publishing math-rich questions.
 
