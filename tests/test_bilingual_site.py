@@ -18,6 +18,14 @@ class BilingualSiteTests(unittest.TestCase):
         self.assertIn("question-bank-workspace.png", english)
         self.assertIn("question-bank-workspace-zh.png", chinese)
         self.assertIn("DX_SX_154", chinese)
+        self.assertIn("\u4e2d\u6587\u9898\u5e93", chinese)
+        self.assertIn("LaTeX \u516c\u5f0f", chinese)
+
+    def test_root_site_defaults_to_english_and_keeps_explicit_language_links(self):
+        root = (ROOT / "site" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('window.location.replace("./en/")', root)
+        self.assertNotIn("navigator.language", root)
+        self.assertIn('href="./zh-CN/"', root)
 
     def test_site_build_copies_both_reviewed_screenshots(self):
         with tempfile.TemporaryDirectory() as temporary:
