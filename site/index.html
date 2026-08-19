@@ -9,8 +9,8 @@
     <link rel="alternate" hreflang="zh-CN" href="./zh-CN/">
     <link rel="alternate" hreflang="x-default" href="./en/">
     <script>
-      const language = navigator.languages?.[0] || navigator.language || "en";
-      window.location.replace(language.toLowerCase().startsWith("zh") ? "./zh-CN/" : "./en/");
+      // English is the stable default; visitors can choose Chinese explicitly.
+      window.location.replace("./en/");
     </script>
   </head>
   <body>
