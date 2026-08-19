@@ -10,6 +10,8 @@ defined and tested in this repository.
 
 - Browse issues labeled [`good first issue`](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 - Improve synthetic examples, tests, and user documentation.
+- Follow the [contributor correction workflow](docs/contributor-correction-workflow.md)
+  when adding a bounded quality rule or fixture.
 - Build adapters for documented format or storage interfaces.
 - Help migrate generic frontend, import, review, editor, quality, or Word
   publishing workflows without copying private code or data.
