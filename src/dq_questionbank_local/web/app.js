@@ -1225,6 +1225,16 @@ function updateEditorSelection() {
   const question = state.current?.questions?.[state.selectedQuestionIndex];
   document.querySelector("#editor-context-id").textContent = question?.id || "Not loaded";
   document.querySelector("#editor-context-source").textContent = question?.source?.title || "Not provided";
+  setActiveEditorField("stem");
+}
+
+function setActiveEditorField(field) {
+  for (const button of document.querySelectorAll("#editor-field-nav [data-editor-field]")) {
+    const active = button.dataset.editorField === field;
+    button.classList.toggle("active", active);
+    if (active) button.setAttribute("aria-current", "true");
+    else button.removeAttribute("aria-current");
+  }
 }
 
 function populateEditor(payload) {
@@ -1591,6 +1601,7 @@ document.querySelector("#next-question").addEventListener("click", () => {
 document.querySelector("#editor-field-nav").addEventListener("click", (event) => {
   const button = event.target.closest("[data-editor-field]");
   if (!button) return;
+  setActiveEditorField(button.dataset.editorField);
   const card = document.querySelector(".edit-question-card:not([hidden])");
   card?.querySelector(`[data-editor-section="${button.dataset.editorField}"]`)
     ?.scrollIntoView({ behavior: "smooth", block: "start" });

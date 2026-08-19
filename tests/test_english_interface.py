@@ -148,3 +148,16 @@ class EnglishInterfaceTests(unittest.TestCase):
             "editor-open-quality",
         ):
             self.assertIn(f'id="{editor_control}"', text)
+
+    def test_editor_field_navigation_exposes_one_active_state(self):
+        root = Path(__file__).resolve().parents[1]
+        html = (root / "src" / "dq_questionbank_local" / "web" / "index.html").read_text(encoding="utf-8")
+        script = (root / "src" / "dq_questionbank_local" / "web" / "app.js").read_text(encoding="utf-8")
+        styles = (root / "src" / "dq_questionbank_local" / "web" / "styles.css").read_text(encoding="utf-8")
+        self.assertIn('data-editor-field="stem" aria-current="true"', html)
+        self.assertIn("function setActiveEditorField(field)", script)
+        self.assertIn('button.classList.toggle("active", active)', script)
+        self.assertIn('button.setAttribute("aria-current", "true")', script)
+        self.assertIn('setActiveEditorField(button.dataset.editorField)', script)
+        self.assertIn(".editor-field-nav button.active", styles)
+        self.assertIn(".editor-field-nav button:focus-visible", styles)
