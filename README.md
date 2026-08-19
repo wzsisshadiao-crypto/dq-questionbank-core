@@ -7,8 +7,8 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 [![Release](https://img.shields.io/badge/release-v0.5.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 
-An open, local-first question-bank workspace built around the complete life of a
-question, from source document to reviewed Word paper.
+An open-source, local-first visual question bank workspace for LaTeX authoring,
+importing, reviewing, editing, and publishing math-rich questions.
 
 DQ QuestionBank Core is the public foundation and migration home of a mature
 question-bank application. Today this repository provides a database-neutral
