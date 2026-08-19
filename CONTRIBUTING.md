@@ -10,6 +10,8 @@ defined and tested in this repository.
 
 - Browse issues labeled [`good first issue`](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
 - Improve synthetic examples, tests, and user documentation.
+- Contribute legally redistributable question fixtures using the
+  [test fixture contribution guide](docs/test-fixture-contributions.md).
 - Follow the [contributor correction workflow](docs/contributor-correction-workflow.md)
   when adding a bounded quality rule or fixture.
 - Build adapters for documented format or storage interfaces.
@@ -91,3 +93,6 @@ During `0.x`, breaking changes require a minor release and migration notes. Patc
 ## Copyright and provenance
 
 Contributors must have the right to submit all code and fixtures. Examples should be original, synthetic, public domain, or provided under a compatible license with attribution. Publisher question banks and exam papers are not acceptable fixtures merely because they can be found online.
+
+For the supported source categories, input formats, provenance manifest, and
+review path, see [Test Fixture Contributions](docs/test-fixture-contributions.md).
