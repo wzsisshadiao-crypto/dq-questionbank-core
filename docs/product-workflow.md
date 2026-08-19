@@ -168,7 +168,16 @@ The editor is also a destination. Search results, review candidates, and quality
 findings can open the relevant question and return the user to the originating
 workflow after the correction.
 
-**Public now:** a focused visual editor for canonical JSON question sets.
+**Public now:** a focused visual editor for canonical JSON question sets. The
+Editor Center supports structured choice editing (stable option ids, add/remove
+rows, and single- or multiple-answer binding) plus reviewable metadata editing
+for subject, grade, category, difficulty, tags, and source year/title. Save is
+blocked when a choice answer points at a missing option, option ids collide, or
+a choice question has incomplete options; the server repeats the canonical
+validation before writing the local workspace. Formula delimiters entered while
+editing are normalized back into canonical math blocks, and unchanged rich
+blocks are retained. The public editor also exposes explicit saved, unsaved, and
+saving states and warns before leaving the page with pending edits.
 
 **Migration target:** the complete field editor, formula/image/table tooling,
 navigation context, and paper integration.

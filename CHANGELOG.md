@@ -2,7 +2,7 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
-## [Unreleased]
+## [0.5.0] - 2026-08-20
 
 ### Added
 
@@ -12,12 +12,24 @@ All notable changes will be documented here. The project follows semantic versio
 - Chinese GitHub landing README featuring the mature Editor Center view for
   `DX_SX_154` while keeping the production database and private implementation
   outside the public repository.
+- Structured choice editing in the public Editor Center, including stable
+  option ids, add/remove controls, and single- or multiple-answer binding.
+- Reviewable question metadata controls for grade, category, difficulty, tags,
+  and source title/year.
+- Formula-preserving editor input parsing and explicit saved/unsaved/saving
+  state handling with a pending-edit navigation guard.
 
 ### Changed
 
 - Keep English normative for APIs, schemas, CLI, technical documentation, and
   contribution contracts while allowing maintained localized product and
   quick-start pages.
+
+### Boundary
+
+- Image-pool editing, interactive table authoring, and private correction
+  providers remain outside this release. The public editor uses canonical
+  content blocks and deterministic local checks.
 
 ## [0.4.0] - 2026-08-17
 

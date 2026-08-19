@@ -17,7 +17,7 @@ Each batch must use synthetic data and preserve the public/private boundary.
 
 ## 2. Visual workspace
 
-**Status: operational public workspace available in v0.4.0**
+**Status: operational public workspace available in v0.5.0**
 
 - Local-first Question Bank with collection browsing and scoped filters
 - Structured text, math, table, choice, answer, and solution rendering
@@ -25,7 +25,7 @@ Each batch must use synthetic data and preserve the public/private boundary.
 - Canonical JSON import, local save, and export
 - Paper assembly with deterministic ordering and canonical JSON export
 - Collection metrics and deterministic local quality checks with editor handoff
-- Next: richer structured choice, image, formula, and metadata editing
+- Next: image-pool editing, interactive table authoring, and richer formula modules
 
 ## 3. Import and review
 
@@ -39,7 +39,7 @@ Each batch must use synthetic data and preserve the public/private boundary.
 
 ## 4. Daily question work
 
-**Status: first local-only batch available in v0.4.0**
+**Status: first local-only batch available in v0.5.0**
 
 - Paper and collection assembly is available for the active canonical set
 - Field-level Editor Center workflows are available for public canonical fields

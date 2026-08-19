@@ -95,6 +95,12 @@ class LocalServerTests(unittest.TestCase):
             'id="question-list"',
             'id="editor-question-select"',
             'id="editor-field-nav"',
+            'class="question-choice-answer"',
+            'class="question-grade"',
+            'class="question-category"',
+            'class="question-difficulty"',
+            'class="question-tags"',
+            'add-choice',
             'id="paper-view"',
             'id="import-view"',
             'id="data-view"',
@@ -126,6 +132,12 @@ class LocalServerTests(unittest.TestCase):
         self.assertIn("function renderReviewCenter()", script)
         self.assertIn("function renderExportCenter()", script)
         self.assertIn("function paperPayload()", script)
+        self.assertIn("function refreshChoiceAnswerControls", script)
+        self.assertIn("function editorValidationIssues", script)
+        self.assertIn("function parseEditableContent", script)
+        self.assertIn("function setSaveInFlight", script)
+        self.assertIn("beforeunload", script)
+        self.assertIn("question.choices = rows.map", script)
         self.assertIn('searchScope.value === "all"', script)
         self.assertIn("question.source?.year ?? question.metadata?.year", script)
         self.assertIn("Expand answer and solution", script)

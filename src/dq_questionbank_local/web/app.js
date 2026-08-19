@@ -15,6 +15,8 @@ const state = {
   qualityHasRun: false,
   reviewedQuestionIds: [],
   importSummary: null,
+  editorDirty: false,
+  saveInFlight: false,
 };
 
 const setList = document.querySelector("#set-list");
@@ -171,6 +173,40 @@ function renderTextWithMath(container, value) {
   appendPlainText(container, text.slice(plainStart));
 }
 
+function parseEditableContent(value, language = "en") {
+  const text = String(value ?? "");
+  const blocks = [];
+  let plainStart = 0;
+  let cursor = 0;
+  const pushText = (raw) => {
+    if (raw) blocks.push({ type: "text", text: raw, language });
+  };
+  while (cursor < text.length) {
+    const delimiter = mathDelimiterAt(text, cursor);
+    if (!delimiter) {
+      cursor += 1;
+      continue;
+    }
+    const latexStart = cursor + delimiter.length;
+    const closing = findClosingDelimiter(text, latexStart, delimiter);
+    if (closing < 0 || !text.slice(latexStart, closing).trim()) {
+      cursor += delimiter.length;
+      continue;
+    }
+    pushText(text.slice(plainStart, cursor));
+    blocks.push({
+      type: "math",
+      latex: text.slice(latexStart, closing),
+      language,
+      metadata: delimiter === "$$" ? { display: true } : {},
+    });
+    cursor = closing + delimiter.length;
+    plainStart = cursor;
+  }
+  pushText(text.slice(plainStart));
+  return { blocks: blocks.length ? blocks : [{ type: "text", text, language }] };
+}
+
 function renderTable(container, block) {
   const figure = document.createElement("figure");
   figure.className = "question-table-figure";
@@ -242,6 +278,115 @@ function answerText(answer) {
 
 function formatType(value) {
   return String(value || "unknown").replaceAll("_", " ");
+}
+
+function choiceAnswerValues(answer) {
+  if (!answer) return [];
+  const values = Array.isArray(answer.value) ? answer.value : [answer.value];
+  return values.filter((value) => value !== undefined && value !== null && String(value).trim())
+    .map((value) => String(value));
+}
+
+function choiceRows(card) {
+  return [...card.querySelectorAll(".choice-row")];
+}
+
+function makeChoiceRow(choice = {}, language = "en") {
+  const row = document.createElement("div");
+  row.className = "choice-row";
+  row.dataset.original = JSON.stringify(choice);
+  const id = document.createElement("input");
+  id.className = "choice-id";
+  id.required = true;
+  id.value = choice.id || "";
+  id.setAttribute("aria-label", "Choice id");
+  id.title = "Stable choice id";
+  const content = document.createElement("textarea");
+  content.className = "choice-content";
+  content.required = true;
+  content.rows = 2;
+  content.value = contentText(choice.content);
+  content.setAttribute("aria-label", `Choice ${choice.id || "option"} content`);
+  const remove = document.createElement("button");
+  remove.className = "icon-button remove-choice";
+  remove.type = "button";
+  remove.title = "Remove choice";
+  remove.setAttribute("aria-label", "Remove choice");
+  remove.textContent = "×";
+  row.append(id, content, remove);
+  return row;
+}
+
+function refreshChoiceAnswerControls(card, selectedValues = null) {
+  const type = card.querySelector(".question-type").value;
+  const rows = choiceRows(card);
+  const ids = rows.map((row) => row.querySelector(".choice-id").value.trim()).filter(Boolean);
+  const current = selectedValues || [...card.querySelectorAll(".choice-answer:checked")].map((input) => input.value);
+  const single = card.querySelector(".single-answer-control");
+  const multiple = card.querySelector(".multiple-answer-control");
+  const list = card.querySelector(".answer-choice-list");
+  const select = card.querySelector(".question-choice-answer");
+  const isSingle = type === "single_choice";
+  const isMultiple = type === "multiple_choice";
+  single.hidden = !isSingle;
+  multiple.hidden = !isMultiple;
+  if (!isSingle && !isMultiple) return;
+  if (isSingle) {
+    select.replaceChildren();
+    const empty = document.createElement("option");
+    empty.value = "";
+    empty.textContent = "Select an answer";
+    select.append(empty);
+    ids.forEach((id) => {
+      const option = document.createElement("option");
+      option.value = id;
+      option.textContent = id;
+      option.selected = current.includes(id);
+      select.append(option);
+    });
+  } else {
+    list.replaceChildren();
+    ids.forEach((id) => {
+      const label = document.createElement("label");
+      label.className = "answer-choice-item";
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.className = "choice-answer";
+      checkbox.value = id;
+      checkbox.checked = current.includes(id);
+      label.append(checkbox, document.createTextNode(id));
+      list.append(label);
+    });
+  }
+}
+
+function renderChoiceEditor(card, question) {
+  const list = card.querySelector(".choice-list");
+  const choices = question.choices || [];
+  list.replaceChildren(...choices.map((choice) => makeChoiceRow(choice, question.language || "en")));
+  card.querySelector(".field-empty").hidden = choices.length > 0;
+  refreshChoiceAnswerControls(card, choiceAnswerValues(question.answer));
+}
+
+function editorValidationIssues(payload) {
+  const issues = [];
+  for (const [questionIndex, question] of (payload.questions || []).entries()) {
+    const path = `Question ${questionIndex + 1}`;
+    const choices = question.choices || [];
+    const ids = choices.map((choice) => choice.id).filter(Boolean);
+    if (["single_choice", "multiple_choice"].includes(question.type)) {
+      if (choices.length < 2) issues.push(`${path} needs at least two choices.`);
+      if (new Set(ids).size !== ids.length) issues.push(`${path} has duplicate choice ids.`);
+      if (choices.some((choice) => !choice.id || !contentText(choice.content).trim())) {
+        issues.push(`${path} has a choice with a missing id or content.`);
+      }
+      const answers = choiceAnswerValues(question.answer);
+      if (question.type === "single_choice" && answers.length > 1) issues.push(`${path} needs one correct choice.`);
+      if (question.type === "multiple_choice" && answers.length < 1) issues.push(`${path} needs at least one correct choice.`);
+      if (answers.some((answer) => !ids.includes(answer))) issues.push(`${path} answer references an unknown choice.`);
+    }
+  }
+  return issues;
 }
 
 function setStatus(message, isError = false) {
@@ -787,13 +932,17 @@ function makeFinding(severity, question, questionIndex, field, message) {
 function runQualityChecks() {
   const findings = [];
   const seen = new Set();
-  for (const [questionIndex, question] of (state.current?.questions || []).entries()) {
+  const payload = state.view === "editor" ? collectPayload() : state.current;
+  for (const [questionIndex, question] of (payload?.questions || []).entries()) {
     if (seen.has(question.id)) findings.push(makeFinding("error", question, questionIndex, "metadata", "Duplicate question ID."));
     seen.add(question.id);
     if (!stemText(question).trim()) findings.push(makeFinding("error", question, questionIndex, "stem", "Question stem is empty."));
     if (!question.subject) findings.push(makeFinding("warning", question, questionIndex, "metadata", "Subject is not assigned."));
     if (!answerText(question.answer)) findings.push(makeFinding("warning", question, questionIndex, "answer", "Answer is missing."));
     if (!contentText(question.solution)) findings.push(makeFinding("warning", question, questionIndex, "solution", "Solution is missing."));
+    for (const issue of editorValidationIssues({ questions: [question] })) {
+      findings.push(makeFinding("error", question, questionIndex, issue.includes("choice") ? "choices" : "answer", issue.replace(/^Question 1 /, "")));
+    }
     inspectContentMath(findings, question, questionIndex, "stem", question.stem);
     for (const choice of question.choices || []) inspectContentMath(findings, question, questionIndex, "choices", choice.content);
     inspectContentMath(findings, question, questionIndex, "solution", question.solution);
@@ -829,9 +978,28 @@ function updateEditorAudit() {
 }
 
 function setEditorDirty(dirty) {
+  state.editorDirty = dirty;
   const saveState = document.querySelector("#editor-save-state");
+  if (!saveState) return;
   saveState.classList.toggle("unsaved", dirty);
   saveState.lastChild.textContent = dirty ? " Unsaved" : " Saved";
+}
+
+function discardEditorChanges(message = "Unsaved editor changes were discarded.") {
+  if (state.view !== "editor" || !state.editorDirty) return false;
+  populateEditor(state.current);
+  setStatus(message);
+  return true;
+}
+
+function setSaveInFlight(inFlight) {
+  state.saveInFlight = inFlight;
+  const button = editorForm.querySelector('button[type="submit"]');
+  if (!button) return;
+  button.disabled = inFlight;
+  button.setAttribute("aria-busy", String(inFlight));
+  button.textContent = inFlight ? "Saving..." : "Save changes";
+  if (inFlight) setStatus("Saving changes locally...");
 }
 
 function renderEditorTextPreview(container, value) {
@@ -984,6 +1152,12 @@ function addQuestion(question, index = questionList.children.length) {
   fragment.querySelector(".question-type").value = question.type || "short_answer";
   fragment.querySelector(".question-language").value = question.language || "en";
   fragment.querySelector(".question-subject").value = question.subject || "";
+  fragment.querySelector(".question-grade").value = question.metadata?.grade || "";
+  fragment.querySelector(".question-category").value = question.metadata?.question_category || "";
+  fragment.querySelector(".question-difficulty").value = question.difficulty ?? "";
+  fragment.querySelector(".question-tags").value = (question.tags || []).join(", ");
+  fragment.querySelector(".question-source-title").value = question.source?.title || "";
+  fragment.querySelector(".question-source-year").value = question.source?.year ?? "";
   fragment.querySelector(".question-stem").value = stemText(question);
   const stemPreview = fragment.querySelector(".stem-preview");
   stemPreview.hidden = false;
@@ -992,18 +1166,7 @@ function addQuestion(question, index = questionList.children.length) {
   } else {
     renderEditorTextPreview(stemPreview, stemText(question));
   }
-  const choicesArea = fragment.querySelector(".choices-area");
-  const choicesList = fragment.querySelector(".choice-list");
-  if (question.choices?.length) {
-    choicesArea.querySelector(".field-empty").hidden = true;
-    for (const choice of question.choices) {
-      const row = document.createElement("div");
-      row.className = "choice-row";
-      appendTextElement(row, "", choice.id);
-      appendTextElement(row, "", contentText(choice.content));
-      choicesList.append(row);
-    }
-  }
+  renderChoiceEditor(card, question);
   const answer = answerText(question.answer);
   fragment.querySelector(".question-answer").value = answer;
   renderEditorTextPreview(fragment.querySelector(".answer-preview"), answer);
@@ -1125,35 +1288,81 @@ function collectPayload() {
     const subject = card.querySelector(".question-subject").value.trim();
     if (subject) question.subject = subject;
     else delete question.subject;
+    question.metadata = { ...(question.metadata || {}) };
+    const grade = card.querySelector(".question-grade").value.trim();
+    const category = card.querySelector(".question-category").value.trim();
+    if (grade) question.metadata.grade = grade;
+    else delete question.metadata.grade;
+    if (category) question.metadata.question_category = category;
+    else delete question.metadata.question_category;
+    const difficulty = card.querySelector(".question-difficulty").value.trim();
+    if (difficulty) question.difficulty = Number(difficulty);
+    else delete question.difficulty;
+    const tags = card.querySelector(".question-tags").value.split(",").map((tag) => tag.trim()).filter(Boolean);
+    question.tags = [...new Set(tags)];
+    const sourceTitle = card.querySelector(".question-source-title").value.trim();
+    const sourceYear = card.querySelector(".question-source-year").value.trim();
+    question.source = { ...(question.source || {}) };
+    if (sourceTitle) question.source.title = sourceTitle;
+    else delete question.source.title;
+    if (sourceYear) question.source.year = Number(sourceYear);
+    else delete question.source.year;
+    if (!Object.keys(question.source).length) delete question.source;
     const editedStem = card.querySelector(".question-stem").value;
     if (editedStem !== card.dataset.originalStem) {
-      question.stem = { blocks: [{ type: "text", text: editedStem, language: question.language }] };
+      question.stem = parseEditableContent(editedStem, question.language);
     }
-    const editedAnswer = card.querySelector(".question-answer").value;
-    if (editedAnswer !== card.dataset.originalAnswer) {
-      if (editedAnswer) {
-        question.answer = typeof question.answer === "object" && question.answer !== null
-          ? { ...question.answer, value: editedAnswer }
-          : { kind: "text", value: editedAnswer };
+    const rows = choiceRows(card);
+    if (rows.length || question.choices?.length) {
+      question.choices = rows.map((row) => {
+        const original = JSON.parse(row.dataset.original || "{}");
+        const editedContent = row.querySelector(".choice-content").value;
+        const originalContent = contentText(original.content);
+        return {
+          ...original,
+          id: row.querySelector(".choice-id").value.trim(),
+          content: editedContent === originalContent
+            ? original.content
+            : parseEditableContent(editedContent, question.language),
+        };
+      });
+    }
+    if (["single_choice", "multiple_choice"].includes(question.type)) {
+      const selected = question.type === "single_choice"
+        ? [card.querySelector(".question-choice-answer").value].filter(Boolean)
+        : [...card.querySelectorAll(".choice-answer:checked")].map((input) => input.value);
+      if (selected.length) {
+        question.answer = {
+          ...(question.answer || {}),
+          kind: question.type === "multiple_choice" ? "choices" : "choice",
+          value: question.type === "multiple_choice" ? selected : selected[0],
+        };
       } else {
         delete question.answer;
+      }
+    } else {
+      const editedAnswer = card.querySelector(".question-answer").value;
+      if (editedAnswer !== card.dataset.originalAnswer) {
+        if (editedAnswer) {
+          question.answer = typeof question.answer === "object" && question.answer !== null
+            ? { ...question.answer, value: editedAnswer }
+            : { kind: "text", value: editedAnswer };
+        } else {
+          delete question.answer;
+        }
       }
     }
     const editedAnalysis = card.querySelector(".question-analysis").value;
     if (editedAnalysis !== card.dataset.originalAnalysis) {
-      question.metadata = { ...(question.metadata || {}) };
       if (editedAnalysis) question.metadata.analysis = editedAnalysis;
       else delete question.metadata.analysis;
-      if (!Object.keys(question.metadata).length) delete question.metadata;
     }
     const editedSolution = card.querySelector(".question-solution").value;
     if (editedSolution !== card.dataset.originalSolution) {
-      if (editedSolution) {
-        question.solution = { blocks: [{ type: "text", text: editedSolution, language: question.language }] };
-      } else {
-        delete question.solution;
-      }
+      if (editedSolution) question.solution = parseEditableContent(editedSolution, question.language);
+      else delete question.solution;
     }
+    if (!Object.keys(question.metadata).length) delete question.metadata;
     return question;
   });
   return payload;
@@ -1214,8 +1423,15 @@ document.querySelector("#add-question").addEventListener("click", () => {
 });
 editorForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  if (state.saveInFlight) return;
+  setSaveInFlight(true);
   try {
     const payload = collectPayload();
+    const editorIssues = editorValidationIssues(payload);
+    if (editorIssues.length) {
+      runQualityChecks();
+      throw new Error(`Resolve editor validation issues before saving: ${editorIssues[0]}`);
+    }
     if (state.persisted && state.selectedId !== payload.id) {
       throw new Error("Collection ID cannot be changed after saving. Create a new collection to use a different ID.");
     }
@@ -1229,6 +1445,8 @@ editorForm.addEventListener("submit", async (event) => {
     setStatus("Changes saved locally.");
   } catch (error) {
     setStatus(error.message, true);
+  } finally {
+    setSaveInFlight(false);
   }
 });
 document.querySelector("#import-file").addEventListener("change", async (event) => {
@@ -1264,17 +1482,26 @@ document.querySelector("#empty-load-case").addEventListener("click", loadDatabas
 document.querySelector("#export-set").addEventListener("click", exportCurrentSet);
 document.querySelector("#edit-set").addEventListener("click", () => setView("editor"));
 document.querySelector("#back-to-bank").addEventListener("click", () => {
-  populateEditor(state.current);
+  discardEditorChanges();
   setView("bank");
   setStatus("Unsaved editor changes were discarded.");
 });
 bankNav.addEventListener("click", () => {
-  if (state.current) setView("bank");
+  if (state.current) {
+    discardEditorChanges();
+    setView("bank");
+  }
 });
 paperNav.addEventListener("click", () => {
-  if (state.current) setView("paper");
+  if (state.current) {
+    discardEditorChanges();
+    setView("paper");
+  }
 });
-importNav.addEventListener("click", () => setView("import"));
+importNav.addEventListener("click", () => {
+  discardEditorChanges();
+  setView("import");
+});
 editorNav.addEventListener("click", () => {
   if (state.current) {
     setView("editor");
@@ -1283,20 +1510,30 @@ editorNav.addEventListener("click", () => {
   }
 });
 dataNav.addEventListener("click", () => {
-  if (state.current) setView("data");
+  if (state.current) {
+    discardEditorChanges();
+    setView("data");
+  }
 });
 qualityNav.addEventListener("click", () => {
   if (state.current) {
+    discardEditorChanges();
     setView("quality");
     runQualityChecks();
   }
 });
 reviewNav.addEventListener("click", () => {
-  if (state.current) setView("review");
+  if (state.current) {
+    discardEditorChanges();
+    setView("review");
+  }
   setMoreMenu(false);
 });
 exportNav.addEventListener("click", () => {
-  if (state.current) setView("export");
+  if (state.current) {
+    discardEditorChanges();
+    setView("export");
+  }
   setMoreMenu(false);
 });
 document.querySelector("#import-load-case").addEventListener("click", loadDatabaseCase);
@@ -1359,6 +1596,27 @@ document.querySelector("#editor-field-nav").addEventListener("click", (event) =>
     ?.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 editorForm.addEventListener("click", (event) => {
+  const addChoice = event.target.closest(".add-choice");
+  if (addChoice) {
+    const card = addChoice.closest(".edit-question-card");
+    const rows = choiceRows(card);
+    const nextId = String.fromCharCode(65 + rows.length);
+    card.querySelector(".choice-list").append(makeChoiceRow({ id: nextId, content: { blocks: [{ type: "text", text: "", language: card.querySelector(".question-language").value }] } }));
+    card.querySelector(".field-empty").hidden = true;
+    refreshChoiceAnswerControls(card);
+    setEditorDirty(true);
+    card.querySelector(".choice-row:last-child .choice-content")?.focus();
+    return;
+  }
+  const removeChoice = event.target.closest(".remove-choice");
+  if (removeChoice) {
+    const card = removeChoice.closest(".edit-question-card");
+    removeChoice.closest(".choice-row")?.remove();
+    card.querySelector(".field-empty").hidden = choiceRows(card).length > 0;
+    refreshChoiceAnswerControls(card);
+    setEditorDirty(true);
+    return;
+  }
   const toggle = event.target.closest(".editor-source-toggle");
   if (!toggle) return;
   const field = toggle.closest(".editor-field");
@@ -1381,10 +1639,27 @@ questionList.addEventListener("input", (event) => {
     renderEditorTextPreview(card.querySelector(".analysis-preview"), event.target.value);
   } else if (event.target.matches(".question-solution")) {
     renderEditorTextPreview(card.querySelector(".solution-preview"), event.target.value);
+  } else if (event.target.matches(".choice-id")) {
+    refreshChoiceAnswerControls(card);
+    card.querySelectorAll(".choice-content").forEach((content) => {
+      const id = content.closest(".choice-row")?.querySelector(".choice-id")?.value || "option";
+      content.setAttribute("aria-label", `Choice ${id} content`);
+    });
   }
+});
+questionList.addEventListener("change", (event) => {
+  if (!event.target.matches(".question-type, .question-choice-answer, .choice-answer")) return;
+  const card = event.target.closest(".edit-question-card");
+  if (event.target.matches(".question-type")) refreshChoiceAnswerControls(card);
+  setEditorDirty(true);
 });
 editorForm.addEventListener("input", (event) => {
   if (!event.target.closest("#question-list")) setEditorDirty(true);
+});
+window.addEventListener("beforeunload", (event) => {
+  if (!state.editorDirty || state.saveInFlight) return;
+  event.preventDefault();
+  event.returnValue = "";
 });
 document.querySelector("#editor-run-quality").addEventListener("click", runQualityChecks);
 document.querySelector("#editor-open-quality").addEventListener("click", () => {
