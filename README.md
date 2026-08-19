@@ -15,6 +15,15 @@
 > **Start here:** [propose a fixture in the pinned community Issue #28](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/28) · [read the provenance and format guide](docs/test-fixture-contributions.md)
 >
 > Do not upload private data, production database extracts, credentials, or content whose redistribution rights are unclear. A public URL alone is not permission to copy.
+**Contribute in a few minutes**
+
+- **No Python:** [share a multilingual math question](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/30)
+- **Know LaTeX:** [try one tricky formula](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/29)
+- **Know Word/DOCX:** [show one small edge case](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/33)
+- **Like testing:** [check an empty search state](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/31)
+- **Like frontend polish:** [make one Editor state clearer](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/32)
+
+You can start with a fixture or a small wording change; you do not need access to the private application.
 An open-source, local-first visual question bank workspace for LaTeX authoring,
 importing, reviewing, editing, and publishing math-rich questions.
 
