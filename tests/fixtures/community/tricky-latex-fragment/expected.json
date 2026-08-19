@@ -1,0 +1,30 @@
+{
+  "schema_version": "1.0",
+  "id": "source",
+  "title": "source",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "q1",
+      "type": "short_answer",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Evaluate the boundary expression "
+          },
+          {
+            "type": "math",
+            "latex": "\\frac{1}{x+1"
+          },
+          {
+            "type": "text",
+            "text": " before applying a correction rule."
+          }
+        ]
+      }
+    }
+  ]
+}
