@@ -6,7 +6,6 @@ import unittest
 from pathlib import Path
 from urllib.parse import urlparse
 
-
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / "tests" / "fixtures" / "word-publishing" / "synthetic-envelope.json"
 
