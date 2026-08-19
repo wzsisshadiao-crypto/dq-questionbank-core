@@ -1,0 +1,111 @@
+{
+  "session_id": "synthetic-intake-session-001",
+  "source_document": "synthetic_math_paper.pdf",
+  "title": "Synthetic PDF Intake Candidate",
+  "language": "en",
+  "candidates": [
+    {
+      "candidate_id": "cand-pdf-001",
+      "status": "pending",
+      "evidence": {
+        "stem": {
+          "field_name": "stem",
+          "source_locator": "synthetic_math_paper.pdf#page=1",
+          "page": 1,
+          "bbox": [50.0, 100.0, 500.0, 140.0],
+          "raw_segment": "Evaluate the quadratic function f(x) = x^2 - 2x + 1 using the values in Table 1."
+        },
+        "formula": {
+          "field_name": "formula",
+          "source_locator": "synthetic_math_paper.pdf#page=1",
+          "page": 1,
+          "bbox": [200.0, 105.0, 320.0, 125.0],
+          "raw_segment": "f(x) = x^2 - 2x + 1"
+        },
+        "table": {
+          "field_name": "table",
+          "source_locator": "synthetic_math_paper.pdf#page=1",
+          "page": 1,
+          "bbox": [50.0, 150.0, 400.0, 250.0],
+          "raw_segment": "| x | f(x) |\n|---|------|\n| 0 | 1 |\n| 1 | 0 |\n| 2 | 1 |\n| 3 | 4 |"
+        },
+        "answer": {
+          "field_name": "answer",
+          "source_locator": "synthetic_math_paper.pdf#page=1",
+          "page": 1,
+          "bbox": [50.0, 260.0, 200.0, 280.0],
+          "raw_segment": "Answer: 4"
+        }
+      },
+      "question": {
+        "schema_version": "1.0",
+        "id": "q-intake-001",
+        "type": "short_answer",
+        "language": "en",
+        "subject": "Mathematics",
+        "stem": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "Evaluate the quadratic function "
+            },
+            {
+              "type": "math",
+              "latex": "f(x) = x^2 - 2x + 1"
+            },
+            {
+              "type": "text",
+              "text": " using the given table and find "
+            },
+            {
+              "type": "math",
+              "latex": "f(3)"
+            },
+            {
+              "type": "text",
+              "text": "."
+            },
+            {
+              "type": "table",
+              "rows": [
+                ["x", "f(x)"],
+                ["0", "1"],
+                ["1", "0"],
+                ["2", "1"],
+                ["3", "4"]
+              ]
+            }
+          ]
+        },
+        "answer": {
+          "kind": "text",
+          "value": "4"
+        },
+        "solution": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "Substitute "
+            },
+            {
+              "type": "math",
+              "latex": "x = 3"
+            },
+            {
+              "type": "text",
+              "text": " into "
+            },
+            {
+              "type": "math",
+              "latex": "f(3) = 3^2 - 2(3) + 1 = 9 - 6 + 1 = 4"
+            },
+            {
+              "type": "text",
+              "text": ", which matches the table row where x = 3."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
