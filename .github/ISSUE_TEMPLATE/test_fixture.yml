@@ -1,0 +1,53 @@
+name: Test fixture contribution
+description: Propose a legally redistributable question specimen for importer, renderer, editor, or compatibility testing.
+title: "[Fixture] "
+labels:
+  - tests
+  - import
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please read [Test Fixture Contributions](../../docs/test-fixture-contributions.md) first.
+        Do not attach private data or material with unclear redistribution rights.
+  - type: input
+    id: source-type
+    attributes:
+      label: Source and rights
+      description: State whether this is original, synthetic, public-domain, openly licensed, or contributor-owned, and name the license.
+      placeholder: "Synthetic; CC0-1.0"
+    validations:
+      required: true
+  - type: input
+    id: format
+    attributes:
+      label: Input format
+      description: Include the extension or media type and whether an importer already exists.
+      placeholder: "LaTeX (.tex), importer exists"
+    validations:
+      required: true
+  - type: textarea
+    id: provenance
+    attributes:
+      label: Provenance and attribution
+      description: Provide the source URL, author, access date, attribution, and permission details, or explain why the specimen is original/synthetic.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Behavior to exercise
+      description: Describe the canonical output, rendering, validation, or failure behavior this fixture should test.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Contributor checks
+      options:
+        - label: I have the right to redistribute every attached or proposed file.
+          required: true
+        - label: The specimen contains no private data, credentials, production database content, or unnecessary personal metadata.
+          required: true
+        - label: I understand that unsupported formats may be accepted only as clearly marked intake specimens.
+          required: true
