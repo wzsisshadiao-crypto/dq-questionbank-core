@@ -118,7 +118,7 @@ class LocalServerTests(unittest.TestCase):
         self.assertEqual(200, response.status)
         self.assertIn('document.createElement("table")', script)
         self.assertIn("globalThis.katex.render", script)
-        self.assertIn("function renderTextWithMath(container, value)", script)
+        self.assertIn("function renderTextWithMath(container, value, annotate = false)", script)
         self.assertIn("renderTextWithMath(cell, value)", script)
         self.assertIn("renderTextWithMath(value, answer)", script)
         self.assertIn('throwOnError: true', script)

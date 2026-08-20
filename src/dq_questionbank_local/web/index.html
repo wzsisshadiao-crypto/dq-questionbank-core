@@ -300,17 +300,39 @@
           <label>Source title<input class="question-source-title" placeholder="Publication or collection"></label>
           <label>Source year<input class="question-source-year" type="number" min="0" max="9999" step="1" placeholder="2025"></label>
           <div class="editor-source-row full"><span>Source details</span><strong class="question-source">Not provided</strong></div>
-          <section class="editor-field full" data-editor-section="stem"><div class="editor-field-heading"><strong>Stem</strong><div><span class="editor-check-badge">Structured preview</span><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-stem" required rows="6" aria-label="Stem"></textarea><div class="stem-preview rendered-content editor-live-preview" aria-label="Structured stem preview" hidden></div></section>
+          <section class="editor-field full" data-editor-section="stem"><div class="editor-field-heading"><strong>Stem</strong><div><span class="editor-check-badge">Structured preview</span><button class="editor-formula-insert" type="button">Insert formula</button><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-stem" required rows="6" aria-label="Stem"></textarea><div class="stem-preview rendered-content editor-live-preview" aria-label="Structured stem preview" hidden></div></section>
         </div>
         <div class="question-content">
           <section class="editor-field choices-area" data-editor-section="choices"><div class="editor-field-heading"><strong>Choices</strong><span class="editor-check-badge">Editable structure</span></div><div class="choice-list"></div><div class="choice-actions"><button class="action-btn secondary compact-action add-choice" type="button">Add choice</button><span>Each option keeps a stable id for answer binding.</span></div><p class="field-empty">No choices for this question.</p><div class="choice-answer-editor"><label class="single-answer-control">Correct choice<select class="question-choice-answer"></select></label><fieldset class="multiple-answer-control"><legend>Correct choices</legend><div class="answer-choice-list"></div></fieldset></div></section>
-          <section class="editor-field answer-area" data-editor-section="answer"><div class="editor-field-heading"><strong>Answer</strong><div><span class="editor-check-badge">Local preview</span><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-answer" rows="3" aria-label="Answer"></textarea><div class="answer-preview editor-live-preview rendered-content"></div></section>
-          <section class="editor-field analysis-area" data-editor-section="analysis"><div class="editor-field-heading"><strong>Analysis</strong><div><span class="editor-check-badge">Local preview</span><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-analysis" rows="4" aria-label="Analysis"></textarea><div class="analysis-preview editor-live-preview rendered-content"></div></section>
-          <section class="editor-field solution-area" data-editor-section="solution"><div class="editor-field-heading"><strong>Solution</strong><div><span class="editor-check-badge">Structured preview</span><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-solution" rows="7" aria-label="Solution"></textarea><div class="solution-preview editor-live-preview rendered-content"></div></section>
+          <section class="editor-field answer-area" data-editor-section="answer"><div class="editor-field-heading"><strong>Answer</strong><div><span class="editor-check-badge">Local preview</span><button class="editor-formula-insert" type="button">Insert formula</button><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-answer" rows="3" aria-label="Answer"></textarea><div class="answer-preview editor-live-preview rendered-content"></div></section>
+          <section class="editor-field analysis-area" data-editor-section="analysis"><div class="editor-field-heading"><strong>Analysis</strong><div><span class="editor-check-badge">Local preview</span><button class="editor-formula-insert" type="button">Insert formula</button><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-analysis" rows="4" aria-label="Analysis"></textarea><div class="analysis-preview editor-live-preview rendered-content"></div></section>
+          <section class="editor-field solution-area" data-editor-section="solution"><div class="editor-field-heading"><strong>Solution</strong><div><span class="editor-check-badge">Structured preview</span><button class="editor-formula-insert" type="button">Insert formula</button><button class="editor-source-toggle" type="button">Edit source</button></div></div><textarea class="question-solution" rows="7" aria-label="Solution"></textarea><div class="solution-preview editor-live-preview rendered-content"></div></section>
         </div>
       </article>
     </template>
+    <dialog id="formula-dialog" class="formula-dialog" aria-labelledby="formula-dialog-title">
+      <form id="formula-form" class="formula-form" method="dialog">
+        <header class="formula-heading">
+          <h2 id="formula-dialog-title">Insert formula block</h2>
+          <label class="formula-mode">Layout
+            <select id="formula-mode" aria-label="Formula layout">
+              <option value="inline">Inline $...$</option>
+              <option value="display">Display $$...$$</option>
+            </select>
+          </label>
+        </header>
+        <label class="formula-source-label" for="formula-source">LaTeX source</label>
+        <textarea id="formula-source" class="formula-source" rows="4" spellcheck="false" aria-describedby="formula-error"></textarea>
+        <div id="formula-preview" class="formula-preview rendered-content" aria-live="polite" aria-label="Formula preview"></div>
+        <p id="formula-error" class="formula-error" role="status"></p>
+        <footer class="formula-actions">
+          <button type="button" class="action-btn secondary" id="formula-cancel">Cancel</button>
+          <button type="submit" class="action-btn primary" id="formula-apply">Insert formula</button>
+        </footer>
+      </form>
+    </dialog>
     <script src="/vendor/katex/katex.min.js"></script>
+    <script src="/formula.js"></script>
     <script src="/app.js"></script>
   </body>
 </html>

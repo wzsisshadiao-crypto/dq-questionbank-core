@@ -2,6 +2,32 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
+## [0.6.0] - 2026-08-20
+
+### Added
+
+- Structured formula-block editing in the public Editor Center: an insert and
+  edit dialog for inline `$...$` and display `$$...$$` math with the LaTeX
+  source shown alongside its live KaTeX preview.
+- Formula blocks in editor previews are now click-to-edit targets with
+  keyboard activation, so an existing formula opens directly in the dialog.
+- A dependency-free `formula.js` module that owns delimited-math parsing,
+  insertion, replacement, and canonical flattening for the Editor Center.
+- Focused JavaScript tests for insert, edit, boundary preservation, canonical
+  round-trip, and the malformed-source recovery path, wired into the Python
+  suite through an optional Node.js runner.
+
+### Changed
+
+- Display math now keeps its `$$` delimiters when canonical JSON is loaded
+  into editor fields, so nearby text edits preserve block boundaries and the
+  `metadata.display` flag survives the save round-trip.
+
+### Boundary
+
+- Private frontend code, private correction rules, and AI provider workflows
+  remain outside the public repository.
+
 ## [0.5.0] - 2026-08-20
 
 ### Added
