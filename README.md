@@ -5,7 +5,7 @@
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v0.5.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![Release](https://img.shields.io/badge/release-v0.6.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 
 
 > **Community fixture call: help us test every legal question format.**
@@ -15,13 +15,13 @@
 > **Start here:** [propose a fixture in the pinned community Issue #28](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/28) · [read the provenance and format guide](docs/test-fixture-contributions.md)
 >
 > Do not upload private data, production database extracts, credentials, or content whose redistribution rights are unclear. A public URL alone is not permission to copy.
-**Contribute in a few minutes**
+**Three tasks we recommend right now**
 
-- **No Python:** [share a multilingual math question](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/30)
-- **Know LaTeX:** [try one tricky formula](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/29)
-- **Know Word/DOCX:** [show one small edge case](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/33)
-- **Like testing:** [check an empty search state](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/31)
-- **Like frontend polish:** [make one Editor state clearer](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/32)
+- **No code (LaTeX only):** [share one complex formula missing a single component](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/43)
+- **15-minute fixture:** [add a blank-cell table fixture](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/37)
+- **Small coding task:** [check that an empty search feels helpful](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/31)
+
+New small tasks are released a few at a time. Browse every open [good first issue](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for docs, multilingual-math, and frontend options.
 
 You can start with a fixture or a small wording change; you do not need access to the private application.
 An open-source, local-first visual question bank workspace for LaTeX authoring,
@@ -365,6 +365,17 @@ Good places to start:
 Read [`CONTRIBUTING.md`](CONTRIBUTING.md) before opening an issue or pull request.
 Report vulnerabilities according to [`SECURITY.md`](SECURITY.md); do not place
 secrets, personal data, or copyrighted exam banks in public issues.
+
+## Community
+
+Recent contributions that made this project better:
+
+- @sashwatpuri documented a Word/DOCX field-label edge case ([#42](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/pull/42))
+- @Maukus delivered the formula-block editor workflow ([#41](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/pull/41)), the Word publishing envelope specification ([#34](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/pull/34)), and a synthetic tricky-LaTeX fixture ([#35](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/pull/35))
+- @TbuY-coder added the active editor-field indicator ([#25](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/pull/25)) and the contributor correction workflow guide ([#24](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/pull/24))
+- @rookepoole wrote the contributor-sized correction workflow documentation ([#21](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/pull/21))
+
+First pull requests get a fast review, a specific thank-you, and a suggested next task. Most open tasks need no Python at all - LaTeX, Word, and documentation skills are enough.
 
 ## License
 
