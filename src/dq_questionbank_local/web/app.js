@@ -84,42 +84,14 @@ function newQuestion(number) {
 }
 
 function contentText(content) {
-  if (typeof content === "string") return content;
-  if (!content || !Array.isArray(content.blocks)) return "";
-  return content.blocks.map((block) => {
-    if (block.type === "line_break") return "\n";
-    if (block.type === "math") return `$${block.latex || ""}$`;
-    if (block.type === "table") {
-      return (block.rows || []).map((row) => row.join(" ")).join(" ");
-    }
-    return block.text || block.latex || block.alt_text || "";
-  }).join("");
+  return globalThis.dqFormula.flattenContent(content);
 }
 
 function hasStructuredBlocks(content) {
   return Boolean(content?.blocks?.some((block) => !["text", "line_break"].includes(block.type)));
 }
 
-function isEscaped(text, index) {
-  let slashCount = 0;
-  for (let cursor = index - 1; cursor >= 0 && text[cursor] === "\\"; cursor -= 1) {
-    slashCount += 1;
-  }
-  return slashCount % 2 === 1;
-}
-
-function mathDelimiterAt(text, index) {
-  if (text[index] !== "$" || isEscaped(text, index)) return "";
-  if (index > 0 && text[index - 1] === "$" && !isEscaped(text, index - 1)) return "";
-  return text.startsWith("$$", index) ? "$$" : "$";
-}
-
-function findClosingDelimiter(text, start, delimiter) {
-  for (let cursor = start; cursor < text.length; cursor += 1) {
-    if (mathDelimiterAt(text, cursor) === delimiter) return cursor;
-  }
-  return -1;
-}
+const { mathDelimiterAt, findClosingDelimiter } = globalThis.dqFormula;
 
 function appendPlainText(container, text) {
   if (text) container.append(document.createTextNode(text.replaceAll("\\$", "$")));
@@ -146,7 +118,7 @@ function renderMathElement(element, latex, displayMode = false, fallback = "") {
   element.textContent = fallback || (displayMode ? `\\[${latex}\\]` : `\\(${latex}\\)`);
 }
 
-function renderTextWithMath(container, value) {
+function renderTextWithMath(container, value, annotate = false) {
   const text = String(value ?? "");
   let plainStart = 0;
   let cursor = 0;
@@ -166,6 +138,15 @@ function renderTextWithMath(container, value) {
     const math = document.createElement("span");
     const source = text.slice(cursor, closing + delimiter.length);
     renderMathElement(math, text.slice(latexStart, closing), delimiter === "$$", source);
+    if (annotate) {
+      math.classList.add("formula-block");
+      math.dataset.formulaStart = String(cursor);
+      math.dataset.formulaEnd = String(closing + delimiter.length);
+      math.setAttribute("role", "button");
+      math.setAttribute("tabindex", "0");
+      math.setAttribute("aria-label", delimiter === "$$" ? "Edit display formula" : "Edit inline formula");
+      math.title = "Edit formula";
+    }
     container.append(math);
     cursor = closing + delimiter.length;
     plainStart = cursor;
@@ -174,37 +155,7 @@ function renderTextWithMath(container, value) {
 }
 
 function parseEditableContent(value, language = "en") {
-  const text = String(value ?? "");
-  const blocks = [];
-  let plainStart = 0;
-  let cursor = 0;
-  const pushText = (raw) => {
-    if (raw) blocks.push({ type: "text", text: raw, language });
-  };
-  while (cursor < text.length) {
-    const delimiter = mathDelimiterAt(text, cursor);
-    if (!delimiter) {
-      cursor += 1;
-      continue;
-    }
-    const latexStart = cursor + delimiter.length;
-    const closing = findClosingDelimiter(text, latexStart, delimiter);
-    if (closing < 0 || !text.slice(latexStart, closing).trim()) {
-      cursor += delimiter.length;
-      continue;
-    }
-    pushText(text.slice(plainStart, cursor));
-    blocks.push({
-      type: "math",
-      latex: text.slice(latexStart, closing),
-      language,
-      metadata: delimiter === "$$" ? { display: true } : {},
-    });
-    cursor = closing + delimiter.length;
-    plainStart = cursor;
-  }
-  pushText(text.slice(plainStart));
-  return { blocks: blocks.length ? blocks : [{ type: "text", text, language }] };
+  return globalThis.dqFormula.parseEditableBlocks(value, language);
 }
 
 function renderTable(container, block) {
@@ -307,13 +258,19 @@ function makeChoiceRow(choice = {}, language = "en") {
   content.rows = 2;
   content.value = contentText(choice.content);
   content.setAttribute("aria-label", `Choice ${choice.id || "option"} content`);
+  const formula = document.createElement("button");
+  formula.className = "icon-button choice-formula-insert";
+  formula.type = "button";
+  formula.title = "Insert formula";
+  formula.setAttribute("aria-label", "Insert formula");
+  formula.textContent = "fx";
   const remove = document.createElement("button");
   remove.className = "icon-button remove-choice";
   remove.type = "button";
   remove.title = "Remove choice";
   remove.setAttribute("aria-label", "Remove choice");
   remove.textContent = "×";
-  row.append(id, content, remove);
+  row.append(id, content, formula, remove);
   return row;
 }
 
@@ -1004,7 +961,97 @@ function setSaveInFlight(inFlight) {
 
 function renderEditorTextPreview(container, value) {
   container.replaceChildren();
-  if (String(value || "").trim()) renderTextWithMath(container, value);
+  if (String(value || "").trim()) renderTextWithMath(container, value, true);
+}
+
+const formulaDialog = document.querySelector("#formula-dialog");
+const formulaModeControl = document.querySelector("#formula-mode");
+const formulaSourceInput = document.querySelector("#formula-source");
+const formulaPreviewPane = document.querySelector("#formula-preview");
+const formulaErrorLine = document.querySelector("#formula-error");
+const formulaApplyButton = document.querySelector("#formula-apply");
+const formulaDialogTitle = document.querySelector("#formula-dialog-title");
+let formulaTarget = null;
+
+function updateFormulaPreview() {
+  const latex = formulaSourceInput.value;
+  const display = formulaModeControl.value === "display";
+  formulaPreviewPane.replaceChildren();
+  formulaErrorLine.replaceChildren();
+  formulaDialog.classList.remove("has-error");
+  if (!latex.trim()) {
+    const hint = document.createElement("p");
+    hint.className = "formula-hint";
+    hint.textContent = "Type LaTeX source to preview the formula.";
+    formulaPreviewPane.append(hint);
+    return;
+  }
+  if (globalThis.katex) {
+    try {
+      const holder = document.createElement("span");
+      globalThis.katex.render(latex, holder, {
+        displayMode: display,
+        output: "htmlAndMathml",
+        strict: "warn",
+        throwOnError: true,
+        trust: false,
+      });
+      formulaPreviewPane.append(holder);
+      return;
+    } catch (error) {
+      // Fall through to the reviewable error state below.
+    }
+  }
+  formulaDialog.classList.add("has-error");
+  const raw = document.createElement("code");
+  raw.className = "formula-raw-source";
+  raw.textContent = latex;
+  formulaPreviewPane.append(raw);
+  const message = document.createElement("span");
+  message.textContent = "KaTeX cannot render this formula yet. The LaTeX source stays visible and is never erased.";
+  formulaErrorLine.append(message);
+}
+
+function openFormulaEditor(textarea, range = null) {
+  let target = range;
+  if (!target) {
+    const caret = textarea.selectionStart ?? textarea.value.length;
+    target = dqFormula.findFormulaRange(textarea.value, caret);
+  }
+  formulaTarget = { textarea, range: target };
+  formulaModeControl.value = target?.display ? "display" : "inline";
+  formulaSourceInput.value = target ? target.latex : "";
+  formulaApplyButton.textContent = target ? "Update formula" : "Insert formula";
+  formulaDialogTitle.textContent = target ? "Edit formula block" : "Insert formula block";
+  updateFormulaPreview();
+  formulaDialog.showModal();
+  formulaSourceInput.focus();
+  formulaSourceInput.select();
+}
+
+function applyFormulaEdit() {
+  if (!formulaTarget) return;
+  const { textarea, range } = formulaTarget;
+  const latex = formulaSourceInput.value.trim();
+  if (!latex) {
+    formulaErrorLine.replaceChildren();
+    const message = document.createElement("span");
+    message.textContent = "Enter the LaTeX source before applying.";
+    formulaErrorLine.append(message);
+    formulaSourceInput.focus();
+    return;
+  }
+  const display = formulaModeControl.value === "display";
+  const caret = textarea.selectionStart ?? textarea.value.length;
+  const result = range
+    ? dqFormula.replaceRange(textarea.value, range.start, range.end, latex, display)
+    : dqFormula.insertFormula(textarea.value, caret, latex, display);
+  textarea.value = result.text;
+  textarea.focus();
+  textarea.setSelectionRange(result.start, result.end);
+  textarea.dispatchEvent(new Event("input", { bubbles: true }));
+  formulaTarget = null;
+  formulaDialog.close();
 }
 
 function renderQualityCenter() {
@@ -1628,6 +1675,32 @@ editorForm.addEventListener("click", (event) => {
     setEditorDirty(true);
     return;
   }
+  const insertFormulaButton = event.target.closest(".editor-formula-insert, .choice-formula-insert");
+  if (insertFormulaButton) {
+    const scope = insertFormulaButton.closest(".choice-row") || insertFormulaButton.closest(".editor-field");
+    const textarea = scope?.querySelector("textarea");
+    if (textarea) {
+      const field = textarea.closest(".editor-field");
+      if (field && !field.classList.contains("source-open")) {
+        field.classList.add("source-open");
+        const fieldToggle = field.querySelector(".editor-source-toggle");
+        if (fieldToggle) fieldToggle.textContent = "Show preview";
+      }
+      openFormulaEditor(textarea, null);
+    }
+    return;
+  }
+  const formulaBlock = event.target.closest(".formula-block");
+  if (formulaBlock) {
+    const field = formulaBlock.closest(".editor-field");
+    const textarea = field?.querySelector("textarea");
+    if (!textarea) return;
+    const token = dqFormula
+      .parseDelimitedText(textarea.value)
+      .find((item) => item.type === "math" && item.start === Number(formulaBlock.dataset.formulaStart));
+    openFormulaEditor(textarea, token || null);
+    return;
+  }
   const toggle = event.target.closest(".editor-source-toggle");
   if (!toggle) return;
   const field = toggle.closest(".editor-field");
@@ -1635,6 +1708,23 @@ editorForm.addEventListener("click", (event) => {
   toggle.textContent = open ? "Show preview" : "Edit source";
   if (open) field.querySelector("textarea")?.focus();
 });
+editorForm.addEventListener("keydown", (event) => {
+  if (event.key !== "Enter" && event.key !== " ") return;
+  const formulaBlock = event.target.closest(".formula-block");
+  if (!formulaBlock) return;
+  event.preventDefault();
+  formulaBlock.click();
+});
+formulaDialog.addEventListener("close", () => {
+  formulaTarget = null;
+});
+document.querySelector("#formula-cancel").addEventListener("click", () => formulaDialog.close());
+document.querySelector("#formula-form").addEventListener("submit", (event) => {
+  event.preventDefault();
+  applyFormulaEdit();
+});
+formulaSourceInput.addEventListener("input", updateFormulaPreview);
+formulaModeControl.addEventListener("change", updateFormulaPreview);
 questionList.addEventListener("input", (event) => {
   setEditorDirty(true);
   const card = event.target.closest(".edit-question-card");

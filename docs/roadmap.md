@@ -17,11 +17,12 @@ Each batch must use synthetic data and preserve the public/private boundary.
 
 ## 2. Visual workspace
 
-**Status: operational public workspace available in v0.5.0**
+**Status: operational public workspace available in v0.6.0**
 
 - Local-first Question Bank with collection browsing and scoped filters
 - Structured text, math, table, choice, answer, and solution rendering
 - Focused selected-question Editor Center
+- Structured formula-block editing with live KaTeX preview and display metadata round-trip
 - Canonical JSON import, local save, and export
 - Paper assembly with deterministic ordering and canonical JSON export
 - Collection metrics and deterministic local quality checks with editor handoff
