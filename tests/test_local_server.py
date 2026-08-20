@@ -144,6 +144,7 @@ class LocalServerTests(unittest.TestCase):
         self.assertNotIn("innerHTML", script)
 
         static_checks = (
+            ("/formula.js", "javascript", b"parseDelimitedText"),
             ("/vendor/katex/katex.min.js", "javascript", b"KaTeX"),
             ("/vendor/katex/katex.min.css", "text/css", b".katex"),
             ("/vendor/katex/fonts/KaTeX_Main-Regular.woff2", "font/woff2", b"wOF2"),
