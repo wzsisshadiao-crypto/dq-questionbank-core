@@ -72,7 +72,7 @@
   "route": "ai_coding",
   "source": {
     "path": "coding-source.docx",
-    "sha256": "d9a8110c1d611393500426425f139c4274d61330921adb5ac0b48568726fd4f1"
+    "sha256": "08fc717a6ec2c773fb2fe1cb56b69471127ee75a53dca91ed05c648f5e29ed2c"
   },
   "title": "AI Coding intake from Word"
 }

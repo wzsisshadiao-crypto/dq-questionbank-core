@@ -4,14 +4,11 @@ from __future__ import annotations
 
 import hashlib
 import json
-import shutil
-import tempfile
 import zipfile
 from pathlib import Path
 from typing import Any
+from xml.sax.saxutils import escape
 
-from docx import Document
-from docx.oxml import parse_xml
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
@@ -42,39 +39,74 @@ def write_json(path: Path, payload: Any) -> None:
     )
 
 
-def normalize_docx(path: Path) -> None:
-    with tempfile.TemporaryDirectory() as temporary:
-        normalized = Path(temporary) / path.name
-        with zipfile.ZipFile(path, "r") as source, zipfile.ZipFile(
-            normalized, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9
-        ) as target:
-            for name in sorted(source.namelist()):
-                info = zipfile.ZipInfo(name, FIXED_ZIP_TIME)
-                info.compress_type = zipfile.ZIP_DEFLATED
-                info.external_attr = 0o600 << 16
-                target.writestr(info, source.read(name))
-        shutil.copyfile(normalized, path)
-
-
 def write_docx(path: Path, title: str, lines: list[str], *, omml: bool = False) -> None:
-    document = Document()
-    document.core_properties.title = title
-    document.core_properties.author = "DQ QuestionBank Core contributors"
-    document.core_properties.created = document.core_properties.modified
-    document.add_heading(title, level=1)
-    for line in lines:
-        document.add_paragraph(line)
+    paragraphs = [title, *lines]
+    body = "".join(
+        f'<w:p><w:r><w:t xml:space="preserve">{escape(line)}</w:t></w:r></w:p>'
+        for line in paragraphs
+    )
     if omml:
-        paragraph = document.add_paragraph("Native equation: ")
-        equation = parse_xml(
-            '<m:oMath xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" '
-            'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
-            '<m:r><m:t>x</m:t></m:r><m:r><m:t>^2</m:t></m:r>'
-            '<m:r><m:t>=9</m:t></m:r></m:oMath>'
+        body += (
+            '<w:p><w:r><w:t xml:space="preserve">Native equation: </w:t></w:r>'
+            '<m:oMath><m:r><m:t>x</m:t></m:r><m:r><m:t>^2</m:t></m:r>'
+            '<m:r><m:t>=9</m:t></m:r></m:oMath></w:p>'
         )
-        paragraph._p.append(equation)
-    document.save(path)
-    normalize_docx(path)
+    members = {
+        "[Content_Types].xml": (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+            '<Default Extension="rels" '
+            'ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+            '<Default Extension="xml" ContentType="application/xml"/>'
+            '<Override PartName="/word/document.xml" '
+            'ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+            '<Override PartName="/docProps/core.xml" '
+            'ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'
+            "</Types>"
+        ),
+        "_rels/.rels": (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+            '<Relationship Id="rId1" '
+            'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" '
+            'Target="word/document.xml"/>'
+            '<Relationship Id="rId2" '
+            'Type="http://schemas.openxmlformats.org/package/2006/relationships/'
+            'metadata/core-properties" '
+            'Target="docProps/core.xml"/>'
+            "</Relationships>"
+        ),
+        "docProps/core.xml": (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<cp:coreProperties '
+            'xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" '
+            'xmlns:dc="http://purl.org/dc/elements/1.1/" '
+            'xmlns:dcterms="http://purl.org/dc/terms/" '
+            'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+            f"<dc:title>{escape(title)}</dc:title>"
+            "<dc:creator>DQ QuestionBank Core contributors</dc:creator>"
+            '<dcterms:created xsi:type="dcterms:W3CDTF">2020-01-01T00:00:00Z</dcterms:created>'
+            '<dcterms:modified xsi:type="dcterms:W3CDTF">2020-01-01T00:00:00Z</dcterms:modified>'
+            "</cp:coreProperties>"
+        ),
+        "word/_rels/document.xml.rels": (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"/>'
+        ),
+        "word/document.xml": (
+            '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+            'xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math">'
+            f"<w:body>{body}<w:sectPr/></w:body></w:document>"
+        ),
+    }
+    with zipfile.ZipFile(path, "w", compression=zipfile.ZIP_STORED) as document:
+        for name in sorted(members):
+            info = zipfile.ZipInfo(name, FIXED_ZIP_TIME)
+            info.compress_type = zipfile.ZIP_STORED
+            info.create_system = 3
+            info.external_attr = 0o600 << 16
+            document.writestr(info, members[name].encode("utf-8"))
 
 
 def write_pdf(path: Path) -> None:

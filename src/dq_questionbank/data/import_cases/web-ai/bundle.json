@@ -77,7 +77,7 @@
   "route": "web_ai",
   "source": {
     "path": "browser-draft.docx",
-    "sha256": "e04f6843e80d77e745a4e2973b49636b6ed1fac499e780b70c3cb85d85cbc6ea"
+    "sha256": "fe1d482175e806555054271b1be0b463e262c2b11494d61fdb7ba1fb2ed4da9e"
   },
   "title": "Browser intake with bounded AI proposal"
 }

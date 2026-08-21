@@ -72,7 +72,7 @@
   "route": "ai_coding_exam_omml",
   "source": {
     "path": "synthetic-exam.docx",
-    "sha256": "5a056996937e1c8159d0d6a6f5833a6ec43166794a81b91300d1a4811258d917"
+    "sha256": "95f075bdefeb9c7b71ab83ce789081e72eb5dd8693b7cfe52ab318dfab578e84"
   },
   "title": "Exam-specific AI Coding intake with OMML"
 }
