@@ -27,6 +27,7 @@
     },
     "contentBlock": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["type"],
       "properties": {
         "type": { "enum": ["text", "math", "image", "table", "code", "line_break"] },
@@ -51,6 +52,7 @@
     },
     "answer": {
       "type": "object",
+      "additionalProperties": false,
       "required": ["kind", "value"],
       "properties": {
         "kind": { "type": "string", "minLength": 1 },

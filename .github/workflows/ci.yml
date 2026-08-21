@@ -24,6 +24,10 @@ jobs:
         run: python -m pip install -e ".[docx,dev]"
       - name: Lint
         run: python -m ruff check src tests scripts run.py
+      - name: Verify deterministic import cases
+        run: |
+          python scripts/build_import_cases.py
+          git diff --exit-code
       - name: Check stable public API manifest
         run: python scripts/check_public_api.py
       - name: Test

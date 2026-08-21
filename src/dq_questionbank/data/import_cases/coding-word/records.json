@@ -1,0 +1,15 @@
+{
+  "records": [
+    {
+      "answer": "x = -4 or x = 4",
+      "external_id": "coding-001",
+      "extraction_profile": "synthetic-word-v1",
+      "prompt": "Solve x^2 = 16 for real x.",
+      "solution": "Taking square roots gives two real values: -4 and 4.",
+      "subject": "Algebra",
+      "tags": [
+        "equations"
+      ]
+    }
+  ]
+}

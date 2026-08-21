@@ -1,0 +1,29 @@
+{
+  "answer": "C",
+  "capture_note": "Entered through a synthetic browser form.",
+  "choices": [
+    {
+      "id": "A",
+      "text": "10"
+    },
+    {
+      "id": "B",
+      "text": "11"
+    },
+    {
+      "id": "C",
+      "text": "12"
+    },
+    {
+      "id": "D",
+      "text": "13"
+    }
+  ],
+  "external_id": "manual-001",
+  "prompt": "What is 7 + 5?",
+  "solution": "Adding 7 and 5 gives 12.",
+  "subject": "Mathematics",
+  "tags": [
+    "arithmetic"
+  ]
+}

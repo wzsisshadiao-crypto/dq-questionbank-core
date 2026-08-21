@@ -1,0 +1,42 @@
+[
+  {
+    "has_ai_proposal": false,
+    "id": "manual-web",
+    "route": "manual_web",
+    "source_type": "json",
+    "summary": "A human-entered form passes through the same evidence and review boundary.",
+    "title": "Manual browser intake"
+  },
+  {
+    "has_ai_proposal": true,
+    "id": "web-ai",
+    "route": "web_ai",
+    "source_type": "docx",
+    "summary": "A browser draft receives only digest-bound, field-allowlisted AI suggestions.",
+    "title": "Browser intake with bounded AI proposal"
+  },
+  {
+    "has_ai_proposal": true,
+    "id": "coding-word",
+    "route": "ai_coding",
+    "source_type": "docx",
+    "summary": "Coding-assisted Word extraction uses a declarative map and human-reviewed proposal.",
+    "title": "AI Coding intake from Word"
+  },
+  {
+    "has_ai_proposal": true,
+    "id": "coding-pdf",
+    "route": "ai_coding_pdf",
+    "source_type": "pdf",
+    "summary": "A PDF worksheet keeps page evidence while extracted records enter review.",
+    "title": "AI Coding intake from PDF"
+  },
+  {
+    "has_ai_proposal": true,
+    "id": "coding-exam-omml",
+    "route": "ai_coding_exam_omml",
+    "source_type": "docx",
+    "summary": "An exam profile preserves native OMML evidence and demonstrates candidate rejection.",
+    "title": "Exam-specific AI Coding intake with OMML"
+  }
+]

@@ -1,0 +1,78 @@
+{
+  "allowed_proposal_fields": [
+    "subject",
+    "tags",
+    "difficulty",
+    "solution"
+  ],
+  "bundle_version": "1.0",
+  "decisions": {
+    "path": "decisions.json",
+    "sha256": "00bf8263bb7b8e6aa8a7d27508726e45db91e1b8fdf49ca4ec2d6b18aaccfc96"
+  },
+  "defaults": {
+    "language": "en",
+    "type": "short_answer"
+  },
+  "evidence": {
+    "path": "evidence.json",
+    "sha256": "c7e515942a2afa12937ae034dd8fa098cdca43d4d32bb4557a66f10fb8924d03"
+  },
+  "id": "coding-word",
+  "ignore_paths": [
+    "capture_note",
+    "extraction_profile"
+  ],
+  "mapping": {
+    "answer": {
+      "path": "answer",
+      "required": true,
+      "transform": "text_answer"
+    },
+    "id": {
+      "path": "external_id",
+      "required": true
+    },
+    "solution": {
+      "path": "solution",
+      "required": true,
+      "transform": "content"
+    },
+    "stem": {
+      "path": "prompt",
+      "required": true,
+      "transform": "content"
+    },
+    "subject": {
+      "path": "subject",
+      "required": true
+    },
+    "tags": {
+      "path": "tags",
+      "transform": "string_list"
+    }
+  },
+  "proposal": {
+    "path": "proposal.json",
+    "sha256": "4ad27a849351e17ccb6bb6e0327705009b0af6295e27632cda1c2eeece96a8c9"
+  },
+  "question_set": {
+    "id": "case-coding-word",
+    "language": "en",
+    "title": "AI Coding intake from Word"
+  },
+  "records": {
+    "path": "records.json",
+    "sha256": "1ee02a5ce83132abdc9d04d0650b547d1a10467c111daa5da5a17e6350a3e166"
+  },
+  "required_evidence_fields": [
+    "stem",
+    "answer"
+  ],
+  "route": "ai_coding",
+  "source": {
+    "path": "coding-source.docx",
+    "sha256": "d9a8110c1d611393500426425f139c4274d61330921adb5ac0b48568726fd4f1"
+  },
+  "title": "AI Coding intake from Word"
+}

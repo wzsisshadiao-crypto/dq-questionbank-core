@@ -4,6 +4,8 @@
     "FormatError",
     "FormatLoadError",
     "FormatWriteError",
+    "ImportBundleError",
+    "ImportCase",
     "PluginDiscoveryError",
     "QuestionBankError",
     "FormatRegistry",
@@ -37,7 +39,14 @@
     "schema_path",
     "validate_question",
     "validate_question_set",
-    "validate_with_schema"
+    "validate_with_schema",
+    "export_reviewed_questions",
+    "get_import_case",
+    "list_import_cases",
+    "prepare_import_bundle",
+    "prepare_import_case",
+    "review_import_session",
+    "run_import_case"
   ],
   "manifest_version": 1,
   "members": {
@@ -123,6 +132,14 @@
       "kind": "function",
       "signature": "(self, importer)"
     },
+    "ImportCase.from_dict": {
+      "kind": "function",
+      "signature": "(payload)"
+    },
+    "ImportCase.to_dict": {
+      "kind": "function",
+      "signature": "(self)"
+    },
     "Question.from_dict": {
       "kind": "function",
       "signature": "(data)"
@@ -206,6 +223,14 @@
       "kind": "class",
       "signature": "(*args)"
     },
+    "ImportBundleError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
+    "ImportCase": {
+      "kind": "class",
+      "signature": "(id, title, route, source_type, summary, has_ai_proposal=False)"
+    },
     "PLUGIN_ENTRY_POINT_GROUP": {
       "kind": "value",
       "value": "'dq_questionbank.plugins'"
@@ -278,6 +303,18 @@
       "kind": "function",
       "signature": "(registry, *, group='dq_questionbank.plugins')"
     },
+    "export_reviewed_questions": {
+      "kind": "function",
+      "signature": "(session)"
+    },
+    "get_import_case": {
+      "kind": "function",
+      "signature": "(case_id)"
+    },
+    "list_import_cases": {
+      "kind": "function",
+      "signature": "()"
+    },
     "list_migrations": {
       "kind": "function",
       "signature": "()"
@@ -290,9 +327,25 @@
       "kind": "function",
       "signature": "(payload, target_version)"
     },
+    "prepare_import_bundle": {
+      "kind": "function",
+      "signature": "(bundle)"
+    },
+    "prepare_import_case": {
+      "kind": "function",
+      "signature": "(case_id)"
+    },
     "register_migration": {
       "kind": "function",
       "signature": "(from_version, to_version)"
+    },
+    "review_import_session": {
+      "kind": "function",
+      "signature": "(session, decisions)"
+    },
+    "run_import_case": {
+      "kind": "function",
+      "signature": "(case_id, output_dir)"
     },
     "schema_path": {
       "kind": "function",

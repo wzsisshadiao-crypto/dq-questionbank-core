@@ -44,3 +44,7 @@ class SchemaVersionError(SchemaError):
 
 class PluginDiscoveryError(QuestionBankError):
     """An installed plugin could not be selected, loaded, or registered."""
+
+
+class ImportBundleError(QuestionBankError):
+    """An import bundle or candidate-session transition failed closed."""

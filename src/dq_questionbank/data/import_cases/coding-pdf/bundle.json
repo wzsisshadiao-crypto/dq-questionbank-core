@@ -1,0 +1,83 @@
+{
+  "allowed_proposal_fields": [
+    "subject",
+    "tags",
+    "difficulty",
+    "solution"
+  ],
+  "bundle_version": "1.0",
+  "decisions": {
+    "path": "decisions.json",
+    "sha256": "3f6b68a62e0797328db844b22ba0591461121ca1dcf5d8212c9b5308913aaaf2"
+  },
+  "defaults": {
+    "language": "en",
+    "type": "single_choice"
+  },
+  "evidence": {
+    "path": "evidence.json",
+    "sha256": "f1cdd1243ee5dbfca826f84b34966bd426f0a498a35c79bcd82544edf36651a9"
+  },
+  "id": "coding-pdf",
+  "ignore_paths": [
+    "capture_note",
+    "extraction_profile"
+  ],
+  "mapping": {
+    "answer": {
+      "path": "answer",
+      "required": true,
+      "transform": "choice_answer"
+    },
+    "choices": {
+      "path": "choices",
+      "required": true,
+      "transform": "choices"
+    },
+    "id": {
+      "path": "external_id",
+      "required": true
+    },
+    "solution": {
+      "path": "solution",
+      "required": true,
+      "transform": "content"
+    },
+    "stem": {
+      "path": "prompt",
+      "required": true,
+      "transform": "content"
+    },
+    "subject": {
+      "path": "subject",
+      "required": true
+    },
+    "tags": {
+      "path": "tags",
+      "transform": "string_list"
+    }
+  },
+  "proposal": {
+    "path": "proposal.json",
+    "sha256": "c846b090aa3241e7130b99c74bcc9bf9f43a5dc7020940a6e3638078045fa036"
+  },
+  "question_set": {
+    "id": "case-coding-pdf",
+    "language": "en",
+    "title": "AI Coding intake from PDF"
+  },
+  "records": {
+    "path": "records.json",
+    "sha256": "c1b03ad4d7818d48a4e12a2a70660dc256850b0775014ead93d37531ac91adc7"
+  },
+  "required_evidence_fields": [
+    "stem",
+    "answer"
+  ],
+  "route": "ai_coding_pdf",
+  "source": {
+    "path": "worksheet.pdf",
+    "sha256": "88d265df9744639f42a140f8fe4b094b3c3ba52d7570621f5e16a1d04760e565"
+  },
+  "title": "AI Coding intake from PDF"
+}

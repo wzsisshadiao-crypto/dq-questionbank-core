@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dq-questionbank-core"
-version = "0.6.0"
+version = "0.7.0"
 description = "Open infrastructure for structured educational questions."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -28,7 +28,13 @@ Issues = "https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues"
 
 [project.optional-dependencies]
 docx = ["python-docx>=1.1,<2"]
-dev = ["pytest>=8,<9", "ruff>=0.6,<1", "build>=1.2,<2", "jsonschema>=4.23,<5"]
+dev = [
+  "pytest>=8,<9",
+  "ruff>=0.6,<1",
+  "build>=1.2,<2",
+  "jsonschema>=4.23,<5",
+  "reportlab>=4,<5",
+]
 
 [project.scripts]
 dq = "dq_questionbank.cli:main"
@@ -46,7 +52,7 @@ license-files = ["LICENSE"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-dq_questionbank = ["web/*"]
+dq_questionbank = ["web/*", "data/import_cases/**/*"]
 dq_questionbank_local = [
   "web/*",
   "web/vendor/katex/*",

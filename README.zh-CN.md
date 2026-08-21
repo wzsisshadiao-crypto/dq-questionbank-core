@@ -30,6 +30,19 @@ python run.py
 - 离线 KaTeX 公式、结构化表格、答案与解析；
 - 原子文件存储和只读 SQLite 公共案例；
 - 插件发现、稳定公共 API 与兼容性 fixtures。
+- 五条可执行导入案例：人工网页、网页 AI、常规 AI Coding、PDF AI Coding、考研 OMML 定制；
+- 共用的来源证据、字段映射、AI 提案边界、人工接受/驳回与导出状态机。
+
+直接运行案例：
+
+```bash
+dq intake cases
+dq intake run coding-exam-omml -o workspace/coding-exam-omml
+```
+
+每条路径都会输出候选会话、复核会话和规范题集，不会自动写入题库。自定义来源只需在
+bundle 边界提供提取记录和证据，后续校验、AI 字段边界、人工复核和导出逻辑完全共用。
+详见[可复核导入案例](docs/import-cases.md)。
 
 ## 想参与贡献
 
@@ -56,7 +69,7 @@ python run.py
   → JSON / DOCX 导出
 ```
 
-成熟私有应用还包含更完整的 Word/PDF 流程、候选题核对、受约束的 AI 修正和 Word 宏发布。这些模块会在经过边界审查、合成 fixture 和兼容测试后逐步迁移到公开仓库；这里不把迁移目标描述成已经可下载的功能。
+公开仓库现已提供可执行的 Word/PDF/OMML 合成导入案例、候选题核对和受约束的 AI 提案边界。更完整的私有提取规则、生产题目、供应商接线与 Word 宏发布仍不会直接复制；后续能力继续通过合成 fixture 和公共契约迁移。
 
 ## 中文入口与英文规范
 

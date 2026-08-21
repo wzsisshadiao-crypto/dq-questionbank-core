@@ -23,6 +23,12 @@ FORBIDDEN_SUFFIXES = {".db", ".sqlite", ".sqlite3", ".log", ".pem", ".key", ".p1
 REVIEWED_DATABASE_FILES = {
     Path("src/dq_questionbank_local/data/synthetic-case.sqlite3"),
 }
+REVIEWED_IMPORT_CASE_FILES = {
+    Path("src/dq_questionbank/data/import_cases/web-ai/browser-draft.docx"): b"PK\x03\x04",
+    Path("src/dq_questionbank/data/import_cases/coding-word/coding-source.docx"): b"PK\x03\x04",
+    Path("src/dq_questionbank/data/import_cases/coding-pdf/worksheet.pdf"): b"%PDF-",
+    Path("src/dq_questionbank/data/import_cases/coding-exam-omml/synthetic-exam.docx"): b"PK\x03\x04",
+}
 MAX_REVIEWED_DATABASE_SIZE = 1024 * 1024
 MAX_FILE_SIZE = 5 * 1024 * 1024
 TEXT_SUFFIXES = {
@@ -37,6 +43,7 @@ TEXT_SUFFIXES = {
     ".js",
     ".txt",
     ".example",
+    ".in",
 }
 SECRET_RULES = {
     "OpenAI-style secret": re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b"),
@@ -68,6 +75,14 @@ def audit(root: Path = ROOT) -> list[tuple[Path, str]]:
                 findings.append((relative, "reviewed database exceeds 1 MiB limit"))
             elif path.read_bytes()[:16] != b"SQLite format 3\x00":
                 findings.append((relative, "reviewed database has an invalid SQLite header"))
+        if path.suffix.lower() in {".docx", ".pdf"}:
+            expected_header = REVIEWED_IMPORT_CASE_FILES.get(relative)
+            if expected_header is None:
+                findings.append((relative, "unreviewed binary document"))
+            elif path.is_symlink():
+                findings.append((relative, "reviewed import source must not be a symbolic link"))
+            elif not path.read_bytes().startswith(expected_header):
+                findings.append((relative, "reviewed import source has an invalid file header"))
         if path.stat().st_size > MAX_FILE_SIZE:
             findings.append((relative, "file exceeds 5 MiB review limit"))
         if path.suffix.lower() not in TEXT_SUFFIXES and path.name not in {"LICENSE", ".gitignore"}:

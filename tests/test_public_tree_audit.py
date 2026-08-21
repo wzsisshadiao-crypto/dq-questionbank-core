@@ -41,3 +41,11 @@ class PublicTreeAuditTests(unittest.TestCase):
                 "reviewed database has an invalid SQLite header",
                 {rule for _, rule in MODULE.audit(root)},
             )
+
+    def test_unreviewed_binary_document_is_rejected(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "questions.pdf").write_bytes(b"%PDF-synthetic")
+            self.assertIn(
+                "unreviewed binary document", {rule for _, rule in MODULE.audit(root)}
+            )

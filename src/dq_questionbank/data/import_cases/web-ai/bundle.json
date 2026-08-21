@@ -1,0 +1,83 @@
+{
+  "allowed_proposal_fields": [
+    "subject",
+    "tags",
+    "difficulty",
+    "solution"
+  ],
+  "bundle_version": "1.0",
+  "decisions": {
+    "path": "decisions.json",
+    "sha256": "799dec9dc43f896d26c5b56133534a95e20909eb3c95dfddc08dd103d31c5e13"
+  },
+  "defaults": {
+    "language": "en",
+    "type": "single_choice"
+  },
+  "evidence": {
+    "path": "evidence.json",
+    "sha256": "cefcb3273a5f14e377ca180b586492e4943d851b04abceea0e88712edadb77de"
+  },
+  "id": "web-ai",
+  "ignore_paths": [
+    "capture_note",
+    "extraction_profile"
+  ],
+  "mapping": {
+    "answer": {
+      "path": "answer",
+      "required": true,
+      "transform": "choice_answer"
+    },
+    "choices": {
+      "path": "choices",
+      "required": true,
+      "transform": "choices"
+    },
+    "id": {
+      "path": "external_id",
+      "required": true
+    },
+    "solution": {
+      "path": "solution",
+      "required": true,
+      "transform": "content"
+    },
+    "stem": {
+      "path": "prompt",
+      "required": true,
+      "transform": "content"
+    },
+    "subject": {
+      "path": "subject",
+      "required": true
+    },
+    "tags": {
+      "path": "tags",
+      "transform": "string_list"
+    }
+  },
+  "proposal": {
+    "path": "proposal.json",
+    "sha256": "ebd51d28a85a7e4e6d00e81dcbeb5d37d2af69b9e1733cfeedc1630c246bc7b9"
+  },
+  "question_set": {
+    "id": "case-web-ai",
+    "language": "en",
+    "title": "Browser intake with bounded AI proposal"
+  },
+  "records": {
+    "path": "records.json",
+    "sha256": "8fc9cd0d293c211a83a6f28bf3d126b705ef686ccd99c4c031f2edf7c322f0ad"
+  },
+  "required_evidence_fields": [
+    "stem",
+    "answer"
+  ],
+  "route": "web_ai",
+  "source": {
+    "path": "browser-draft.docx",
+    "sha256": "e04f6843e80d77e745a4e2973b49636b6ed1fac499e780b70c3cb85d85cbc6ea"
+  },
+  "title": "Browser intake with bounded AI proposal"
+}

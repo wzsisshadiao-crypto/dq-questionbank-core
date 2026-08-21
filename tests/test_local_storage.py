@@ -65,3 +65,14 @@ class LocalWorkspaceStorageTests(unittest.TestCase):
         payload["questions"].append(payload["questions"][0])
         with self.assertRaisesRegex(ValueError, "unique"):
             self.storage.save(payload)
+
+    def test_schema_validation_rejects_unknown_properties_and_typed_difficulty(self):
+        for key, value in (("private_extension", True), ("difficulty", "hard")):
+            with self.subTest(key=key):
+                payload = sample_payload()
+                if key == "difficulty":
+                    payload["questions"][0][key] = value
+                else:
+                    payload[key] = value
+                with self.assertRaises(ValueError):
+                    self.storage.save(payload)

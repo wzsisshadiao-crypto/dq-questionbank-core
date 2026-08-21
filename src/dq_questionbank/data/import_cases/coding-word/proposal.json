@@ -1,0 +1,12 @@
+{
+  "base_sha256": "50ef1c0e9861e600f1fe11c473cc424100829bd02e9c51c18fd9462d06b3788e",
+  "changes": [
+    {
+      "after": 0.35,
+      "before": null,
+      "field": "difficulty",
+      "question_id": "coding-001",
+      "reason": "Provide a bounded estimate for human review."
+    }
+  ]
+}

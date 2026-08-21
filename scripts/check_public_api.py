@@ -36,6 +36,7 @@ STABLE_MEMBERS = {
         "register_importer",
     ),
     "FilesystemStorageAdapter": ("load", "save"),
+    "ImportCase": ("from_dict", "to_dict"),
 }
 
 

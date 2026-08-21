@@ -1,0 +1,33 @@
+{
+  "records": [
+    {
+      "answer": "C",
+      "choices": [
+        {
+          "id": "A",
+          "text": "2"
+        },
+        {
+          "id": "B",
+          "text": "3"
+        },
+        {
+          "id": "C",
+          "text": "4"
+        },
+        {
+          "id": "D",
+          "text": "6"
+        }
+      ],
+      "external_id": "pdf-001",
+      "extraction_profile": "synthetic-pdf-v1",
+      "prompt": "If 3x + 2 = 14, what is x?",
+      "solution": "Subtract 2, then divide 12 by 3 to get x = 4.",
+      "subject": "Algebra",
+      "tags": [
+        "linear-equation"
+      ]
+    }
+  ]
+}

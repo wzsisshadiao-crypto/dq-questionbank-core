@@ -1,0 +1,78 @@
+{
+  "allowed_proposal_fields": [
+    "subject",
+    "tags",
+    "difficulty",
+    "solution"
+  ],
+  "bundle_version": "1.0",
+  "decisions": {
+    "path": "decisions.json",
+    "sha256": "8a56abd3476bc1335da123afeab33c8aaba3a78ad462965d42e85668f66a1c1c"
+  },
+  "defaults": {
+    "language": "en",
+    "type": "short_answer"
+  },
+  "evidence": {
+    "path": "evidence.json",
+    "sha256": "0bd485d08967bfc488a72e4e41cb01f175af992b4dc96306cc5999215c960ab8"
+  },
+  "id": "coding-exam-omml",
+  "ignore_paths": [
+    "capture_note",
+    "extraction_profile"
+  ],
+  "mapping": {
+    "answer": {
+      "path": "answer",
+      "required": true,
+      "transform": "text_answer"
+    },
+    "id": {
+      "path": "external_id",
+      "required": true
+    },
+    "solution": {
+      "path": "solution",
+      "required": true,
+      "transform": "content"
+    },
+    "stem": {
+      "path": "prompt",
+      "required": true,
+      "transform": "content"
+    },
+    "subject": {
+      "path": "subject",
+      "required": true
+    },
+    "tags": {
+      "path": "tags",
+      "transform": "string_list"
+    }
+  },
+  "proposal": {
+    "path": "proposal.json",
+    "sha256": "de9c7d32b5d4915d77bfd45f8e7809649ca7ad68167e26b5bef602ca6adfc0fc"
+  },
+  "question_set": {
+    "id": "case-coding-exam-omml",
+    "language": "en",
+    "title": "Exam-specific AI Coding intake with OMML"
+  },
+  "records": {
+    "path": "records.json",
+    "sha256": "1e135dd81b7f77cfc2b106def175eb44583843248c8616494e8399e7bafdd464"
+  },
+  "required_evidence_fields": [
+    "stem",
+    "answer"
+  ],
+  "route": "ai_coding_exam_omml",
+  "source": {
+    "path": "synthetic-exam.docx",
+    "sha256": "5a056996937e1c8159d0d6a6f5833a6ec43166794a81b91300d1a4811258d917"
+  },
+  "title": "Exam-specific AI Coding intake with OMML"
+}
