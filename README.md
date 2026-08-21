@@ -5,7 +5,7 @@
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v0.6.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![Release](https://img.shields.io/badge/release-v0.7.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 
 
 > **Community fixture call: help us test every legal question format.**
@@ -77,14 +77,14 @@ mandatory publication review.
 | Area | In this repository today | Mature application / public migration |
 |---|---|---|
 | Data model | Versioned canonical schema, validation, migrations, compatibility fixtures | Mapping more application fields without coupling to the production database |
-| Import | JSON, Markdown, LaTeX, and convention-based DOCX adapters | Process-based Word/PDF intake, source evidence, candidate sessions, bounded AI correction |
+| Import | JSON, Markdown, LaTeX, DOCX adapters; five review-first browser/AI Coding/Word/PDF/OMML cases with evidence and candidate sessions | Richer arbitrary-document adapters and visual candidate review |
 | Visual frontend | Question Bank, Import, Paper, Bank Data, Quality, and Editor workspaces with scoped search, offline math and table rendering, editor handoff, and canonical JSON exchange | Candidate Review Center, richer structured editing, image repair, revision-bound quality history, and Word-native Export Center |
 | Storage | Atomic filesystem adapter and read-only reviewed SQLite case adapter | User-selected local database adapters behind the same canonical boundary |
 | Export | JSON, Markdown, LaTeX, and conventional DOCX | High-fidelity Word macro/reference-box publishing workflow |
-| AI | Stable provider protocol; no bundled provider or credential | Provider-neutral candidate correction with explicit review and validation gates |
+| AI | Stable provider protocol plus digest-bound, field-allowlisted proposals; no bundled provider or credential | Provider adapters selected by downstream applications |
 
-The right column describes working product behavior that is being migrated; it
-is not a claim that those modules are already downloadable from this repository.
+The right column describes remaining working product behavior that is being
+migrated; only capabilities listed in the middle column ship in this release.
 
 ## The question lifecycle
 
@@ -172,6 +172,7 @@ database table or one AI service the definition of the question.
 - Source attribution, taxonomy references, tags, difficulty, hints, solutions, and extensions
 - Deterministic JSON, Markdown, and generated-LaTeX round trips
 - Convention-based DOCX import/export with image extraction
+- Five executable import cases behind one evidence, proposal, review, and export contract
 - `QuestionImporter`, `QuestionExporter`, `StorageAdapter`, and `AIProvider` interfaces
 - Reference local filesystem storage with atomic canonical JSON writes
 - English-language CLI, lightweight playground, and operational local question-bank workspace
@@ -215,6 +216,19 @@ Import a DOCX document:
 ```bash
 dq import exam.docx -o questions.json --assets-dir imported_assets
 ```
+
+Replay the five review-first import routes or adapt one as a custom bundle:
+
+```bash
+dq intake cases
+dq intake run coding-pdf -o workspace/coding-pdf
+dq intake prepare path/to/bundle -o candidate-session.json
+```
+
+The installed cases cover manual browser entry, browser AI, regular AI Coding,
+PDF AI Coding, and exam-specific AI Coding with native Word OMML. All routes use
+the same digest-bound evidence, proposal, validation, review, and export states;
+none persists automatically. See [Review-first import cases](docs/import-cases.md).
 
 Launch the lightweight, English-language canonical JSON playground:
 
@@ -285,6 +299,7 @@ Human document formats are not lossless containers for every source-specific fea
 - `exceptions.py`: catchable error hierarchy (`QuestionBankError` and subtypes)
 - `migration.py`: schema version migration framework
 - `interfaces.py`: extension contracts
+- `intake.py`: review-first bundle mapping, evidence, proposal, and state transitions
 - `storage.py`: reference local filesystem storage adapter
 - `registry.py`: built-in format discovery with protocol enforcement
 - `formats/`: JSON, Markdown, LaTeX, and DOCX adapters
@@ -320,7 +335,7 @@ python scripts/audit_public_tree.py
 python scripts/check_docs.py
 ```
 
-The test suite covers model serialization, schema conformance, validation, unsafe asset paths, CLI behavior, format round trips, DOCX conversion, composite questions, formulas, documentation links, English-only public interface, both browser applications, SQLite case safety, and the exception hierarchy.
+The test suite covers model serialization, schema conformance, validation, unsafe asset paths, CLI behavior, five import routes, digest and review boundaries, format round trips, DOCX conversion, composite questions, formulas, documentation links, English-only public interface, both browser applications, SQLite case safety, and the exception hierarchy.
 
 ## Compatibility
 

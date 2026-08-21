@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from dq_questionbank.models import (
     Answer,
@@ -13,7 +14,7 @@ from dq_questionbank.models import (
     Question,
     QuestionSet,
 )
-from dq_questionbank.validation import validate_question, validate_question_set
+from dq_questionbank.validation import validate_question, validate_question_set, validate_with_schema
 
 SAMPLE_PATH = Path(__file__).resolve().parents[1] / "examples" / "sample_questions.json"
 
@@ -74,3 +75,27 @@ class ValidationTests(unittest.TestCase):
             "q1", "short_answer", Content([ContentBlock(type="image", asset_id="missing")])
         )
         self.assertIn("unknown_asset", codes(validate_question(question)))
+
+    def test_non_numeric_difficulty_returns_an_issue(self):
+        question = Question("q1", "short_answer", Content.text("Example"), difficulty="hard")
+        self.assertIn("invalid_difficulty", codes(validate_question(question)))
+
+    def test_schema_rejects_unknown_top_level_property_without_optional_dependencies(self):
+        payload = json.loads(SAMPLE_PATH.read_text(encoding="utf-8"))
+        payload["private_extension"] = True
+        real_import = __import__
+
+        def import_without_jsonschema(name, *args, **kwargs):
+            if name == "jsonschema":
+                raise ImportError("simulated zero-install environment")
+            return real_import(name, *args, **kwargs)
+
+        with mock.patch("builtins.__import__", side_effect=import_without_jsonschema):
+            self.assertIn("schema", codes(validate_with_schema(payload)))
+
+    def test_schema_rejects_unknown_content_and_answer_fields(self):
+        payload = json.loads(SAMPLE_PATH.read_text(encoding="utf-8"))
+        payload["questions"][0]["stem"]["blocks"][0]["private_extension"] = True
+        payload["questions"][0]["answer"]["private_extension"] = True
+        issues = validate_with_schema(payload)
+        self.assertGreaterEqual(sum(issue.code == "schema" for issue in issues), 2)

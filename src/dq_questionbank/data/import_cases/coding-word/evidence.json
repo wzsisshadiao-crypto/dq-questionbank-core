@@ -1,0 +1,20 @@
+{
+  "evidence": [
+    {
+      "excerpt": "Solve x^2 = 16 for real x.",
+      "excerpt_sha256": "d0e7afd5a128cf67be58d7d35a1d11849e3d87277113c28f1aedd1de890a718e",
+      "field": "stem",
+      "locator": "paragraph 2",
+      "question_id": "coding-001",
+      "source_path": "coding-source.docx"
+    },
+    {
+      "excerpt": "x = -4 or x = 4",
+      "excerpt_sha256": "144d9c8e5b52fc660eb1ee5bd380ca56fe91589d158ba224dc975ee9094c1170",
+      "field": "answer",
+      "locator": "paragraph 3",
+      "question_id": "coding-001",
+      "source_path": "coding-source.docx"
+    }
+  ]
+}

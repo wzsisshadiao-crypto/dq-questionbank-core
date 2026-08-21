@@ -1,0 +1,12 @@
+{
+  "base_sha256": "c83a5b86dc96984de2ec1810b0eba2e10ade0dd907fb16d003c7304ec32e4d70",
+  "changes": [
+    {
+      "after": 0.25,
+      "before": null,
+      "field": "difficulty",
+      "question_id": "pdf-001",
+      "reason": "Flag an estimated difficulty without changing source-derived content."
+    }
+  ]
+}

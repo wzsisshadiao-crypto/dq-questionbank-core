@@ -1,0 +1,12 @@
+{
+  "base_sha256": "0482ef1fd208742474526f48c5100cdad8dd4535ebdef0445558185b40213a9c",
+  "changes": [
+    {
+      "after": 0.4,
+      "before": null,
+      "field": "difficulty",
+      "question_id": "exam-001",
+      "reason": "Attach an exam-profile estimate for explicit review."
+    }
+  ]
+}

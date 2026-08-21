@@ -1,0 +1,28 @@
+{
+  "records": [
+    {
+      "answer": "x = -3 or x = 3",
+      "external_id": "exam-001",
+      "extraction_profile": "synthetic-exam-omml-v1",
+      "prompt": "Solve x^2 = 9 over the real numbers.",
+      "solution": "Factor as (x - 3)(x + 3) = 0.",
+      "subject": "Mathematics",
+      "tags": [
+        "exam",
+        "omml"
+      ]
+    },
+    {
+      "answer": "not published",
+      "external_id": "exam-002",
+      "extraction_profile": "synthetic-exam-omml-v1",
+      "prompt": "Draft item reserved to demonstrate rejection.",
+      "solution": "This candidate is rejected by the bundled reviewer.",
+      "subject": "Mathematics",
+      "tags": [
+        "exam",
+        "review-demo"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "evidence": [
+    {
+      "excerpt": "Solve x^2 = 9 over the real numbers.",
+      "excerpt_sha256": "e7a443ed80fb18f3c820b8389ab630b3a3ecb541aff782057923ffb7aa64eb43",
+      "field": "stem",
+      "locator": "paragraph 3 + OMML",
+      "question_id": "exam-001",
+      "source_path": "synthetic-exam.docx"
+    },
+    {
+      "excerpt": "x^2 = 9; roots -3 and 3",
+      "excerpt_sha256": "84580429f7ae0524f1efc57de786bebcb0cb79895ff045651ca589ea4c6cd16f",
+      "field": "answer",
+      "locator": "native OMML equation",
+      "question_id": "exam-001",
+      "source_path": "synthetic-exam.docx"
+    },
+    {
+      "excerpt": "Draft item intentionally rejected during review.",
+      "excerpt_sha256": "9a9a99eeda71cac4b0dbcacc6c6c856955ca821ae6c7ed2cadcc4b9ca9a2dc60",
+      "field": "stem",
+      "locator": "paragraph 4",
+      "question_id": "exam-002",
+      "source_path": "synthetic-exam.docx"
+    },
+    {
+      "excerpt": "not published",
+      "excerpt_sha256": "30839efda73a5b59b55a31a731a1b2484efbbd0eb4427d50c68aa5e00582a318",
+      "field": "answer",
+      "locator": "review fixture",
+      "question_id": "exam-002",
+      "source_path": "synthetic-exam.docx"
+    }
+  ]
+}

@@ -29,6 +29,7 @@ secrets/
 *_assets/
 *.docx
 !examples/*.docx
+!src/dq_questionbank/data/import_cases/**/*.docx
 .DS_Store
 Thumbs.db
 .idea/

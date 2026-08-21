@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from pathlib import PurePosixPath, PureWindowsPath
+from typing import Any
 from urllib.parse import urlparse
 
 from .models import BLOCK_TYPES, QUESTION_TYPES, SCHEMA_VERSION, Content, Question, QuestionSet
@@ -104,12 +105,20 @@ def validate_question(question: Question, path: str = "question") -> list[Valida
         issues.append(
             ValidationIssue(f"{path}.stem", "empty_stem", "Question stem must not be empty.")
         )
-    if question.difficulty is not None and not 0 <= float(question.difficulty) <= 1:
-        issues.append(
-            ValidationIssue(
-                f"{path}.difficulty", "invalid_difficulty", "Difficulty must be between 0 and 1."
+    if question.difficulty is not None:
+        difficulty = question.difficulty
+        if (
+            isinstance(difficulty, bool)
+            or not isinstance(difficulty, (int, float))
+            or not 0 <= difficulty <= 1
+        ):
+            issues.append(
+                ValidationIssue(
+                    f"{path}.difficulty",
+                    "invalid_difficulty",
+                    "Difficulty must be a number between 0 and 1.",
+                )
             )
-        )
 
     asset_ids = [asset.id for asset in question.assets]
     if len(asset_ids) != len(set(asset_ids)):
@@ -218,8 +227,94 @@ def validate_question_set(question_set: QuestionSet) -> list[ValidationIssue]:
     for index, question in enumerate(question_set.questions):
         issues.extend(validate_question(question, f"questions[{index}]"))
     return issues
+
+
+def _matches_schema_type(value: Any, expected: str) -> bool:
+    if expected == "object":
+        return isinstance(value, dict)
+    if expected == "array":
+        return isinstance(value, list)
+    if expected == "string":
+        return isinstance(value, str)
+    if expected == "integer":
+        return isinstance(value, int) and not isinstance(value, bool)
+    if expected == "number":
+        return isinstance(value, (int, float)) and not isinstance(value, bool)
+    if expected == "boolean":
+        return isinstance(value, bool)
+    if expected == "null":
+        return value is None
+    return False
+
+
+def _resolve_local_ref(root: dict[str, Any], reference: str) -> dict[str, Any]:
+    if not reference.startswith("#/"):
+        raise ValueError(f"Unsupported non-local schema reference: {reference}")
+    current: Any = root
+    for part in reference[2:].split("/"):
+        key = part.replace("~1", "/").replace("~0", "~")
+        current = current[key]
+    if not isinstance(current, dict):
+        raise ValueError(f"Schema reference does not resolve to an object: {reference}")
+    return current
+
+
+def _stdlib_schema_issues(
+    value: Any,
+    schema: dict[str, Any],
+    root: dict[str, Any],
+    path: str = "$",
+) -> list[ValidationIssue]:
+    if "$ref" in schema:
+        return _stdlib_schema_issues(value, _resolve_local_ref(root, schema["$ref"]), root, path)
+    issues: list[ValidationIssue] = []
+    expected = schema.get("type")
+    if isinstance(expected, str) and not _matches_schema_type(value, expected):
+        return [ValidationIssue(path, "schema", f"Expected {expected}.", "error")]
+    if "const" in schema and value != schema["const"]:
+        issues.append(ValidationIssue(path, "schema", f"Expected {schema['const']!r}.", "error"))
+    if "enum" in schema and value not in schema["enum"]:
+        issues.append(ValidationIssue(path, "schema", "Value is not in the allowed set.", "error"))
+    if isinstance(value, dict):
+        properties = schema.get("properties", {})
+        required = schema.get("required", [])
+        for key in required:
+            if key not in value:
+                issues.append(
+                    ValidationIssue(f"{path}/{key}", "schema", "Required property is missing.", "error")
+                )
+        if schema.get("additionalProperties") is False:
+            for key in sorted(set(value) - set(properties)):
+                issues.append(
+                    ValidationIssue(f"{path}/{key}", "schema", "Unexpected property.", "error")
+                )
+        for key, child in properties.items():
+            if key in value:
+                issues.extend(_stdlib_schema_issues(value[key], child, root, f"{path}/{key}"))
+    if isinstance(value, list):
+        item_schema = schema.get("items")
+        if isinstance(item_schema, dict):
+            for index, item in enumerate(value):
+                issues.extend(_stdlib_schema_issues(item, item_schema, root, f"{path}/{index}"))
+        if schema.get("uniqueItems") is True:
+            encoded = [repr(item) for item in value]
+            if len(encoded) != len(set(encoded)):
+                issues.append(ValidationIssue(path, "schema", "Array items must be unique.", "error"))
+    if isinstance(value, str):
+        if isinstance(schema.get("minLength"), int) and len(value) < schema["minLength"]:
+            issues.append(ValidationIssue(path, "schema", "String is too short.", "error"))
+        if isinstance(schema.get("pattern"), str) and re.search(schema["pattern"], value) is None:
+            issues.append(ValidationIssue(path, "schema", "String does not match the pattern.", "error"))
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        if "minimum" in schema and value < schema["minimum"]:
+            issues.append(ValidationIssue(path, "schema", "Number is below the minimum.", "error"))
+        if "maximum" in schema and value > schema["maximum"]:
+            issues.append(ValidationIssue(path, "schema", "Number is above the maximum.", "error"))
+    return issues
+
+
 def validate_with_schema(
-    payload: dict,
+    payload: dict[str, Any],
     schema: dict | None = None,
 ) -> list[ValidationIssue]:
     """Run JSON Schema structural validation followed by semantic rules.
@@ -231,8 +326,11 @@ def validate_with_schema(
         try:
             from .schema import load_schema
             schema = load_schema()
-        except Exception:
-            pass
+        except Exception as exc:
+            issues.append(
+                ValidationIssue("$", "schema_unavailable", str(exc), "error")
+            )
+            schema = None
     if schema is not None:
         try:
             import jsonschema
@@ -247,7 +345,7 @@ def validate_with_schema(
                     )
                 )
         except ImportError:
-            pass
+            issues.extend(_stdlib_schema_issues(payload, schema, schema))
         except Exception as exc:
             issues.append(
                 ValidationIssue("$", "schema_error", str(exc), "error")

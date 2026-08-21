@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {
+      "candidate_sha256": "8ea7deb48b10481ad0b3ea9df51283f249577086a4eab588c665cd1c3331b298",
+      "decision": "accepted",
+      "note": "Synthetic case review completed.",
+      "question_id": "web-ai-001"
+    }
+  ]
+}

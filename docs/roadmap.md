@@ -30,13 +30,19 @@ Each batch must use synthetic data and preserve the public/private boundary.
 
 ## 3. Import and review
 
-**Status: planned as independent public contracts**
+**Status: executable public intake contract available in v0.7.0**
 
 - Source-evidence records and adaptable import profiles
 - Candidate sessions that separate extraction from persistence
 - Deterministic validation before bounded AI-assisted suggestions
 - Human Review Center acceptance and rejection states
 - No bundled provider, credential, private prompt, or automatic production write
+- Five installed synthetic routes: manual browser, browser AI, regular AI Coding,
+  PDF AI Coding, and exam-specific AI Coding with native OMML evidence
+- One CLI and bundle seam for prepare, digest-bound review, and canonical export
+
+Next: connect the candidate sessions to the visual Review Center without
+weakening the explicit persistence boundary.
 
 ## 4. Daily question work
 
@@ -77,4 +83,3 @@ Contributor-sized work is tracked through the
 [`editor`](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3Aeditor), and
 [`word`](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3Aword)
 labels.
-

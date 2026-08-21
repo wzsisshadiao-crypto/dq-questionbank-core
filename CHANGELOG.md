@@ -2,6 +2,33 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
+## [0.7.0] - 2026-08-22
+
+### Added
+
+- Add one public review-first intake layer and `dq intake` CLI for preparing,
+  reviewing, exporting, inspecting, and replaying import bundles.
+- Ship five deterministic synthetic cases for manual browser entry, browser AI,
+  regular AI Coding, PDF AI Coding, and exam-specific AI Coding with native OMML.
+- Bind bundle files, evidence excerpts, AI proposals, candidates, and review
+  decisions to SHA-256 digests; reject stale or out-of-scope transitions.
+- Add a deterministic case generator plus real DOCX, PDF, and OMML fixtures.
+
+### Changed
+
+- Make canonical validation fail closed at CLI and local persistence boundaries,
+  with a zero-install validator for the normative schema and explicit missing
+  schema diagnostics.
+- Reject unknown content-block and answer fields consistently in the JSON Schema
+  and Python model instead of silently losing accepted data.
+- Report incorrectly typed difficulty values as validation issues.
+
+### Security
+
+- Never persist intake candidates automatically; require an explicit decision for
+  every candidate and omit rejected candidates from export.
+- Extend the public-tree audit with exact binary fixture paths and signature checks.
+
 ## [0.6.0] - 2026-08-20
 
 ### Added

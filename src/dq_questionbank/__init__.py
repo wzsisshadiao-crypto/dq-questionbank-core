@@ -5,12 +5,23 @@ from .exceptions import (
     FormatError,
     FormatLoadError,
     FormatWriteError,
+    ImportBundleError,
     PluginDiscoveryError,
     QuestionBankError,
     SchemaError,
     SchemaNotFoundError,
     SchemaValidationError,
     SchemaVersionError,
+)
+from .intake import (
+    ImportCase,
+    export_reviewed_questions,
+    get_import_case,
+    list_import_cases,
+    prepare_import_bundle,
+    prepare_import_case,
+    review_import_session,
+    run_import_case,
 )
 from .interfaces import AIProvider, QuestionExporter, QuestionImporter, StorageAdapter
 from .migration import list_migrations, migrate, register_migration
@@ -41,6 +52,8 @@ __all__ = [
     "FormatError",
     "FormatLoadError",
     "FormatWriteError",
+    "ImportBundleError",
+    "ImportCase",
     "PluginDiscoveryError",
     "QuestionBankError",
     "FormatRegistry",
@@ -75,6 +88,13 @@ __all__ = [
     "validate_question",
     "validate_question_set",
     "validate_with_schema",
+    "export_reviewed_questions",
+    "get_import_case",
+    "list_import_cases",
+    "prepare_import_bundle",
+    "prepare_import_case",
+    "review_import_session",
+    "run_import_case",
 ]
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"

@@ -1,0 +1,16 @@
+{
+  "decisions": [
+    {
+      "candidate_sha256": "666fb4a1d859bf6ebc599ae6a28d1a430d8fe6a07d9331f1c147525574b455e9",
+      "decision": "accepted",
+      "note": "Synthetic case review completed.",
+      "question_id": "exam-001"
+    },
+    {
+      "candidate_sha256": "336d99e56ef00f36ebcc441423e1bd98ee69506c7fa5518dcf018344a9a781e9",
+      "decision": "rejected",
+      "note": "Synthetic case review completed.",
+      "question_id": "exam-002"
+    }
+  ]
+}

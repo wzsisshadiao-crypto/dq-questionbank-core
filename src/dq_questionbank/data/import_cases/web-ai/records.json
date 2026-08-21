@@ -1,0 +1,33 @@
+{
+  "records": [
+    {
+      "answer": "B",
+      "capture_note": "Drafted in the browser before a bounded AI proposal.",
+      "choices": [
+        {
+          "id": "A",
+          "text": "9"
+        },
+        {
+          "id": "B",
+          "text": "11"
+        },
+        {
+          "id": "C",
+          "text": "15"
+        },
+        {
+          "id": "D",
+          "text": "21"
+        }
+      ],
+      "external_id": "web-ai-001",
+      "prompt": "Which number is prime?",
+      "solution": "11 has no positive divisors other than 1 and itself.",
+      "subject": "Mathematics",
+      "tags": [
+        "numbers"
+      ]
+    }
+  ]
+}

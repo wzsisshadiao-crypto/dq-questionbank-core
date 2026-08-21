@@ -1,0 +1,5 @@
+include CHANGELOG.md CONTRIBUTING.md LICENSE OPEN_SOURCE_BOUNDARY.md README.md README.zh-CN.md
+recursive-include docs *.json *.md *.png
+recursive-include schema *.json
+recursive-include scripts *.py
+recursive-include tests *.js *.json *.md *.py *.tex

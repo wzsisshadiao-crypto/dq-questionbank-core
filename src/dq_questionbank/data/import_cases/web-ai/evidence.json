@@ -1,0 +1,20 @@
+{
+  "evidence": [
+    {
+      "excerpt": "Which number is prime?",
+      "excerpt_sha256": "642e94f702e499770fc513a52a9042bd804aa2f8feacebbeda7e1f126ced243b",
+      "field": "stem",
+      "locator": "paragraph 2",
+      "question_id": "web-ai-001",
+      "source_path": "browser-draft.docx"
+    },
+    {
+      "excerpt": "11 (choice B)",
+      "excerpt_sha256": "764044c14e245e6634f618542c5b64a8986f4fcf2616d163dbe81f9812f48dbe",
+      "field": "answer",
+      "locator": "paragraph 4",
+      "question_id": "web-ai-001",
+      "source_path": "browser-draft.docx"
+    }
+  ]
+}

@@ -18,6 +18,12 @@ QUESTION_TYPES = {
 BLOCK_TYPES = {"text", "math", "image", "table", "code", "line_break"}
 
 
+def _reject_unknown(data: dict[str, Any], allowed: set[str], label: str) -> None:
+    unknown = sorted(set(data) - allowed)
+    if unknown:
+        raise ValueError(f"Unknown {label} field(s): {', '.join(unknown)}.")
+
+
 def _copy_mapping(value: Any) -> dict[str, Any]:
     return dict(value) if isinstance(value, dict) else {}
 
@@ -35,6 +41,11 @@ class ContentBlock:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]) -> ContentBlock:
+        _reject_unknown(
+            data,
+            {"type", "text", "latex", "asset_id", "alt_text", "language", "rows", "metadata"},
+            "content block",
+        )
         return cls(
             type=str(data.get("type", "text")),
             text=data.get("text"),
@@ -149,6 +160,7 @@ class Answer:
             return None
         if not isinstance(data, dict):
             return cls(kind="text", value=data)
+        _reject_unknown(data, {"kind", "value", "alternatives", "metadata"}, "answer")
         return cls(
             kind=str(data.get("kind", "text")),
             value=data.get("value"),

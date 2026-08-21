@@ -1,0 +1,17 @@
+{
+  "base_sha256": "9bbf076cc4f3ad3ec43e4b183c37c4b693fcc01ea7c7ecc85f947e14e289daff",
+  "changes": [
+    {
+      "after": [
+        "numbers",
+        "prime-numbers"
+      ],
+      "before": [
+        "numbers"
+      ],
+      "field": "tags",
+      "question_id": "web-ai-001",
+      "reason": "Add a narrower, reviewable taxonomy hint."
+    }
+  ]
+}

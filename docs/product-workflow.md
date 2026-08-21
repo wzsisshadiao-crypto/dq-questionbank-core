@@ -96,8 +96,10 @@ from a solution. Keeping evidence available makes later repair reviewable.
 integrity validation, deterministic generated-format round trips, and a
 convention-based DOCX adapter.
 
-**Migration target:** richer Word/PDF extraction profiles and candidate-session
-evidence, extracted with synthetic fixtures and without private document rules.
+**Public now:** five installed synthetic intake routes share declarative field
+mapping, file and excerpt digests, source locators, unmapped-field diagnostics,
+and candidate sessions. Richer arbitrary-document extraction remains an adapter
+responsibility rather than a promise that one parser understands every layout.
 
 ### 3. Normalize into a canonical candidate
 
@@ -132,7 +134,9 @@ The intended flow is:
 
 The public project contains the provider-neutral `AIProvider` protocol but no
 built-in provider, credential, private prompt, or automatic persistence. The
-candidate and safety workflow is a **migration target**.
+candidate safety workflow is public in v0.7: proposals are bound to the mapped
+candidate digest, limited to manifest-allowed fields, checked against exact
+before values, validated, and always sent to explicit human review.
 
 ### 5. Review in context and assemble a paper
 
@@ -147,9 +151,9 @@ filter by subject or source and collect related questions, including a set from
 the same source, into a paper. This avoids the common detour of approving
 questions in one tool and rebuilding the paper manually in another.
 
-The full Review Center and paper workflow are **migration targets**. The public
-visual workspace already provides the local application shell, synthetic case,
-question list, and editor foundation needed for their extraction.
+The visual Review Center and paper integration remain **migration targets**.
+The public CLI now implements the underlying accepted/rejected candidate state,
+stale-decision protection, and reviewed export contract used by all five cases.
 
 ### 6. Correct with the Editor Center
 
@@ -315,8 +319,8 @@ and independently reviewable.
 2. **Visual local workspace, first batch complete:** one-command launcher,
    question list/editor, canonical JSON import/save/export, read-only SQLite case
    adapter, and a synthetic database case.
-3. **Import and review:** generic process-based import sessions, source evidence,
-   bounded enrichment hooks, candidate review, and adapted-pipeline examples.
+3. **Import and review, CLI contract complete:** generic import sessions, source
+   evidence, bounded proposals, candidate review, and five adapted-pipeline cases.
 4. **Daily question work:** fuller editor, generic quality findings, recheck loop,
    and paper assembly over canonical storage.
 5. **Word publishing:** reviewed loopback macro bridge, refreshable question

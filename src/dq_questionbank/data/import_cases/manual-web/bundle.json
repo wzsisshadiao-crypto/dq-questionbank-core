@@ -1,0 +1,79 @@
+{
+  "allowed_proposal_fields": [
+    "subject",
+    "tags",
+    "difficulty",
+    "solution"
+  ],
+  "bundle_version": "1.0",
+  "decisions": {
+    "path": "decisions.json",
+    "sha256": "4a11a93b76d6c3fe69016f37c54bf4b632d7f8a3979949781ab6cf8c951943d7"
+  },
+  "defaults": {
+    "language": "en",
+    "type": "single_choice"
+  },
+  "evidence": {
+    "path": "evidence.json",
+    "sha256": "22109b5815f4cd3776347061fa67a6d9d64bdff1eb7605927ecbadf39dcd59b8"
+  },
+  "id": "manual-web",
+  "ignore_paths": [
+    "capture_note",
+    "extraction_profile"
+  ],
+  "mapping": {
+    "answer": {
+      "path": "answer",
+      "required": true,
+      "transform": "choice_answer"
+    },
+    "choices": {
+      "path": "choices",
+      "required": true,
+      "transform": "choices"
+    },
+    "id": {
+      "path": "external_id",
+      "required": true
+    },
+    "solution": {
+      "path": "solution",
+      "required": true,
+      "transform": "content"
+    },
+    "stem": {
+      "path": "prompt",
+      "required": true,
+      "transform": "content"
+    },
+    "subject": {
+      "path": "subject",
+      "required": true
+    },
+    "tags": {
+      "path": "tags",
+      "transform": "string_list"
+    }
+  },
+  "question_set": {
+    "id": "case-manual-web",
+    "language": "en",
+    "title": "Manual browser intake"
+  },
+  "records": {
+    "path": "records.json",
+    "sha256": "e1edab2c5e0739ed0af526116f6ad856e0a6bb731a59df2fd1b76ea8f872d920"
+  },
+  "required_evidence_fields": [
+    "stem",
+    "answer"
+  ],
+  "route": "manual_web",
+  "source": {
+    "path": "form-submission.json",
+    "sha256": "73dc04629feb5f1d3e481f020dc1fd98bb6c4c500ceb1ef7234ed4ba6987d803"
+  },
+  "title": "Manual browser intake"
+}

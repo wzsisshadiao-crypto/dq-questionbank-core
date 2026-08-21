@@ -20,7 +20,7 @@ def sample_payload():
                 "id": "q-1",
                 "type": "short_answer",
                 "language": "en",
-                "stem": "Example",
+                "stem": {"blocks": [{"type": "text", "text": "Example"}]},
             }
         ],
     }

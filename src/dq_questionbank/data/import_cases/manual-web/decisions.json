@@ -1,0 +1,10 @@
+{
+  "decisions": [
+    {
+      "candidate_sha256": "a67e45db662921e4051b7032240ed16c5294173168f5993aaeff293556e2cb5f",
+      "decision": "accepted",
+      "note": "Synthetic case review completed.",
+      "question_id": "manual-001"
+    }
+  ]
+}
