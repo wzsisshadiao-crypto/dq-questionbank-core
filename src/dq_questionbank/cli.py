@@ -24,8 +24,16 @@ from .intake import (
     review_import_session,
     run_import_case,
 )
+from .models import QuestionSet
 from .registry import default_registry
 from .validation import validate_question_set, validate_with_schema
+from .word_publishing import (
+    WordPublishingBridge,
+    WordPublishingError,
+    build_envelope,
+    export_word_publishing,
+    word_macro_source,
+)
 
 _FORMAT_CHOICES = ("json", "markdown", "latex", "docx")
 
@@ -140,6 +148,17 @@ def build_parser():
     c = intake_commands.add_parser("export", help="Export accepted reviewed candidates.")
     c.add_argument("session", type=Path)
     c.add_argument("-o", "--output", type=Path, required=True)
+    word = commands.add_parser("word-publish", help="Export managed Word reference blocks.")
+    word.add_argument("source", type=Path, help="Canonical question-set JSON.")
+    word.add_argument("-o", "--output", type=Path, required=True, help="Target DOCX path.")
+    word.add_argument("--envelope", type=Path, help="Also write the publishing envelope JSON.")
+    word.add_argument("--mode", choices=("compose", "final"), default="compose")
+    word = commands.add_parser("word-serve", help="Serve reviewed questions to the Word macro.")
+    word.add_argument("source", type=Path, help="Canonical question-set JSON.")
+    word.add_argument("--host", default="127.0.0.1", choices=("127.0.0.1", "localhost", "::1"))
+    word.add_argument("--port", default=8766, type=int)
+    word = commands.add_parser("word-macro", help="Export the bundled Word VBA module.")
+    word.add_argument("-o", "--output", type=Path, required=True)
     return parser
 
 
@@ -192,6 +211,61 @@ def main(argv=None):
             return 2
         except (OSError, TypeError, ValueError, json.JSONDecodeError) as exc:
             print(f"Intake error: {exc}", file=sys.stderr)
+            return 2
+
+    if args.command == "word-publish":
+        if not args.source.is_file():
+            print(f"Input file not found: {args.source}", file=sys.stderr)
+            return 2
+        try:
+            question_set = QuestionSet.from_dict(_read_json(args.source))
+            envelope = build_envelope(question_set, mode=args.mode)
+            export_word_publishing(question_set, args.output, envelope)
+            if args.envelope:
+                _write_json(args.envelope, envelope)
+            print(
+                f"Wrote managed Word document with {len(envelope['blocks'])} "
+                f"block(s) to {args.output}."
+            )
+            return 0
+        except (
+            OSError,
+            TypeError,
+            ValueError,
+            RuntimeError,
+            WordPublishingError,
+            json.JSONDecodeError,
+        ) as exc:
+            print(f"Word publishing error: {exc}", file=sys.stderr)
+            return 2
+
+    if args.command == "word-serve":
+        if not args.source.is_file():
+            print(f"Input file not found: {args.source}", file=sys.stderr)
+            return 2
+        try:
+            question_set = QuestionSet.from_dict(_read_json(args.source))
+            bridge = WordPublishingBridge(question_set, args.host, args.port)
+            print(f"Word publishing bridge listening at {bridge.origin}. Press Ctrl+C to stop.")
+            try:
+                bridge.server.serve_forever()
+            except KeyboardInterrupt:
+                pass
+            finally:
+                bridge.server.server_close()
+            return 0
+        except (OSError, TypeError, ValueError, WordPublishingError, json.JSONDecodeError) as exc:
+            print(f"Word bridge error: {exc}", file=sys.stderr)
+            return 2
+
+    if args.command == "word-macro":
+        try:
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(word_macro_source(), encoding="utf-8")
+            print(f"Wrote Word macro template to {args.output}.")
+            return 0
+        except OSError as exc:
+            print(f"Word macro export error: {exc}", file=sys.stderr)
             return 2
 
     if not args.source.is_file():

@@ -60,13 +60,19 @@ claim those contracts.
 
 ## 5. Word publishing
 
-**Status: planned; conventional DOCX remains available today**
+**Status: provider-neutral workflow available in v0.8.0**
 
 - Loopback-only Word integration contract
 - Refreshable question reference blocks
 - Native Word math, images, tables, option layouts, and answer sections
 - Visible composition borders that can be hidden for final output
 - Explicit compatibility and rollback behavior
+
+The release includes managed `w:sdt` export, deterministic revision
+fingerprints, stale detection, single-block rollback, a loopback-only JSON
+bridge, a bundled VBA template, and compose/final modes. Native Word integration
+is tested statically and at the Open XML boundary in CI; community Windows/Word
+fixtures continue to expand the compatibility matrix.
 
 ## 1.0 readiness
 

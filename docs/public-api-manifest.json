@@ -46,7 +46,19 @@
     "prepare_import_bundle",
     "prepare_import_case",
     "review_import_session",
-    "run_import_case"
+    "run_import_case",
+    "ENVELOPE_VERSION",
+    "BlockResult",
+    "WordPublisher",
+    "WordPublishingBridge",
+    "WordPublishingError",
+    "build_envelope",
+    "canonical_json",
+    "export_word_publishing",
+    "extract_managed_blocks",
+    "question_fingerprint",
+    "validate_envelope",
+    "word_macro_source"
   ],
   "manifest_version": 1,
   "members": {
@@ -187,6 +199,10 @@
       "kind": "class",
       "signature": "(id, kind, uri, media_type=None, sha256=None, width=None, height=None, metadata=<factory>)"
     },
+    "BlockResult": {
+      "kind": "class",
+      "signature": "(block_id, status, content=None, reason=None)"
+    },
     "Choice": {
       "kind": "class",
       "signature": "(id, content, metadata=<factory>)"
@@ -198,6 +214,10 @@
     "ContentBlock": {
       "kind": "class",
       "signature": "(type='text', text=None, latex=None, asset_id=None, alt_text=None, language=None, rows=None, metadata=<factory>)"
+    },
+    "ENVELOPE_VERSION": {
+      "kind": "value",
+      "value": "'0.2'"
     },
     "FilesystemStorageAdapter": {
       "kind": "class",
@@ -291,9 +311,29 @@
       "kind": "class",
       "signature": "(path, code, message, severity='error')"
     },
+    "WordPublisher": {
+      "kind": "class",
+      "signature": "(question_set)"
+    },
+    "WordPublishingBridge": {
+      "kind": "class",
+      "signature": "(question_set, host='127.0.0.1', port=8766)"
+    },
+    "WordPublishingError": {
+      "kind": "class",
+      "signature": "(*args)"
+    },
     "available_plugins": {
       "kind": "function",
       "signature": "(*, group='dq_questionbank.plugins')"
+    },
+    "build_envelope": {
+      "kind": "function",
+      "signature": "(question_set, question_ids=None, *, document_id=None, service_origin='http://127.0.0.1:8766', mode='compose', roles=None)"
+    },
+    "canonical_json": {
+      "kind": "function",
+      "signature": "(value)"
     },
     "default_registry": {
       "kind": "function",
@@ -306,6 +346,14 @@
     "export_reviewed_questions": {
       "kind": "function",
       "signature": "(session)"
+    },
+    "export_word_publishing": {
+      "kind": "function",
+      "signature": "(question_set, target, envelope=None)"
+    },
+    "extract_managed_blocks": {
+      "kind": "function",
+      "signature": "(source)"
     },
     "get_import_case": {
       "kind": "function",
@@ -335,6 +383,10 @@
       "kind": "function",
       "signature": "(case_id)"
     },
+    "question_fingerprint": {
+      "kind": "function",
+      "signature": "(question)"
+    },
     "register_migration": {
       "kind": "function",
       "signature": "(from_version, to_version)"
@@ -351,6 +403,10 @@
       "kind": "function",
       "signature": "()"
     },
+    "validate_envelope": {
+      "kind": "function",
+      "signature": "(envelope)"
+    },
     "validate_question": {
       "kind": "function",
       "signature": "(question, path='question')"
@@ -362,6 +418,10 @@
     "validate_with_schema": {
       "kind": "function",
       "signature": "(payload, schema=None)"
+    },
+    "word_macro_source": {
+      "kind": "function",
+      "signature": "()"
     }
   }
 }

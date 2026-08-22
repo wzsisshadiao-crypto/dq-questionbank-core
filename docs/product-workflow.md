@@ -243,9 +243,11 @@ its rendered copy. The document stays editable, formulas remain Word-native,
 and the author can refresh managed question blocks while retaining the
 surrounding paper layout.
 
-The generic macro/helper contract is a **migration target**. Public extraction
-must be loopback-only, must not expose a private database schema, and must use
-synthetic questions in all tests and examples.
+The provider-neutral macro/helper contract is **available in v0.8.0**. It is
+loopback-only, reads reviewed canonical JSON rather than a private database
+schema, and uses synthetic questions in all tests and examples. Application-
+specific render adapters and broader native-OMML compatibility remain separate
+from this public contract; see [Word Publishing](word-publishing-envelope.md).
 
 ## Designing a custom import pipeline
 
