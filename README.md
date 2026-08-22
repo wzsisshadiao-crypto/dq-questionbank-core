@@ -48,29 +48,52 @@ points without creating a second API or schema specification.
 
 ## Visual quick start
 
-Python 3.10 or newer is the only requirement for a downloaded source archive:
+The fastest way to try the visual workspace and make your first contribution is:
+
+1. Clone the repository and check it out.
 
 ```bash
-python run.py
+   git clone https://github.com/wzsisshadiao-crypto/dq-questionbank-core.git
+   cd dq-questionbank-core
 ```
 
-The command starts a loopback-only server, creates an ignored local workspace,
-and opens `http://127.0.0.1:8766`. Choose **Open public case** to enter the
-Question Bank with ten original synthetic questions. The interface provides
-collection and question navigation, year, subject, type, and field-scoped
-search filters, structured tables, offline KaTeX math, in-card answer review,
-a focused Editor Center, paper assembly, bank metrics, and deterministic local
-quality checks. Import, edit, save, quality, paper, and export operations stay
-on the local computer.
-
-To offer another independently reviewed case:
+2. Use a supported Python version — 3.10, 3.11, or 3.12.
 
 ```bash
-python run.py --case-database ./downloaded-case.sqlite3
+   python --version
 ```
 
-See [`docs/database-case.md`](docs/database-case.md) for the supported schema and
-mandatory publication review.
+   If this reports 3.9 or earlier (or Python is missing), install a supported version before continuing.
+
+3. Start the local visual workspace.
+
+```bash
+   python run.py
+```
+
+   The command starts a loopback-only server, creates an ignored local workspace, and opens `http://127.0.0.1:8766`.
+
+4. Open the bundled public case.
+
+   Choose **Open public case** to enter the Question Bank with ten original synthetic questions. The interface provides collection and question navigation, year, subject, type, and field-scoped search filters, structured tables, offline KaTeX math, in-card answer review, a focused Editor Center, paper assembly, bank metrics, and deterministic local quality checks. Import, edit, save, quality, paper, and export operations stay on the local computer. Do not use private or production data.
+
+   See [`docs/database-case.md`](docs/database-case.md) for the supported schema and mandatory publication review.
+
+5. Run one focused test.
+
+```bash
+   python -m unittest tests.test_local_workspace -v
+```
+
+6. Find your next contribution.
+
+   Read [`CONTRIBUTING.md`](CONTRIBUTING.md), then browse the open [`good first issue`](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) list. Current small tasks include:
+
+   * [Issue #43](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/43) — add a complex LaTeX formula (no code)
+   * [Issue #37](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/37) — add a blank-cell table fixture (15 min)
+   * [Issue #31](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/31) — check that an empty search feels helpful (small coding task)
+
+All examples in this quick start use the bundled synthetic case. The repository does not require access to the private application or production data.
 
 ## What is available now
 
