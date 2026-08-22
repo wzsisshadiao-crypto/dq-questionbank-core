@@ -88,3 +88,24 @@ class PluginDiscoveryTests(unittest.TestCase):
             registry = default_registry()
         self.assertIn("json", registry.import_formats)
         discover.assert_not_called()
+
+
+class PluginDemoExampleTests(unittest.TestCase):
+    def test_demo_example_lists_without_loading_and_pins_its_output(self):
+        import subprocess
+        import sys
+
+        example = (
+            Path(__file__).resolve().parents[1] / "examples" / "plugin_discovery_demo.py"
+        )
+        completed = subprocess.run(
+            [sys.executable, str(example)],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(0, completed.returncode, completed.stderr)
+        self.assertIn("entry-point group: dq_questionbank.plugins", completed.stdout)
+        self.assertIn("listing only, nothing loaded): 0", completed.stdout)
+        self.assertIn("listing is read-only; pass --opt-in-load", completed.stdout)
