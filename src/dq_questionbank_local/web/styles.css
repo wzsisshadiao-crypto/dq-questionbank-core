@@ -290,6 +290,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--blue); outline: 
 .work-list { display: grid; }
 .work-panel > .work-list { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
 .work-row { align-items: center; background: var(--surface); border-bottom: 1px solid var(--soft-line); display: grid; gap: 10px; grid-template-columns: minmax(0, 1fr) auto; min-width: 0; padding: 9px 11px; }
+.work-row[tabindex]:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
 .work-row:last-child { border-bottom: 0; }
 .work-row div:first-child { min-width: 0; }
 .work-row strong, .work-row p, .work-row span { display: block; }
