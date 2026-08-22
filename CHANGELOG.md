@@ -2,6 +2,23 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
+## [0.13.0] - 2026-08-23
+
+### Added
+
+- Review Center rows are keyboard-friendly: each row is focusable with a
+  descriptive aria-label, Enter or Space activates the mark-reviewed/undo
+  action, child-button activation stays native (no double firing), and a
+  visible focus outline works in both themes (#16).
+- Table-and-math rendering regression fixture with focused DOM-level tests:
+  the real `app.js` runs in a Node `vm` context with a scripted KaTeX
+  double, proving table rows and header cells survive, math blocks and
+  table-cell formulas render through KaTeX, and a rendering failure keeps
+  the source visible while removing nothing (#27).
+- Source-year filter regression test covering the served control, the exact
+  matching predicate, and the bundled case's 2025 subset plus the
+  unknown-year empty state (#9).
+
 ## [0.12.0] - 2026-08-23
 
 ### Added
