@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0",
+  "id": "missing-brace-repair",
+  "title": "Synthetic Missing-Brace Repair Set",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "q-brace-1",
+      "type": "short_answer",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Simplify the nested fraction "
+          },
+          {
+            "type": "math",
+            "latex": "\\frac{\\sqrt{3}}{x+1",
+            "metadata": { "display": false }
+          },
+          {
+            "type": "text",
+            "text": " and state the domain of the result."
+          }
+        ]
+      },
+      "answer": { "kind": "text", "value": "The expression stands for a fraction whose numerator is the square root of 3; the denominator cannot be zero." }
+    }
+  ]
+}
