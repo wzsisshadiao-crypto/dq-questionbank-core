@@ -47,6 +47,8 @@
     "prepare_import_case",
     "review_import_session",
     "run_import_case",
+    "LatexRepairOutcome",
+    "repair_latex_braces",
     "ENVELOPE_VERSION",
     "BlockResult",
     "WordPublisher",
@@ -251,6 +253,10 @@
       "kind": "class",
       "signature": "(id, title, route, source_type, summary, has_ai_proposal=False)"
     },
+    "LatexRepairOutcome": {
+      "kind": "class",
+      "signature": "(source, latex, rule_id=None, finding_code=None, finding_message=None)"
+    },
     "PLUGIN_ENTRY_POINT_GROUP": {
       "kind": "value",
       "value": "'dq_questionbank.plugins'"
@@ -390,6 +396,10 @@
     "register_migration": {
       "kind": "function",
       "signature": "(from_version, to_version)"
+    },
+    "repair_latex_braces": {
+      "kind": "function",
+      "signature": "(latex)"
     },
     "review_import_session": {
       "kind": "function",

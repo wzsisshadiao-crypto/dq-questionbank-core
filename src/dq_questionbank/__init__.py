@@ -24,6 +24,7 @@ from .intake import (
     run_import_case,
 )
 from .interfaces import AIProvider, QuestionExporter, QuestionImporter, StorageAdapter
+from .latex_repair import LatexRepairOutcome, repair_latex_braces
 from .migration import list_migrations, migrate, register_migration
 from .models import (
     Answer,
@@ -109,6 +110,8 @@ __all__ = [
     "prepare_import_case",
     "review_import_session",
     "run_import_case",
+    "LatexRepairOutcome",
+    "repair_latex_braces",
     "ENVELOPE_VERSION",
     "BlockResult",
     "WordPublisher",

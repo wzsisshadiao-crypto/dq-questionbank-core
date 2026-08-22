@@ -44,3 +44,18 @@ Version 0.8 adds the following stable package exports:
 canonical question schema and Python package version. See
 [Word Publishing](word-publishing-envelope.md) for the full behavioral and
 security contract.
+
+## LaTeX repair API
+
+The package exports the first deterministic quality repair rule:
+
+- `repair_latex_braces` proposes a one-step repair for a LaTeX source that is
+  missing exactly one closing brace and is otherwise intact.
+- `LatexRepairOutcome` keeps the original source visible, carries the stable
+  rule id (`latex-missing-closing-brace`) when a repair is proposed, and a
+  finding code when the damage is ambiguous and must stay in manual review.
+
+Missing opening braces, multiple breaks, and trailing escapes are never
+rewritten; they are reported as findings instead. This is the first bounded
+slice of the deterministic repair rule set described in the
+[Correction Rule Workflow](correction-rule-workflow.md).
