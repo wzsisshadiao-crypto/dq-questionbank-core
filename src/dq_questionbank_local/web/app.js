@@ -1149,6 +1149,19 @@ function renderReviewCenter() {
       state.reviewedQuestionIds.includes(question.id) ? "Reviewed" : "Mark reviewed",
       () => toggleQuestionReviewed(question.id),
     );
+    const isReviewed = state.reviewedQuestionIds.includes(question.id);
+    row.tabIndex = 0;
+    row.setAttribute("role", "button");
+    row.setAttribute(
+      "aria-label",
+      isReviewed ? `Undo review for ${question.id}` : `Mark ${question.id} reviewed`,
+    );
+    row.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      if (event.target instanceof Element && event.target.closest("button")) return;
+      event.preventDefault();
+      toggleQuestionReviewed(question.id);
+    });
     const controls = document.createElement("div");
     controls.className = "row-controls";
     const edit = document.createElement("button");

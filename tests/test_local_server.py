@@ -235,6 +235,28 @@ class LocalServerTests(unittest.TestCase):
         )
         self.assertNotIn(9999, years)
 
+    def test_review_center_rows_are_keyboard_activatable(self):
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+        connection.request("GET", "/app.js")
+        response = connection.getresponse()
+        script = response.read().decode("utf-8")
+        connection.close()
+        self.assertIn("row.tabIndex = 0", script)
+        self.assertIn('row.setAttribute("role", "button")', script)
+        self.assertIn("Undo review for", script)
+        self.assertIn("Mark ${question.id} reviewed", script)
+        self.assertIn('event.key !== "Enter" && event.key !== " "', script)
+        self.assertIn('event.target.closest("button")', script)
+        self.assertIn("toggleQuestionReviewed(question.id);", script)
+
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+        connection.request("GET", "/styles.css")
+        response = connection.getresponse()
+        styles = response.read().decode("utf-8")
+        connection.close()
+        self.assertIn(".work-row[tabindex]:focus-visible", styles)
+        self.assertIn("outline: 2px solid var(--blue)", styles)
+
     def test_search_empty_state_names_recovery_actions(self):
         connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
         connection.request("GET", "/")
