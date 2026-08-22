@@ -114,6 +114,7 @@ h1, h2, h3, h4, p { margin: 0; }
 .status { background: #edf7f0; border: 1px solid #b9ddc4; border-radius: 6px; color: #176339; font-size: 12px; margin: 0 auto 10px; max-width: 1540px; padding: 8px 11px; }
 .status:empty { display: none; }
 .status.error { background: #fff1f0; border-color: #f0bbb6; color: var(--danger); }
+.case-load-error { background: #fff1f0; border: 1px solid #f0bbb6; border-radius: 6px; color: var(--danger); font-size: 13px; margin: 14px auto 0; max-width: 480px; padding: 9px 12px; }
 .empty-state { margin: 22vh auto 0; max-width: 560px; text-align: center; }
 .empty-state h1 { font-size: 25px; margin: 7px 0; }
 .empty-state p { color: var(--muted); font-size: 14px; }

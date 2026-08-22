@@ -24,6 +24,7 @@ const setCount = document.querySelector("#set-count");
 const editorForm = document.querySelector("#editor-form");
 const bankView = document.querySelector("#bank-view");
 const emptyState = document.querySelector("#empty-state");
+const caseLoadError = document.querySelector("#case-load-error");
 const questionList = document.querySelector("#question-list");
 const questionTemplate = document.querySelector("#question-template");
 const questionResults = document.querySelector("#question-results");
@@ -1454,8 +1455,11 @@ async function loadDatabaseCase() {
       message: "The reviewed public case passed adapter and schema validation.",
     };
     if (targetView === "import") renderImportCenter();
+    caseLoadError.hidden = true;
     setStatus("Public database case loaded into the question bank.");
   } catch (error) {
+    caseLoadError.textContent = `Could not load the public case (${error.message}). Choose "Open public case" to try again.`;
+    caseLoadError.hidden = false;
     setStatus(error.message, true);
   } finally {
     loadCaseButton.disabled = false;

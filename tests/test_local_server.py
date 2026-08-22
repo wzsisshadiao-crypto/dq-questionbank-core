@@ -171,6 +171,30 @@ class LocalServerTests(unittest.TestCase):
         self.assertIn('Use "Add choice" to create option A', page)
         self.assertIn("correct-answer control fills in as choices are added", page)
 
+    def test_public_case_load_failure_state_supports_retry(self):
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+        connection.request("GET", "/")
+        response = connection.getresponse()
+        page = response.read().decode("utf-8")
+        connection.close()
+        self.assertEqual(200, response.status)
+        self.assertIn('<p id="case-load-error" class="case-load-error" hidden></p>', page)
+
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+        connection.request("GET", "/app.js")
+        response = connection.getresponse()
+        script = response.read().decode("utf-8")
+        connection.close()
+        self.assertIn('querySelector("#case-load-error")', script)
+        self.assertIn("caseLoadError.hidden = false", script)
+        self.assertIn("caseLoadError.hidden = true", script)
+        self.assertIn('Choose "Open public case" to try again.', script)
+        self.assertIn('request("/api/case/load"', script)
+
+        status, payload = self.request("POST", "/api/case/load")
+        self.assertEqual(200, status)
+        self.assertEqual("synthetic-database-case", payload["id"])
+
     def test_loads_bundled_database_case_into_workspace(self):
         status, info = self.request("GET", "/api/case")
         self.assertEqual(200, status)
