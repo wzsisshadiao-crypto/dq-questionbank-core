@@ -1,0 +1,54 @@
+{
+  "session_id": "pdf-intake-session-001",
+  "candidates": [
+    {
+      "candidate_id": "cand-pdf-math-001",
+      "status": "pending",
+      "source_evidence": {
+        "document": "synthetic_math_exam.pdf",
+        "page_number": 3,
+        "bounding_box": [100, 150, 500, 450],
+        "raw_text": "Question 1: Evaluate f(x) = x^2 + 3x for the table values. Table: x|f(x); 1|4; 2|10; 3|18. Answer: 18."
+      },
+      "extracted_fields": {
+        "stem": {
+          "value": {
+            "text": "Evaluate the function for the values in the table below.",
+            "latex_formula": "f(x) = x^2 + 3x"
+          },
+          "evidence": {
+            "source_locator": "page 3, lines 1-3",
+            "confidence": 0.98,
+            "raw_text": "Evaluate f(x) = x^2 + 3x"
+          }
+        },
+        "table": {
+          "value": {
+            "rows": [
+              ["x", "f(x)"],
+              ["1", "4"],
+              ["2", "10"],
+              ["3", "18"]
+            ]
+          },
+          "evidence": {
+            "source_locator": "page 3, table_block_1",
+            "confidence": 0.95,
+            "raw_text": "x | f(x) \\n 1 | 4 \\n 2 | 10 \\n 3 | 18"
+          }
+        },
+        "answer": {
+          "value": {
+            "kind": "text",
+            "value": "18"
+          },
+          "evidence": {
+            "source_locator": "page 3, line 12",
+            "confidence": 0.99,
+            "raw_text": "Answer: 18"
+          }
+        }
+      }
+    }
+  ]
+}
