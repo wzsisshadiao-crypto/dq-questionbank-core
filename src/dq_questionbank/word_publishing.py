@@ -14,10 +14,11 @@ import json
 import re
 import socket
 import threading
+from collections.abc import Mapping
 from dataclasses import dataclass
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any
 from urllib.parse import urlparse
 from zipfile import ZipFile
 
@@ -392,8 +393,6 @@ def extract_managed_blocks(source: Path) -> dict[str, dict[str, str]]:
 
 
 class _BridgeHandler(BaseHTTPRequestHandler):
-    server: "WordPublishingBridge"
-
     def log_message(self, *_args: Any) -> None:
         return
 
