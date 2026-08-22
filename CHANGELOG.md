@@ -2,6 +2,24 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
+## [0.14.0] - 2026-08-23
+
+### Added
+
+- Soft-delete Recycle Bin in the local visual workspace: recycling a
+  question keeps it in the canonical payload (exports keep it until
+  permanent delete), restoring returns it to its original position, and
+  permanent delete removes it for real while clearing derived selections
+  and marking the workspace unsaved (#58).
+- Safe plugin-discovery example (`examples/plugin_discovery_demo.py`):
+  listing installed entry points never loads plugin code, and the explicit
+  opt-in flag is the only step that executes third-party registrars; the
+  documentation pins the deterministic clean-environment output (#38).
+- Blank-cell table fixture package: an original synthetic table with one
+  intentionally empty cell, covered by a DOM-level rendering check
+  (empty-but-present cell, shape preserved) and a canonical round-trip
+  test (#37).
+
 ## [0.13.0] - 2026-08-23
 
 ### Added
