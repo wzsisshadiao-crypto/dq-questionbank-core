@@ -59,6 +59,7 @@ from .quality_findings import (
 )
 from .registry import FormatRegistry, default_registry
 from .schema import load_schema, schema_path
+from .sqlite_storage import SqliteStorageAdapter
 from .storage import FilesystemStorageAdapter
 from .validation import (
     ValidationIssue,
@@ -92,6 +93,7 @@ __all__ = [
     "QuestionBankError",
     "FormatRegistry",
     "FilesystemStorageAdapter",
+    "SqliteStorageAdapter",
     "PLUGIN_ENTRY_POINT_GROUP",
     "SchemaError",
     "SchemaNotFoundError",
@@ -159,4 +161,4 @@ __all__ = [
     "word_macro_source",
 ]
 
-__version__ = "0.10.0"
+__version__ = "0.11.0"

@@ -5,7 +5,7 @@
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v0.10.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![Release](https://img.shields.io/badge/release-v0.11.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 
 
 > **Community fixture call: help us test every legal question format.**
@@ -102,7 +102,7 @@ All examples in this quick start use the bundled synthetic case. The repository 
 | Data model | Versioned canonical schema, validation, migrations, compatibility fixtures | Mapping more application fields without coupling to the production database |
 | Import | JSON, Markdown, LaTeX, DOCX adapters; five review-first browser/AI Coding/Word/PDF/OMML cases with evidence and candidate sessions | Richer arbitrary-document adapters and visual candidate review |
 | Visual frontend | Question Bank, Import, Paper, Bank Data, Quality, and Editor workspaces with scoped search, offline math and table rendering, editor handoff, and canonical JSON exchange | Candidate Review Center, richer structured editing, image repair, revision-bound quality history, and Word-native Export Center |
-| Storage | Atomic filesystem adapter and read-only reviewed SQLite case adapter | User-selected local database adapters behind the same canonical boundary |
+| Storage | Atomic filesystem adapter, writable reference SQLite adapter, and read-only reviewed SQLite case adapter | User-selected local database adapters behind the same canonical boundary |
 | Export | JSON, Markdown, LaTeX, conventional DOCX, and managed Word reference blocks with a bundled loopback VBA client | Broader Word-version compatibility fixtures and application-specific rendering adapters |
 | AI | Stable provider protocol plus digest-bound, field-allowlisted proposals; no bundled provider or credential | Provider adapters selected by downstream applications |
 
@@ -199,6 +199,7 @@ database table or one AI service the definition of the question.
 - Five executable import cases behind one evidence, proposal, review, and export contract
 - `QuestionImporter`, `QuestionExporter`, `StorageAdapter`, and `AIProvider` interfaces
 - Reference local filesystem storage with atomic canonical JSON writes
+- Writable reference SQLite storage adapter built on the standard-library `sqlite3` module
 - English-language CLI, lightweight playground, and operational local question-bank workspace
 - Reviewed read-only SQLite case adapter and bundled synthetic database case
 - No database, frontend framework, or AI provider lock-in
@@ -336,6 +337,7 @@ Human document formats are not lossless containers for every source-specific fea
 - `interfaces.py`: extension contracts
 - `intake.py`: review-first bundle mapping, evidence, proposal, and state transitions
 - `storage.py`: reference local filesystem storage adapter
+- `sqlite_storage.py`: writable reference SQLite storage adapter (stdlib `sqlite3`)
 - `registry.py`: built-in format discovery with protocol enforcement
 - `formats/`: JSON, Markdown, LaTeX, and DOCX adapters
 - `cli.py`: thin command wrapper over the library
