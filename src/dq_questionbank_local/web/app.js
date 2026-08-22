@@ -589,7 +589,7 @@ function renderQuestionResults() {
   if (!matches.length) {
     const message = document.createElement("p");
     message.className = "no-results";
-    message.textContent = "No questions match these filters.";
+    message.textContent = "No questions match these filters. Clear the Search and Year boxes, or turn off the active Subject and Question type chips, to see every question again.";
     questionResults.append(message);
     return;
   }

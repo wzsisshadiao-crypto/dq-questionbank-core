@@ -195,6 +195,32 @@ class LocalServerTests(unittest.TestCase):
         self.assertEqual(200, status)
         self.assertEqual("synthetic-database-case", payload["id"])
 
+    def test_search_empty_state_names_recovery_actions(self):
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+        connection.request("GET", "/")
+        response = connection.getresponse()
+        page = response.read().decode("utf-8")
+        connection.close()
+        self.assertEqual(200, response.status)
+        self.assertIn('id="question-search" type="search"', page)
+        self.assertIn('id="question-year"', page)
+        self.assertIn('id="subject-filter"', page)
+        self.assertIn('id="type-filter"', page)
+
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+        connection.request("GET", "/app.js")
+        response = connection.getresponse()
+        script = response.read().decode("utf-8")
+        connection.close()
+        self.assertIn('className = "no-results"', script)
+        self.assertIn("No questions match these filters.", script)
+        self.assertIn("Clear the Search and Year boxes", script)
+        self.assertIn("turn off the active Subject and Question type chips", script)
+
+        status, info = self.request("GET", "/api/case")
+        self.assertEqual(200, status)
+        self.assertEqual(10, info["question_count"])
+
     def test_loads_bundled_database_case_into_workspace(self):
         status, info = self.request("GET", "/api/case")
         self.assertEqual(200, status)
