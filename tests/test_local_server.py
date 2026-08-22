@@ -160,6 +160,17 @@ class LocalServerTests(unittest.TestCase):
                 self.assertIn(content_type, response.getheader("Content-Type"))
                 self.assertTrue(content.startswith(marker) or marker in content)
 
+    def test_editor_empty_choices_hint_names_next_action(self):
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+        connection.request("GET", "/")
+        response = connection.getresponse()
+        page = response.read().decode("utf-8")
+        connection.close()
+        self.assertEqual(200, response.status)
+        self.assertIn("No choices yet.", page)
+        self.assertIn('Use "Add choice" to create option A', page)
+        self.assertIn("correct-answer control fills in as choices are added", page)
+
     def test_loads_bundled_database_case_into_workspace(self):
         status, info = self.request("GET", "/api/case")
         self.assertEqual(200, status)
