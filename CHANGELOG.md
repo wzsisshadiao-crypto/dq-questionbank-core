@@ -2,6 +2,28 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
+## [0.12.0] - 2026-08-23
+
+### Added
+
+- Public reviewable import-candidate-session contract
+  (`dq_questionbank.review_session`): `ImportCandidateSession` and
+  `ImportCandidate` wrap the canonical digest-bound session documents in
+  stable dataclasses without changing the wire format.
+- Sessions now retain the parser identity next to source evidence.
+- Deterministic candidate revisions: every candidate starts at revision 1,
+  and a reviewed edit bumps the revision while rebinding the question
+  digest; plain accepts/rejects leave it unchanged.
+- Stable serialized fixtures for pending, reviewed (accepted with edit),
+  rejected, and exported states, plus contract documentation and
+  source-specific profile extension guidance in `docs/review-sessions.md`.
+
+### Security
+
+- No candidate state implies persistence or AI approval; export still
+  requires an explicit decision for every candidate and never writes to a
+  store.
+
 ## [0.11.0] - 2026-08-23
 
 ### Added

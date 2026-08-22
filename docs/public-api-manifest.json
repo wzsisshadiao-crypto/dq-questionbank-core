@@ -11,6 +11,11 @@
     "FormatRegistry",
     "FilesystemStorageAdapter",
     "SqliteStorageAdapter",
+    "DECISION_ACCEPTED",
+    "DECISION_PENDING",
+    "DECISION_REJECTED",
+    "ImportCandidate",
+    "ImportCandidateSession",
     "PLUGIN_ENTRY_POINT_GROUP",
     "SchemaError",
     "SchemaNotFoundError",
@@ -236,6 +241,18 @@
       "kind": "value",
       "value": "('accepted', 'rejected')"
     },
+    "DECISION_ACCEPTED": {
+      "kind": "value",
+      "value": "'accepted'"
+    },
+    "DECISION_PENDING": {
+      "kind": "value",
+      "value": "'pending'"
+    },
+    "DECISION_REJECTED": {
+      "kind": "value",
+      "value": "'rejected'"
+    },
     "ENVELOPE_VERSION": {
       "kind": "value",
       "value": "'0.2'"
@@ -267,6 +284,14 @@
     "ImportBundleError": {
       "kind": "class",
       "signature": "(*args)"
+    },
+    "ImportCandidate": {
+      "kind": "class",
+      "signature": "(question_id, status, decision, revision, question, question_sha256, evidence, diagnostics)"
+    },
+    "ImportCandidateSession": {
+      "kind": "class",
+      "signature": "(document, candidates=())"
     },
     "ImportCase": {
       "kind": "class",

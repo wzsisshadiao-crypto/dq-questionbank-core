@@ -1,0 +1,209 @@
+{
+  "session_version": "1.0",
+  "bundle_id": "manual-web",
+  "bundle_title": "Manual browser intake",
+  "route": "manual_web",
+  "parser": {
+    "identity": "canonical-records/1",
+    "route": "manual_web"
+  },
+  "source": {
+    "path": "form-submission.json",
+    "sha256": "73dc04629feb5f1d3e481f020dc1fd98bb6c4c500ceb1ef7234ed4ba6987d803"
+  },
+  "status": "reviewed",
+  "question_set_template": {
+    "schema_version": "1.0",
+    "id": "case-manual-web",
+    "title": "Manual browser intake",
+    "language": "en",
+    "questions": []
+  },
+  "proposal": {
+    "applied": false,
+    "changes": [],
+    "requires_human_review": true
+  },
+  "candidates": [
+    {
+      "question_id": "manual-001",
+      "status": "reviewed",
+      "decision": "rejected",
+      "revision": 1,
+      "base_question": {
+        "schema_version": "1.0",
+        "id": "manual-001",
+        "type": "single_choice",
+        "language": "en",
+        "stem": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "What is 7 + 5?"
+            }
+          ]
+        },
+        "subject": "Mathematics",
+        "choices": [
+          {
+            "id": "A",
+            "content": {
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "10"
+                }
+              ]
+            }
+          },
+          {
+            "id": "B",
+            "content": {
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "11"
+                }
+              ]
+            }
+          },
+          {
+            "id": "C",
+            "content": {
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "12"
+                }
+              ]
+            }
+          },
+          {
+            "id": "D",
+            "content": {
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "13"
+                }
+              ]
+            }
+          }
+        ],
+        "answer": {
+          "kind": "choice",
+          "value": "C"
+        },
+        "solution": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "Adding 7 and 5 gives 12."
+            }
+          ]
+        },
+        "tags": [
+          "arithmetic"
+        ]
+      },
+      "question": {
+        "schema_version": "1.0",
+        "id": "manual-001",
+        "type": "single_choice",
+        "language": "en",
+        "stem": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "What is 7 + 5?"
+            }
+          ]
+        },
+        "subject": "Mathematics",
+        "choices": [
+          {
+            "id": "A",
+            "content": {
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "10"
+                }
+              ]
+            }
+          },
+          {
+            "id": "B",
+            "content": {
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "11"
+                }
+              ]
+            }
+          },
+          {
+            "id": "C",
+            "content": {
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "12"
+                }
+              ]
+            }
+          },
+          {
+            "id": "D",
+            "content": {
+              "blocks": [
+                {
+                  "type": "text",
+                  "text": "13"
+                }
+              ]
+            }
+          }
+        ],
+        "answer": {
+          "kind": "choice",
+          "value": "C"
+        },
+        "solution": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "Adding 7 and 5 gives 12."
+            }
+          ]
+        },
+        "tags": [
+          "arithmetic"
+        ]
+      },
+      "question_sha256": "a67e45db662921e4051b7032240ed16c5294173168f5993aaeff293556e2cb5f",
+      "evidence": [
+        {
+          "excerpt": "C",
+          "excerpt_sha256": "6b23c0d5f35d1b11f9b683f0b0a617355deb11277d91ae091d399c655b87940d",
+          "field": "answer",
+          "locator": "field: answer",
+          "question_id": "manual-001",
+          "source_path": "form-submission.json"
+        },
+        {
+          "excerpt": "What is 7 + 5?",
+          "excerpt_sha256": "d55d6ae374dc7cc2814a724009a672a96d0c5b52bc5350db65c412bcc265fb84",
+          "field": "stem",
+          "locator": "field: prompt",
+          "question_id": "manual-001",
+          "source_path": "form-submission.json"
+        }
+      ],
+      "diagnostics": [],
+      "review_note": "Duplicate of an already stored question."
+    }
+  ],
+  "session_sha256": "fb66afb5649415dac47daa13623ad5bea483cf2127a6080ee071fcdfe77a3d49"
+}

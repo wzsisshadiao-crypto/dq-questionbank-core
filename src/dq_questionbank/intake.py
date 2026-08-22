@@ -479,6 +479,7 @@ def _prepare_root(root: Any) -> tuple[dict[str, Any], dict[str, Any]]:
                 "question_id": question_id,
                 "status": "candidate_ready",
                 "decision": "pending",
+                "revision": 1,
                 "base_question": base_by_id[question_id],
                 "question": candidate_by_id[question_id],
                 "question_sha256": _digest(candidate_by_id[question_id]),
@@ -495,6 +496,10 @@ def _prepare_root(root: Any) -> tuple[dict[str, Any], dict[str, Any]]:
         "bundle_id": manifest["id"],
         "bundle_title": manifest["title"],
         "route": manifest["route"],
+        "parser": {
+            "identity": str(manifest.get("parser") or "canonical-records/1"),
+            "route": str(manifest["route"]),
+        },
         "source": copy.deepcopy(manifest["source"]),
         "status": "candidate_ready",
         "question_set_template": template,
@@ -572,6 +577,7 @@ def review_import_session(
                 )
             candidate["question"] = copy.deepcopy(edited)
             candidate["question_sha256"] = _digest(edited)
+            candidate["revision"] = int(candidate.get("revision", 1)) + 1
         candidate["decision"] = decision
         candidate["status"] = "reviewed"
         candidate["review_note"] = str(entry.get("note", ""))
