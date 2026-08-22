@@ -46,6 +46,20 @@ from .validation import (
     validate_question_set,
     validate_with_schema,
 )
+from .word_publishing import (
+    ENVELOPE_VERSION,
+    BlockResult,
+    WordPublisher,
+    WordPublishingBridge,
+    WordPublishingError,
+    build_envelope,
+    canonical_json,
+    export_word_publishing,
+    extract_managed_blocks,
+    question_fingerprint,
+    validate_envelope,
+    word_macro_source,
+)
 
 __all__ = [
     "FormatDetectionError",
@@ -95,6 +109,18 @@ __all__ = [
     "prepare_import_case",
     "review_import_session",
     "run_import_case",
+    "ENVELOPE_VERSION",
+    "BlockResult",
+    "WordPublisher",
+    "WordPublishingBridge",
+    "WordPublishingError",
+    "build_envelope",
+    "canonical_json",
+    "export_word_publishing",
+    "extract_managed_blocks",
+    "question_fingerprint",
+    "validate_envelope",
+    "word_macro_source",
 ]
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"

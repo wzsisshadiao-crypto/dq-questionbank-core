@@ -2,6 +2,29 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
+## [0.8.0] - 2026-08-22
+
+### Added
+
+- Ship the complete provider-neutral Word publishing path: managed `w:sdt`
+  DOCX export, canonical question fingerprints, envelope validation, ordered
+  refresh, stale detection, and single-block rollback.
+- Add a loopback-only, credential-free JSON bridge for inserting and refreshing
+  reviewed canonical questions without database or remote-service access.
+- Bundle an auditable Word VBA template with insert, refresh-current,
+  refresh-all, compose-border, and final-render commands.
+- Add `dq word-publish`, `dq word-serve`, and `dq word-macro` so the workflow can
+  be adopted without application-specific glue code.
+- Cover Open XML markers, deterministic managed document XML, bridge safety,
+  compose/final output, stale retention, and VBA safety properties in tests.
+
+### Security
+
+- Reject non-loopback origins, credentials, duplicate block ids, unknown
+  envelope versions, and unsupported refresh or rollback policies.
+- Never execute document content or persist candidates through the Word bridge;
+  stale and failed blocks keep their prior content.
+
 ## [0.7.0] - 2026-08-22
 
 ### Added

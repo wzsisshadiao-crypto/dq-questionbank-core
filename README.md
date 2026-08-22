@@ -5,7 +5,7 @@
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v0.7.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![Release](https://img.shields.io/badge/release-v0.8.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 
 
 > **Community fixture call: help us test every legal question format.**
@@ -80,7 +80,7 @@ mandatory publication review.
 | Import | JSON, Markdown, LaTeX, DOCX adapters; five review-first browser/AI Coding/Word/PDF/OMML cases with evidence and candidate sessions | Richer arbitrary-document adapters and visual candidate review |
 | Visual frontend | Question Bank, Import, Paper, Bank Data, Quality, and Editor workspaces with scoped search, offline math and table rendering, editor handoff, and canonical JSON exchange | Candidate Review Center, richer structured editing, image repair, revision-bound quality history, and Word-native Export Center |
 | Storage | Atomic filesystem adapter and read-only reviewed SQLite case adapter | User-selected local database adapters behind the same canonical boundary |
-| Export | JSON, Markdown, LaTeX, and conventional DOCX | High-fidelity Word macro/reference-box publishing workflow |
+| Export | JSON, Markdown, LaTeX, conventional DOCX, and managed Word reference blocks with a bundled loopback VBA client | Broader Word-version compatibility fixtures and application-specific rendering adapters |
 | AI | Stable provider protocol plus digest-bound, field-allowlisted proposals; no bundled provider or credential | Provider adapters selected by downstream applications |
 
 The right column describes remaining working product behavior that is being
@@ -172,6 +172,7 @@ database table or one AI service the definition of the question.
 - Source attribution, taxonomy references, tags, difficulty, hints, solutions, and extensions
 - Deterministic JSON, Markdown, and generated-LaTeX round trips
 - Convention-based DOCX import/export with image extraction
+- Managed Word content-control export, revision-bound refresh, local bridge, and bundled VBA template
 - Five executable import cases behind one evidence, proposal, review, and export contract
 - `QuestionImporter`, `QuestionExporter`, `StorageAdapter`, and `AIProvider` interfaces
 - Reference local filesystem storage with atomic canonical JSON writes
@@ -216,6 +217,17 @@ Import a DOCX document:
 ```bash
 dq import exam.docx -o questions.json --assets-dir imported_assets
 ```
+
+Publish reviewed canonical questions as refreshable Word blocks:
+
+```bash
+dq word-publish reviewed.json -o paper.docx --envelope paper.envelope.json
+dq word-macro -o DQWordPublishing.bas
+dq word-serve reviewed.json
+```
+
+See [Word Publishing](docs/word-publishing-envelope.md) for Word setup,
+revision/stale rules, rollback behavior, compatibility, and the bridge API.
 
 Replay the five review-first import routes or adapt one as a custom bundle:
 
@@ -321,7 +333,7 @@ See [`OPEN_SOURCE_BOUNDARY.md`](OPEN_SOURCE_BOUNDARY.md) for the public/private 
   source-specific profiles allow independently designed ingestion workflows.
 - **Quality as a loop:** findings can open the exact question and field in the
   editor, then be re-evaluated against the saved revision.
-- **Word as a first-class publishing surface:** the planned public macro bridge
+- **Word as a first-class publishing surface:** the public macro bridge
   treats a paper as refreshable document blocks with native Word formulas, not a
   one-time text dump.
 
