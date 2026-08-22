@@ -15,6 +15,7 @@
     "SchemaNotFoundError",
     "SchemaValidationError",
     "SchemaVersionError",
+    "StaleFindingError",
     "Answer",
     "Asset",
     "Choice",
@@ -53,6 +54,15 @@
     "repair_latex_braces",
     "repair_latex_source",
     "repair_operator_spacing",
+    "DECISIONS",
+    "RULESET_VERSION",
+    "SEVERITIES",
+    "QualityFinding",
+    "QualityJudgment",
+    "detect_quality_findings",
+    "field_fingerprint",
+    "finding_state",
+    "judge_finding",
     "ENVELOPE_VERSION",
     "BlockResult",
     "WordPublisher",
@@ -221,6 +231,10 @@
       "kind": "class",
       "signature": "(type='text', text=None, latex=None, asset_id=None, alt_text=None, language=None, rows=None, metadata=<factory>)"
     },
+    "DECISIONS": {
+      "kind": "value",
+      "value": "('accepted', 'rejected')"
+    },
     "ENVELOPE_VERSION": {
       "kind": "value",
       "value": "'0.2'"
@@ -269,6 +283,14 @@
       "kind": "class",
       "signature": "(*args)"
     },
+    "QualityFinding": {
+      "kind": "class",
+      "signature": "(question_id, target_field, rule_id, ruleset_version, input_fingerprints, severity, explanation, repair=None)"
+    },
+    "QualityJudgment": {
+      "kind": "class",
+      "signature": "(finding, decision, finding_fingerprint)"
+    },
     "Question": {
       "kind": "class",
       "signature": "(id, type, stem, language='en', subject=None, choices=<factory>, answer=None, solution=None, hints=<factory>, assets=<factory>, tags=<factory>, difficulty=None, source=None, taxonomy=<factory>, subquestions=<factory>, metadata=<factory>, schema_version='1.0')"
@@ -289,6 +311,14 @@
       "kind": "class",
       "signature": "(id, title, questions=<factory>, description=None, language='en', metadata=<factory>, schema_version='1.0')"
     },
+    "RULESET_VERSION": {
+      "kind": "value",
+      "value": "'quality/1'"
+    },
+    "SEVERITIES": {
+      "kind": "value",
+      "value": "('error', 'warning', 'info')"
+    },
     "SchemaError": {
       "kind": "class",
       "signature": "(*args)"
@@ -308,6 +338,10 @@
     "SourceMetadata": {
       "kind": "class",
       "signature": "(title=None, author=None, year=None, uri=None, license=None, attribution=None, locator=None, metadata=<factory>)"
+    },
+    "StaleFindingError": {
+      "kind": "class",
+      "signature": "(*args)"
     },
     "StorageAdapter": {
       "kind": "class",
@@ -349,6 +383,10 @@
       "kind": "function",
       "signature": "()"
     },
+    "detect_quality_findings": {
+      "kind": "function",
+      "signature": "(question)"
+    },
     "discover_plugins": {
       "kind": "function",
       "signature": "(registry, *, group='dq_questionbank.plugins')"
@@ -365,9 +403,21 @@
       "kind": "function",
       "signature": "(source)"
     },
+    "field_fingerprint": {
+      "kind": "function",
+      "signature": "(value)"
+    },
+    "finding_state": {
+      "kind": "function",
+      "signature": "(finding, question)"
+    },
     "get_import_case": {
       "kind": "function",
       "signature": "(case_id)"
+    },
+    "judge_finding": {
+      "kind": "function",
+      "signature": "(finding, question, decision)"
     },
     "list_import_cases": {
       "kind": "function",

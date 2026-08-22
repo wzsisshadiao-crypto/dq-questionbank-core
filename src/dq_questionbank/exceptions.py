@@ -48,3 +48,7 @@ class PluginDiscoveryError(QuestionBankError):
 
 class ImportBundleError(QuestionBankError):
     """An import bundle or candidate-session transition failed closed."""
+
+
+class StaleFindingError(QuestionBankError):
+    """A quality finding was applied against content it no longer matches."""

@@ -2,6 +2,24 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
+## [0.10.0] - 2026-08-23
+
+### Added
+
+- Public revision-bound quality-finding contract (`dq_questionbank.quality_findings`):
+  a finding binds a question id, an exact target field path, a rule id, the
+  ruleset version, and deterministic SHA-256 fingerprints over every field
+  the rule read.
+- `detect_quality_findings` runs the deterministic LaTeX rules over math
+  blocks in stems, solutions, and choices; repairable sources carry
+  preview-only repair data.
+- `judge_finding` records human accept/reject decisions as a separate
+  operation that fails closed with `StaleFindingError` on stale content.
+- Cross-field findings go stale when any declared input dependency changes;
+  unrelated edits do not invalidate a finding.
+- Stable serialized fixtures for current, stale, accepted, and rejected
+  findings, plus the contract documentation in `docs/quality-findings.md`.
+
 ## [0.9.0] - 2026-08-23
 
 ### Added

@@ -12,6 +12,7 @@ from .exceptions import (
     SchemaNotFoundError,
     SchemaValidationError,
     SchemaVersionError,
+    StaleFindingError,
 )
 from .intake import (
     ImportCase,
@@ -45,6 +46,17 @@ from .models import (
     TaxonomyRef,
 )
 from .plugins import PLUGIN_ENTRY_POINT_GROUP, available_plugins, discover_plugins
+from .quality_findings import (
+    DECISIONS,
+    RULESET_VERSION,
+    SEVERITIES,
+    QualityFinding,
+    QualityJudgment,
+    detect_quality_findings,
+    field_fingerprint,
+    finding_state,
+    judge_finding,
+)
 from .registry import FormatRegistry, default_registry
 from .schema import load_schema, schema_path
 from .storage import FilesystemStorageAdapter
@@ -85,6 +97,7 @@ __all__ = [
     "SchemaNotFoundError",
     "SchemaValidationError",
     "SchemaVersionError",
+    "StaleFindingError",
     "Answer",
     "Asset",
     "Choice",
@@ -123,6 +136,15 @@ __all__ = [
     "repair_latex_braces",
     "repair_latex_source",
     "repair_operator_spacing",
+    "DECISIONS",
+    "RULESET_VERSION",
+    "SEVERITIES",
+    "QualityFinding",
+    "QualityJudgment",
+    "detect_quality_findings",
+    "field_fingerprint",
+    "finding_state",
+    "judge_finding",
     "ENVELOPE_VERSION",
     "BlockResult",
     "WordPublisher",
@@ -137,4 +159,4 @@ __all__ = [
     "word_macro_source",
 ]
 
-__version__ = "0.9.0"
+__version__ = "0.10.0"

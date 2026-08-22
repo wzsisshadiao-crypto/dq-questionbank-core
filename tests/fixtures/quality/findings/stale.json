@@ -1,0 +1,42 @@
+{
+  "question": {
+    "schema_version": "1.0",
+    "id": "q-findings-1",
+    "type": "short_answer",
+    "language": "en",
+    "stem": {
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Consider the malformed interval "
+        },
+        {
+          "type": "math",
+          "latex": "[x+1)",
+          "metadata": {
+            "display": false
+          }
+        }
+      ]
+    },
+    "answer": {
+      "kind": "text",
+      "value": "Manual review resolves the finding."
+    }
+  },
+  "finding": {
+    "question_id": "q-findings-1",
+    "target_field": "stem.blocks[1]",
+    "rule_id": "latex-mismatched-delimiters",
+    "ruleset_version": "quality/1",
+    "input_fingerprints": [
+      {
+        "path": "stem.blocks[1]",
+        "fingerprint": "5b650b1759b1b05e1070a60d801c78221f5d4ba5ea02106d7126055de53d3914"
+      }
+    ],
+    "severity": "error",
+    "explanation": "Plain delimiters are mismatched (for example '(' closed by ']'); the intended form is ambiguous and needs manual review."
+  },
+  "expected_state": "stale"
+}

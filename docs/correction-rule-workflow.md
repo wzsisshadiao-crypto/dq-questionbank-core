@@ -31,6 +31,17 @@ Synthetic before/after specimen pairs live in
 executed by `tests/test_latex_repair.py`, including idempotency and the
 preserved-prose guarantee (`\text{a  +  b}` stays verbatim).
 
+## Revision-Bound Quality Findings
+
+Detected issues graduate into reviewable findings through the public
+contract in `src/dq_questionbank/quality_findings.py` (see
+[Revision-Bound Quality Findings](quality-findings.md)). A finding binds a
+question id, an exact target field path, a rule id, the ruleset version,
+and SHA-256 fingerprints over every field the rule read. Judging a stale
+finding fails closed with `StaleFindingError`, and cross-field findings go
+stale when any declared input dependency changes. Stable fixtures cover
+current, stale, accepted, and rejected findings.
+
 ## Repository Layout: Where Code and Assets Belong
 
 When contributing a new correction rule, files are organized as follows:
