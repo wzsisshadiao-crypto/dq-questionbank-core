@@ -50,6 +50,31 @@ class TableMathRenderingTests(unittest.TestCase):
             self.assertIn("table", types)
             self.assertIn("math", types)
 
+    def test_blank_cell_fixture_keeps_table_shape_through_the_canonical_model(self):
+        from dq_questionbank import QuestionSet
+
+        payload = json.loads(
+            (
+                REPOSITORY_ROOT
+                / "tests"
+                / "fixtures"
+                / "rendering"
+                / "blank-cell-table.json"
+            ).read_text(encoding="utf-8")
+        )
+
+        self.assertEqual([], validate_with_schema(payload))
+        table = next(
+            block
+            for block in payload["questions"][0]["stem"]["blocks"]
+            if block["type"] == "table"
+        )
+        self.assertEqual(["Step", "Checkpoint"], table["rows"][0])
+        self.assertEqual("", table["rows"][2][1], "the blank cell stays an empty string")
+
+        restored = QuestionSet.from_dict(payload)
+        self.assertEqual(payload, restored.to_dict())
+
 
 if __name__ == "__main__":
     unittest.main()
