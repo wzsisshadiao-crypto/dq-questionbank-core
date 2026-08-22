@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0",
+  "id": "table-math-rendering",
+  "title": "Synthetic Table-and-Math Rendering Set",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "q-render-1",
+      "type": "short_answer",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "The table below pairs each outcome with its probability; the identity "
+          },
+          {
+            "type": "math",
+            "latex": "\\sum_{k=0}^{n} \\binom{n}{k} = 2^n",
+            "metadata": { "display": false }
+          },
+          {
+            "type": "text",
+            "text": " governs the totals."
+          },
+          {
+            "type": "table",
+            "rows": [
+              ["Outcome", "Probability"],
+              ["Zero successes", "$\\binom{n}{0}p^0(1-p)^n$"],
+              ["All successes", "$p^n$"]
+            ],
+            "metadata": { "header_rows": 1, "caption": "Synthetic outcome table" }
+          }
+        ]
+      },
+      "answer": { "kind": "text", "value": "The table and the inline identity render from the same canonical blocks." }
+    },
+    {
+      "schema_version": "1.0",
+      "id": "q-render-2",
+      "type": "short_answer",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Even when a formula cannot be rendered, the source stays visible beside the table:"
+          },
+          {
+            "type": "math",
+            "latex": "\\invalid{",
+            "metadata": { "display": false }
+          },
+          {
+            "type": "table",
+            "rows": [
+              ["Column A", "Column B"],
+              ["kept", "kept"]
+            ],
+            "metadata": { "header_rows": 1 }
+          }
+        ]
+      },
+      "answer": { "kind": "text", "value": "A rendering failure never removes the table or the formula source." }
+    }
+  ]
+}
