@@ -24,7 +24,14 @@ from .intake import (
     run_import_case,
 )
 from .interfaces import AIProvider, QuestionExporter, QuestionImporter, StorageAdapter
-from .latex_repair import LatexRepairOutcome, repair_latex_braces
+from .latex_repair import (
+    LatexRepairOutcome,
+    repair_bare_function_names,
+    repair_delimiter_spacing,
+    repair_latex_braces,
+    repair_latex_source,
+    repair_operator_spacing,
+)
 from .migration import list_migrations, migrate, register_migration
 from .models import (
     Answer,
@@ -111,7 +118,11 @@ __all__ = [
     "review_import_session",
     "run_import_case",
     "LatexRepairOutcome",
+    "repair_bare_function_names",
+    "repair_delimiter_spacing",
     "repair_latex_braces",
+    "repair_latex_source",
+    "repair_operator_spacing",
     "ENVELOPE_VERSION",
     "BlockResult",
     "WordPublisher",
@@ -126,4 +137,4 @@ __all__ = [
     "word_macro_source",
 ]
 
-__version__ = "0.8.0"
+__version__ = "0.9.0"

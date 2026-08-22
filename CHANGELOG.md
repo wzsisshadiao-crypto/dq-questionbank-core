@@ -2,6 +2,26 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
+## [0.9.0] - 2026-08-23
+
+### Added
+
+- Deterministic LaTeX repair rule set: bare function names (`sin x` ->
+  `\sin x`), `\left(`/`\right)` inner spacing normalization, and doubled
+  operator-spacing collapse outside `\text{...}` prose, each with a stable
+  rule ID and a visible before/after preview on the outcome.
+- `repair_latex_source` composes the safe rules (plus the existing
+  missing-closing-brace repair) in a fixed order and reports every applied
+  rule ID on `applied_rules`.
+- Synthetic before/after rule-set fixture covering composition, preserved
+  prose spacing, and the fail-closed ambiguous case.
+
+### Security
+
+- Mismatched plain delimiters such as `(x+1]` are never rewritten; they are
+  reported as a `latex-mismatched-delimiters` manual-review finding with the
+  source left untouched.
+
 ## [0.8.0] - 2026-08-22
 
 ### Added
