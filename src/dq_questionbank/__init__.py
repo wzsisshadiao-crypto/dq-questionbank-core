@@ -58,6 +58,13 @@ from .quality_findings import (
     judge_finding,
 )
 from .registry import FormatRegistry, default_registry
+from .review_session import (
+    DECISION_ACCEPTED,
+    DECISION_PENDING,
+    DECISION_REJECTED,
+    ImportCandidate,
+    ImportCandidateSession,
+)
 from .schema import load_schema, schema_path
 from .sqlite_storage import SqliteStorageAdapter
 from .storage import FilesystemStorageAdapter
@@ -94,6 +101,11 @@ __all__ = [
     "FormatRegistry",
     "FilesystemStorageAdapter",
     "SqliteStorageAdapter",
+    "DECISION_ACCEPTED",
+    "DECISION_PENDING",
+    "DECISION_REJECTED",
+    "ImportCandidate",
+    "ImportCandidateSession",
     "PLUGIN_ENTRY_POINT_GROUP",
     "SchemaError",
     "SchemaNotFoundError",
@@ -161,4 +173,4 @@ __all__ = [
     "word_macro_source",
 ]
 
-__version__ = "0.11.0"
+__version__ = "0.12.0"

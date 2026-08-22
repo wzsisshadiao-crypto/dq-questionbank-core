@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0",
+  "id": "case-manual-web",
+  "title": "Manual browser intake",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "manual-001",
+      "type": "single_choice",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Edited during review: "
+          },
+          {
+            "type": "text",
+            "text": "What is 7 + 5?"
+          }
+        ]
+      },
+      "subject": "Mathematics",
+      "choices": [
+        {
+          "id": "A",
+          "content": {
+            "blocks": [
+              {
+                "type": "text",
+                "text": "10"
+              }
+            ]
+          }
+        },
+        {
+          "id": "B",
+          "content": {
+            "blocks": [
+              {
+                "type": "text",
+                "text": "11"
+              }
+            ]
+          }
+        },
+        {
+          "id": "C",
+          "content": {
+            "blocks": [
+              {
+                "type": "text",
+                "text": "12"
+              }
+            ]
+          }
+        },
+        {
+          "id": "D",
+          "content": {
+            "blocks": [
+              {
+                "type": "text",
+                "text": "13"
+              }
+            ]
+          }
+        }
+      ],
+      "answer": {
+        "kind": "choice",
+        "value": "C"
+      },
+      "solution": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Adding 7 and 5 gives 12."
+          }
+        ]
+      },
+      "tags": [
+        "arithmetic"
+      ]
+    }
+  ]
+}
