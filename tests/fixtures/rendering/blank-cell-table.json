@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "id": "blank-cell-table",
+  "title": "Synthetic Blank-Cell Table Set",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "q-blank-1",
+      "type": "short_answer",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "The schedule below is missing exactly one entry; the blank cell must stay a cell:"
+          },
+          {
+            "type": "table",
+            "rows": [
+              ["Step", "Checkpoint"],
+              ["Setup", "Verified"],
+              ["Run", ""],
+              ["Teardown", "Verified"]
+            ],
+            "metadata": { "header_rows": 1, "caption": "Synthetic schedule with one blank cell" }
+          }
+        ]
+      },
+      "answer": { "kind": "text", "value": "An empty cell is preserved as an empty table cell, not as a missing row or column." }
+    }
+  ]
+}

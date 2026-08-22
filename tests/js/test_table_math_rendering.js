@@ -28,6 +28,13 @@ const FIXTURE = JSON.parse(
   ),
 );
 
+const BLANK_CELL_FIXTURE = JSON.parse(
+  fs.readFileSync(
+    path.join(REPOSITORY_ROOT, "tests", "fixtures", "rendering", "blank-cell-table.json"),
+    "utf-8",
+  ),
+);
+
 function makeStubElement(tagName) {
   const element = {
     tagName: (tagName || "div").toUpperCase(),
@@ -197,6 +204,25 @@ check("a rendering failure keeps the source visible and the table intact", () =>
   assert.equal(tables.length, 1, "the failure removes no table");
   const headerCells = descendants(tables[0], (node) => node.tagName === "TH");
   assert.equal(textOf(headerCells[0]), "Column A");
+});
+
+const blankContainer = makeStubElement("div");
+
+check("a blank cell stays an empty cell, not a missing row or column", () => {
+  sandbox.renderStructuredContent(blankContainer, BLANK_CELL_FIXTURE.questions[0].stem);
+  const tables = descendants(blankContainer, (node) => node.tagName === "TABLE");
+  assert.equal(tables.length, 1);
+  const rows = descendants(tables[0], (node) => node.tagName === "TR");
+  assert.equal(rows.length, 4, "every declared row is rendered");
+  const cellsOf = (row) => descendants(row, (node) => node.tagName === "TD" || node.tagName === "TH");
+  assert.deepEqual(
+    rows.map((row) => cellsOf(row).length),
+    [2, 2, 2, 2],
+    "every row keeps both columns, including the one with a blank cell",
+  );
+  const runCells = cellsOf(rows[2]);
+  assert.equal(textOf(runCells[0]), "Run");
+  assert.equal(textOf(runCells[1]), "", "the blank cell renders empty but present");
 });
 
 console.log("rendering checks passed");
