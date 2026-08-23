@@ -80,6 +80,7 @@
           <div class="content-layout">
             <section class="questions-section" aria-label="Questions">
               <div class="result-heading"><strong>Questions</strong><span id="result-count">0 results</span></div>
+              <div id="question-pagination" class="pagination-controls" hidden></div>
               <div id="question-results" class="questions-list"></div>
             </section>
             <aside class="directory-sidebar" aria-label="Collections">
@@ -340,6 +341,8 @@
       </form>
     </dialog>
     <script src="/vendor/katex/katex.min.js"></script>
+    <script src="/fetch_with_retries.js"></script>
+    <script src="/pagination.js"></script>
     <script src="/formula.js"></script>
     <script src="/app.js"></script>
   </body>

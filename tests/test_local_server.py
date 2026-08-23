@@ -214,7 +214,7 @@ class LocalServerTests(unittest.TestCase):
             'question.source?.year ?? question.metadata?.year ?? ""', script
         )
         self.assertIn("String(questionYear) === year", script)
-        self.assertIn("yearInput.addEventListener(\"input\", renderQuestionResults)", script)
+        self.assertIn("yearInput.addEventListener(\"input\", applyQuestionFilters)", script)
         self.assertIn("No questions match these filters.", script)
 
         status, payload = self.request("POST", "/api/case/load")
