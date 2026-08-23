@@ -2,6 +2,31 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
+## [0.15.0] - 2026-08-23
+
+### Added
+
+- OMML-to-LaTeX import adapter (`dq_questionbank.omml_import`): reads
+  native Word math (`m:oMath`/`m:oMathPara`) from a DOCX with the
+  standard library only, maps fractions, scripts, roots, delimiters,
+  named functions, and n-ary operators to deterministic LaTeX, and
+  preserves unknown constructs as text with an unsupported report
+  instead of guessing (#56).
+- Asset-evidence contract for image repair
+  (`dq_questionbank.asset_repair`): `AssetRepairProposal` binds the
+  question block, asset reference, current digest, and replacement
+  digest; binding enforces safe-relative-path rules, previewing
+  re-verifies both digests, and there is deliberately no
+  accept-and-write step in the core (#57).
+- Formula-image transcription candidates
+  (`dq_questionbank.formula_images`): digest-bound review records for
+  rasterized formulas with human transcription, contributor provenance,
+  and fail-closed evidence checks; no OCR engine or network access (#59).
+- Safe backup-and-restore drill (`examples/backup_restore_drill.py`):
+  backup, verify, restore, and compare phases over a caller-chosen
+  workspace with SHA-256 manifests, fail-closed verification, and a
+  written guide linked from the docs index (#60).
+
 ## [0.14.0] - 2026-08-23
 
 ### Added
