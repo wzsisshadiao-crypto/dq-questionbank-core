@@ -332,6 +332,7 @@
         </header>
         <label class="formula-source-label" for="formula-source">LaTeX source</label>
         <textarea id="formula-source" class="formula-source" rows="4" spellcheck="false" aria-describedby="formula-error"></textarea>
+        <div id="formula-rich-host" class="formula-rich-host" contenteditable="true" role="textbox" aria-multiline="true" aria-label="LaTeX source with visible empty slots (Tab jumps between slots)" spellcheck="false" hidden></div>
         <div id="formula-preview" class="formula-preview rendered-content" aria-live="polite" aria-label="Formula preview"></div>
         <p id="formula-error" class="formula-error" role="status"></p>
         <footer class="formula-actions">
@@ -344,6 +345,7 @@
     <script src="/fetch_with_retries.js"></script>
     <script src="/pagination.js"></script>
     <script src="/formula.js"></script>
+    <script src="/rich_edit.js"></script>
     <script src="/app.js"></script>
   </body>
 </html>

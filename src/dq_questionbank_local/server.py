@@ -46,6 +46,7 @@ _STATIC_FILES = {
     "/fetch_with_retries.js": "fetch_with_retries.js",
     "/formula.js": "formula.js",
     "/pagination.js": "pagination.js",
+    "/rich_edit.js": "rich_edit.js",
     "/styles.css": "styles.css",
     "/vendor/katex/katex.min.css": "vendor/katex/katex.min.css",
     "/vendor/katex/katex.min.js": "vendor/katex/katex.min.js",

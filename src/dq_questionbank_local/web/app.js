@@ -1067,6 +1067,20 @@ function renderEditorTextPreview(container, value) {
 const formulaDialog = document.querySelector("#formula-dialog");
 const formulaModeControl = document.querySelector("#formula-mode");
 const formulaSourceInput = document.querySelector("#formula-source");
+const formulaRichHost = document.querySelector("#formula-rich-host");
+const formulaRichEditor = globalThis.dqRichEdit && formulaRichHost
+  ? globalThis.dqRichEdit.createRichFormulaEditor(formulaRichHost, {
+      getLatex: () => formulaSourceInput.value,
+      onChange: (latex) => {
+        formulaSourceInput.value = latex;
+        updateFormulaPreview();
+      },
+    })
+  : null;
+if (formulaRichEditor) {
+  formulaRichHost.hidden = false;
+  formulaSourceInput.hidden = true;
+}
 const formulaPreviewPane = document.querySelector("#formula-preview");
 const formulaErrorLine = document.querySelector("#formula-error");
 const formulaApplyButton = document.querySelector("#formula-apply");
@@ -1125,8 +1139,13 @@ function openFormulaEditor(textarea, range = null) {
   formulaDialogTitle.textContent = target ? "Edit formula block" : "Insert formula block";
   updateFormulaPreview();
   formulaDialog.showModal();
-  formulaSourceInput.focus();
-  formulaSourceInput.select();
+  if (formulaRichEditor) {
+    formulaRichEditor.refresh();
+    formulaRichHost.focus();
+  } else {
+    formulaSourceInput.focus();
+    formulaSourceInput.select();
+  }
 }
 
 function applyFormulaEdit() {
