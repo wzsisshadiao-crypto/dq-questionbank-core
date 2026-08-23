@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sqlite3
 import sys
 from pathlib import Path
 
@@ -159,6 +160,21 @@ def build_parser():
     word.add_argument("--port", default=8766, type=int)
     word = commands.add_parser("word-macro", help="Export the bundled Word VBA module.")
     word.add_argument("-o", "--output", type=Path, required=True)
+    audit = commands.add_parser(
+        "audit", help="Run read-only workspace health checks (never repairs)."
+    )
+    audit.add_argument("workspace", type=Path, help="Workspace root with question_sets/.")
+    audit.add_argument(
+        "--assets-root",
+        type=Path,
+        help="Assets root (defaults to <workspace>/assets).",
+    )
+    audit.add_argument(
+        "--database", type=Path, help="Also check SQLite derived-column drift."
+    )
+    audit.add_argument(
+        "--json", dest="json_output", action="store_true", help="Emit the report as JSON."
+    )
     return parser
 
 
@@ -267,6 +283,31 @@ def main(argv=None):
         except OSError as exc:
             print(f"Word macro export error: {exc}", file=sys.stderr)
             return 2
+
+    if args.command == "audit":
+        from .workspace_audit import audit_workspace
+
+        try:
+            report = audit_workspace(args.workspace, args.assets_root, args.database)
+        except (OSError, sqlite3.Error) as exc:
+            print(f"Audit error: {exc}", file=sys.stderr)
+            return 2
+        if args.json_output:
+            print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
+        else:
+            for issue in report.issues:
+                parts = (issue.code, issue.location, issue.detail)
+                print(f"{parts[0].upper().replace('-', ' ')} {parts[1]}: {parts[2]}")
+            rows_note = f", {report.rows_checked} database row(s)" if report.rows_checked else ""
+            summary = (
+                f"Audited {report.sets_checked} set(s), "
+                f"{report.references_checked} asset reference(s), "
+                f"{report.assets_checked} asset file(s)"
+                + rows_note
+                + ("." if report.ok else f"; {len(report.issues)} issue(s).")
+            )
+            print(summary)
+        return 0 if report.ok else 1
 
     if not args.source.is_file():
         print(f"Input file not found: {args.source}", file=sys.stderr)
