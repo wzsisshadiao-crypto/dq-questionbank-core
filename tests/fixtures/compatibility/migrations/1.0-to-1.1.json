@@ -1,0 +1,109 @@
+{
+  "fixture_format": "dq-questionbank-migration-fixture-1",
+  "description": "Schema 1.1 promotes question-level metadata.analysis to a first-class analysis field.",
+  "from_version": "1.0",
+  "to_version": "1.1",
+  "source": {
+    "schema_version": "1.0",
+    "id": "migration-analysis",
+    "title": "Analysis promotion fixture",
+    "language": "en",
+    "questions": [
+      {
+        "schema_version": "1.0",
+        "id": "analysis-1",
+        "type": "short_answer",
+        "language": "en",
+        "stem": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "State the fixture result."
+            }
+          ]
+        },
+        "answer": {
+          "kind": "text",
+          "value": "fixture"
+        },
+        "metadata": {
+          "analysis": "Factor the expression before substituting values.",
+          "workspace_hint": "check units"
+        }
+      },
+      {
+        "schema_version": "1.0",
+        "id": "analysis-2",
+        "type": "true_false",
+        "language": "en",
+        "stem": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "True or false: this fixture is synthetic."
+            }
+          ]
+        },
+        "answer": {
+          "kind": "text",
+          "value": "true"
+        }
+      }
+    ]
+  },
+  "expected": {
+    "schema_version": "1.1",
+    "id": "migration-analysis",
+    "title": "Analysis promotion fixture",
+    "language": "en",
+    "questions": [
+      {
+        "schema_version": "1.1",
+        "id": "analysis-1",
+        "type": "short_answer",
+        "language": "en",
+        "stem": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "State the fixture result."
+            }
+          ]
+        },
+        "answer": {
+          "kind": "text",
+          "value": "fixture"
+        },
+        "metadata": {
+          "workspace_hint": "check units"
+        },
+        "analysis": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "Factor the expression before substituting values."
+            }
+          ]
+        }
+      },
+      {
+        "schema_version": "1.1",
+        "id": "analysis-2",
+        "type": "true_false",
+        "language": "en",
+        "stem": {
+          "blocks": [
+            {
+              "type": "text",
+              "text": "True or false: this fixture is synthetic."
+            }
+          ]
+        },
+        "answer": {
+          "kind": "text",
+          "value": "true"
+        }
+      }
+    ]
+  }
+}

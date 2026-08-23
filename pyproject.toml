@@ -46,7 +46,10 @@ include-package-data = true
 license-files = ["LICENSE"]
 
 [tool.setuptools.data-files]
-"share/dq-questionbank-core/schema" = ["schema/question-set.schema.json"]
+"share/dq-questionbank-core/schema" = [
+  "schema/question-set.schema.json",
+  "schema/question-set-1.1.schema.json",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]

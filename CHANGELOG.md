@@ -2,6 +2,24 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
+## [Unreleased]
+
+### Added
+
+- Safer schema migration support between question model versions (#1):
+  schema 1.1 promotes question-level `metadata.analysis` to a first-class
+  `analysis` content-block field, shipped as
+  `schema/question-set-1.1.schema.json` next to the unchanged 1.0 schema.
+  `load_schema`/`schema_path` take an optional version, the `Question`
+  model round-trips `analysis`, and `validate_with_schema` dispatches on
+  the declared version while rejecting unknown ones explicitly. The
+  framework's first built-in `migrate(payload, "1.1")` edge bumps versions,
+  preserves unrelated extension metadata, never mutates its input, and
+  refuses ambiguous or backward paths with `SchemaVersionError`. New
+  constants `SUPPORTED_SCHEMA_VERSIONS` and `LATEST_SCHEMA_VERSION`; guide
+  in `docs/schema-migrations.md`; source/expected fixture and path-selection
+  tests included.
+
 ## [0.15.0] - 2026-08-23
 
 ### Added

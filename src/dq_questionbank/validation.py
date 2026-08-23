@@ -8,7 +8,14 @@ from pathlib import PurePosixPath, PureWindowsPath
 from typing import Any
 from urllib.parse import urlparse
 
-from .models import BLOCK_TYPES, QUESTION_TYPES, SCHEMA_VERSION, Content, Question, QuestionSet
+from .models import (
+    BLOCK_TYPES,
+    QUESTION_TYPES,
+    SUPPORTED_SCHEMA_VERSIONS,
+    Content,
+    Question,
+    QuestionSet,
+)
 
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 LANGUAGE_RE = re.compile(r"^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$")
@@ -79,12 +86,12 @@ def _asset_uri_is_safe(uri: str) -> bool:
 
 def validate_question(question: Question, path: str = "question") -> list[ValidationIssue]:
     issues: list[ValidationIssue] = []
-    if question.schema_version != SCHEMA_VERSION:
+    if question.schema_version not in SUPPORTED_SCHEMA_VERSIONS:
         issues.append(
             ValidationIssue(
                 f"{path}.schema_version",
                 "unsupported_schema",
-                f"Expected schema version {SCHEMA_VERSION}.",
+                "Expected schema version " + " or ".join(SUPPORTED_SCHEMA_VERSIONS) + ".",
             )
         )
     if not question.id.strip():
@@ -155,6 +162,8 @@ def validate_question(question: Question, path: str = "question") -> list[Valida
     issues.extend(_content_issues(question.stem, f"{path}.stem", set(asset_ids)))
     if question.solution:
         issues.extend(_content_issues(question.solution, f"{path}.solution", set(asset_ids)))
+    if question.analysis:
+        issues.extend(_content_issues(question.analysis, f"{path}.analysis", set(asset_ids)))
     for index, hint in enumerate(question.hints):
         issues.extend(_content_issues(hint, f"{path}.hints[{index}]", set(asset_ids)))
 
@@ -207,10 +216,12 @@ def validate_question(question: Question, path: str = "question") -> list[Valida
 
 def validate_question_set(question_set: QuestionSet) -> list[ValidationIssue]:
     issues: list[ValidationIssue] = []
-    if question_set.schema_version != SCHEMA_VERSION:
+    if question_set.schema_version not in SUPPORTED_SCHEMA_VERSIONS:
         issues.append(
             ValidationIssue(
-                "schema_version", "unsupported_schema", f"Expected schema version {SCHEMA_VERSION}."
+                "schema_version",
+                "unsupported_schema",
+                "Expected schema version " + " or ".join(SUPPORTED_SCHEMA_VERSIONS) + ".",
             )
         )
     if not question_set.id.strip():
@@ -323,14 +334,31 @@ def validate_with_schema(
     """
     issues: list[ValidationIssue] = []
     if schema is None:
-        try:
-            from .schema import load_schema
-            schema = load_schema()
-        except Exception as exc:
+        declared = payload.get("schema_version") if isinstance(payload, dict) else None
+        if declared is None:
+            version = "1.0"  # Structural validation reports the missing field.
+        elif declared in SUPPORTED_SCHEMA_VERSIONS:
+            version = declared
+        else:
+            version = None
             issues.append(
-                ValidationIssue("$", "schema_unavailable", str(exc), "error")
+                ValidationIssue(
+                    "schema_version",
+                    "unsupported_schema",
+                    f"Payload declares schema_version {declared!r}; expected one of: "
+                    + ", ".join(SUPPORTED_SCHEMA_VERSIONS)
+                    + ".",
+                )
             )
-            schema = None
+        if version is not None:
+            try:
+                from .schema import load_schema
+                schema = load_schema(version)
+            except Exception as exc:
+                issues.append(
+                    ValidationIssue("$", "schema_unavailable", str(exc), "error")
+                )
+                schema = None
     if schema is not None:
         try:
             import jsonschema

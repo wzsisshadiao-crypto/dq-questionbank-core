@@ -51,6 +51,8 @@ from .mapping_import import (
 )
 from .migration import list_migrations, migrate, register_migration
 from .models import (
+    LATEST_SCHEMA_VERSION,
+    SUPPORTED_SCHEMA_VERSIONS,
     Answer,
     Asset,
     Choice,
@@ -168,6 +170,8 @@ __all__ = [
     "migrate",
     "register_migration",
     "schema_path",
+    "LATEST_SCHEMA_VERSION",
+    "SUPPORTED_SCHEMA_VERSIONS",
     "validate_question",
     "validate_question_set",
     "validate_with_schema",
