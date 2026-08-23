@@ -82,7 +82,7 @@ The fastest way to try the visual workspace and make your first contribution is:
 5. Run one focused test.
 
 ```bash
-   python -m unittest tests.test_local_workspace -v
+   python -m unittest tests.test_local_server -v
 ```
 
 6. Find your next contribution.
