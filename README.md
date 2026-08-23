@@ -377,8 +377,9 @@ The test suite covers model serialization, schema conformance, validation, unsaf
 ## Compatibility
 
 Python 3.10-3.12. See [`docs/compatibility.md`](docs/compatibility.md) for format-specific notes,
-[`docs/public-api.md`](docs/public-api.md) for the stable Python API, and
-[`docs/filesystem-storage.md`](docs/filesystem-storage.md) for the local reference adapter.
+[`docs/public-api.md`](docs/public-api.md) for the stable Python API,
+[`docs/filesystem-storage.md`](docs/filesystem-storage.md) for the local reference adapter, and
+[`docs/backup-restore.md`](docs/backup-restore.md) for the safe backup-and-restore drill.
 
 ## Language policy
 
