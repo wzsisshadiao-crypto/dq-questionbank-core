@@ -1,5 +1,10 @@
 """Database-neutral tools for structured educational questions."""
 
+from .asset_repair import (
+    AssetRepairProposal,
+    bind_asset_repair,
+    preview_asset_repair,
+)
 from .exceptions import (
     FormatDetectionError,
     FormatError,
@@ -118,6 +123,9 @@ __all__ = [
     "SchemaValidationError",
     "SchemaVersionError",
     "StaleFindingError",
+    "AssetRepairProposal",
+    "bind_asset_repair",
+    "preview_asset_repair",
     "FORMULA_IMAGE_FLAG",
     "FormulaImageCandidate",
     "detect_formula_image_candidates",

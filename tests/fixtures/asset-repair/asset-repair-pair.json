@@ -1,0 +1,39 @@
+{
+  "fixture_note": "Original synthetic specimen pair for the asset-evidence contract.",
+  "original_png_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR42mPQAgAALAArYfKSawAAAABJRU5ErkJggg==",
+  "original_sha256": "ed68458231f63a4d7664c8f9806447b0e8da1b81ca34ab0dfad1ccc697c2b296",
+  "replacement_png_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR42mOIBgAAXQBccQuRVQAAAABJRU5ErkJggg==",
+  "replacement_sha256": "e30d27fe8dccf6639d23d04501964b82e03fe20146913809c49b5790c80c281a",
+  "question": {
+    "schema_version": "1.0",
+    "id": "q-asset-repair-1",
+    "type": "short_answer",
+    "language": "en",
+    "stem": {
+      "blocks": [
+        {
+          "type": "text",
+          "text": "The diagram below was rasterized with the wrong bytes."
+        },
+        {
+          "type": "image",
+          "asset_id": "diagram-1",
+          "alt_text": "Synthetic diagram raster"
+        }
+      ]
+    },
+    "answer": {
+      "kind": "text",
+      "value": "A previewed repair replaces the bound bytes."
+    },
+    "assets": [
+      {
+        "id": "diagram-1",
+        "kind": "image",
+        "uri": "assets/diagram-1.png",
+        "media_type": "image/png",
+        "sha256": "ed68458231f63a4d7664c8f9806447b0e8da1b81ca34ab0dfad1ccc697c2b296"
+      }
+    ]
+  }
+}
