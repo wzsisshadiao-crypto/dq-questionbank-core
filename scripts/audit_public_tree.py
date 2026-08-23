@@ -28,6 +28,7 @@ REVIEWED_IMPORT_CASE_FILES = {
     Path("src/dq_questionbank/data/import_cases/coding-word/coding-source.docx"): b"PK\x03\x04",
     Path("src/dq_questionbank/data/import_cases/coding-pdf/worksheet.pdf"): b"%PDF-",
     Path("src/dq_questionbank/data/import_cases/coding-exam-omml/synthetic-exam.docx"): b"PK\x03\x04",
+    Path("src/dq_questionbank/data/import_cases/pdf-table/structured-worksheet.pdf"): b"%PDF-",
 }
 MAX_REVIEWED_DATABASE_SIZE = 1024 * 1024
 MAX_FILE_SIZE = 5 * 1024 * 1024

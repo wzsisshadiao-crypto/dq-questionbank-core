@@ -100,7 +100,7 @@ All examples in this quick start use the bundled synthetic case. The repository 
 | Area | In this repository today | Mature application / public migration |
 |---|---|---|
 | Data model | Versioned canonical schema, validation, migrations, compatibility fixtures | Mapping more application fields without coupling to the production database |
-| Import | JSON, Markdown, LaTeX, DOCX adapters; five review-first browser/AI Coding/Word/PDF/OMML cases with evidence and candidate sessions | Richer arbitrary-document adapters and visual candidate review |
+| Import | JSON, Markdown, LaTeX, DOCX adapters; six review-first browser/AI Coding/Word/PDF/OMML cases with evidence and candidate sessions | Richer arbitrary-document adapters and visual candidate review |
 | Visual frontend | Question Bank, Import, Paper, Bank Data, Quality, and Editor workspaces with scoped search, offline math and table rendering, editor handoff, and canonical JSON exchange | Candidate Review Center, richer structured editing, image repair, revision-bound quality history, and Word-native Export Center |
 | Storage | Atomic filesystem adapter, writable reference SQLite adapter, and read-only reviewed SQLite case adapter | User-selected local database adapters behind the same canonical boundary |
 | Export | JSON, Markdown, LaTeX, conventional DOCX, and managed Word reference blocks with a bundled loopback VBA client | Broader Word-version compatibility fixtures and application-specific rendering adapters |
@@ -256,7 +256,7 @@ dq word-serve reviewed.json
 See [Word Publishing](docs/word-publishing-envelope.md) for Word setup,
 revision/stale rules, rollback behavior, compatibility, and the bridge API.
 
-Replay the five review-first import routes or adapt one as a custom bundle:
+Replay the six review-first import routes or adapt one as a custom bundle:
 
 ```bash
 dq intake cases
@@ -265,7 +265,8 @@ dq intake prepare path/to/bundle -o candidate-session.json
 ```
 
 The installed cases cover manual browser entry, browser AI, regular AI Coding,
-PDF AI Coding, and exam-specific AI Coding with native Word OMML. All routes use
+PDF AI Coding, exam-specific AI Coding with native Word OMML, and a structured
+PDF intake whose stem carries a table and formula through review. All routes use
 the same digest-bound evidence, proposal, validation, review, and export states;
 none persists automatically. See [Review-first import cases](docs/import-cases.md).
 

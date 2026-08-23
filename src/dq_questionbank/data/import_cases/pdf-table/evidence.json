@@ -1,0 +1,28 @@
+{
+  "evidence": [
+    {
+      "excerpt": "The table below lists the outcomes of a synthetic experiment.",
+      "excerpt_sha256": "c54da7ddf7e0bc6f5d72029559994b76dc5ed71fed0dc59b0e2c0577d9c2089d",
+      "field": "stem",
+      "locator": "page 1, question T-01",
+      "question_id": "pdf-table-001",
+      "source_path": "structured-worksheet.pdf"
+    },
+    {
+      "excerpt": "8 outcomes in total",
+      "excerpt_sha256": "26fac181483323b73081ab74a7d277cd6447bcbf6c9e7a82d2b977075009ceef",
+      "field": "answer",
+      "locator": "page 1, answer key",
+      "question_id": "pdf-table-001",
+      "source_path": "structured-worksheet.pdf"
+    },
+    {
+      "excerpt": "Adding the table column gives 3 + 5 = 8 outcomes.",
+      "excerpt_sha256": "5d0219ad5f64b61802432476db8029c2a63dfa277c9cb0ae045fcb7d03b3fdbf",
+      "field": "solution",
+      "locator": "page 2, worked solution",
+      "question_id": "pdf-table-001",
+      "source_path": "structured-worksheet.pdf"
+    }
+  ]
+}

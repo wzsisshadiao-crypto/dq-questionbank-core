@@ -2,18 +2,13 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import zipfile
 from pathlib import Path
 from typing import Any
 from xml.sax.saxutils import escape
-
-from reportlab.lib import colors
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.lib.units import mm
-from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "src" / "dq_questionbank" / "data" / "import_cases"
@@ -109,7 +104,65 @@ def write_docx(path: Path, title: str, lines: list[str], *, omml: bool = False) 
             document.writestr(info, members[name].encode("utf-8"))
 
 
+def write_structured_pdf(path: Path) -> None:
+    """Write a minimal, deterministic PDF without third-party libraries.
+
+    The single page carries the table-and-formula worksheet as text; the
+    digest-bound evidence excerpts reference these exact lines.
+    """
+    lines = [
+        "Synthetic PDF Intake Worksheet (structured)",
+        "Question T-01. The table below lists the outcomes of a",
+        "synthetic experiment. Using the identity",
+        "sum_{k=0}^{n} binom(n, k) = 2^n, compute the total count.",
+        "Outcome | Count",
+        "Success | 3",
+        "Failure | 5",
+        "Answer key: 8 outcomes in total.",
+        "Worked solution: Adding the table column gives 3 + 5 = 8 outcomes.",
+    ]
+    stream_parts = ["BT /F1 11 Tf 14 TL 50 780 Td"]
+    for line in lines:
+        safe = line.replace("\\", "").replace("(", "").replace(")", "")
+        stream_parts.append(f"({safe}) Tj T*")
+    stream_parts.append("ET")
+    stream = "\n".join(stream_parts).encode("latin-1")
+
+    objects = [
+        b"<< /Type /Catalog /Pages 2 0 R >>",
+        b"<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+        b"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] "
+        b"/Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+        b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+        b"<< /Length " + str(len(stream)).encode() + b" >>\nstream\n" + stream + b"\nendstream",
+    ]
+
+    out = bytearray(b"%PDF-1.4\n")
+    offsets = []
+    for index, body in enumerate(objects, start=1):
+        offsets.append(len(out))
+        out += f"{index} 0 obj\n".encode()
+        out += body
+        out += b"\nendobj\n"
+    xref_at = len(out)
+    out += b"xref\n0 " + str(len(objects) + 1).encode() + b"\n"
+    out += b"0000000000 65535 f \n"
+    for offset in offsets:
+        out += f"{offset:010d} 00000 n \n".encode()
+    out += (
+        b"trailer\n<< /Size " + str(len(objects) + 1).encode()
+        + b" /Root 1 0 R >>\nstartxref\n" + str(xref_at).encode() + b"\n%%EOF\n"
+    )
+    path.write_bytes(bytes(out))
+
+
 def write_pdf(path: Path) -> None:
+    from reportlab.lib import colors
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.lib.units import mm
+    from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+
     styles = getSampleStyleSheet()
     document = SimpleDocTemplate(
         str(path),
@@ -147,7 +200,9 @@ def write_pdf(path: Path) -> None:
     document.build(story)
 
 
-def content(text: str) -> dict[str, Any]:
+def content(text: Any) -> dict[str, Any]:
+    if isinstance(text, dict) and isinstance(text.get("blocks"), list):
+        return copy.deepcopy(text)
     return {"blocks": [{"type": "text", "text": text}]}
 
 
@@ -183,8 +238,14 @@ def build_case(spec: dict[str, Any]) -> None:
     source_path = case_dir / source_name
     if source_path.suffix == ".json":
         write_json(source_path, spec["source_payload"])
+    elif source_path.name == "structured-worksheet.pdf":
+        write_structured_pdf(source_path)
     elif source_path.suffix == ".pdf":
-        write_pdf(source_path)
+        try:
+            write_pdf(source_path)
+        except ImportError:
+            if not source_path.exists():
+                raise
     else:
         write_docx(
             source_path,
@@ -551,6 +612,76 @@ def case_specs() -> list[dict[str, Any]]:
                 }
             ],
             "decision_by_id": {"exam-002": "rejected"},
+        },
+        {
+            "id": "pdf-table",
+            "title": "PDF intake with structured table and formula",
+            "route": "ai_coding_pdf",
+            "source_name": "structured-worksheet.pdf",
+            "records": [
+                {
+                    "external_id": "pdf-table-001",
+                    "subject": "Statistics",
+                    "prompt": {
+                        "blocks": [
+                            {
+                                "type": "text",
+                                "text": "The table below lists the outcomes of a synthetic experiment. "
+                                "Using the identity ",
+                            },
+                            {
+                                "type": "math",
+                                "latex": "\\sum_{k=0}^{n} \\binom{n}{k} = 2^n",
+                                "metadata": {"display": False},
+                            },
+                            {"type": "text", "text": ", compute the total count of outcomes."},
+                            {
+                                "type": "table",
+                                "rows": [
+                                    ["Outcome", "Count"],
+                                    ["Success", "3"],
+                                    ["Failure", "5"],
+                                ],
+                                "metadata": {"header_rows": 1},
+                            },
+                        ]
+                    },
+                    "answer": "8 outcomes in total",
+                    "solution": "Adding the table column gives 3 + 5 = 8 outcomes.",
+                    "tags": ["tables", "binomial-identity"],
+                    "extraction_profile": "synthetic-pdf-table-v1",
+                }
+            ],
+            "defaults": {"type": "short_answer", "language": "en"},
+            "answer_kind": "text",
+            "answer_transform": "text_answer",
+            "summary": (
+                "A PDF worksheet keeps page evidence while a structured stem "
+                "carries its table and formula through review."
+            ),
+            "evidence": [
+                evidence(
+                    "pdf-table-001",
+                    "stem",
+                    "structured-worksheet.pdf",
+                    "page 1, question T-01",
+                    "The table below lists the outcomes of a synthetic experiment.",
+                ),
+                evidence(
+                    "pdf-table-001",
+                    "answer",
+                    "structured-worksheet.pdf",
+                    "page 1, answer key",
+                    "8 outcomes in total",
+                ),
+                evidence(
+                    "pdf-table-001",
+                    "solution",
+                    "structured-worksheet.pdf",
+                    "page 2, worked solution",
+                    "Adding the table column gives 3 + 5 = 8 outcomes.",
+                ),
+            ],
         },
     ]
 

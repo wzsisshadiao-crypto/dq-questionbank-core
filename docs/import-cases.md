@@ -1,8 +1,9 @@
 # Review-first import cases
 
-Version 0.7 ships five executable, synthetic cases behind one intake contract.
-They demonstrate the handoff from source-specific extraction to canonical review;
-they do not claim that one generic parser can understand every PDF or Word layout.
+The repository ships six executable, synthetic cases behind one intake
+contract. They demonstrate the handoff from source-specific extraction to
+canonical review; they do not claim that one generic parser can understand
+every PDF or Word layout.
 
 ## Run the cases
 
@@ -23,6 +24,7 @@ application question bank.
 | `coding-word` | Regular AI Coding | DOCX | Source-specific extraction maps through the shared contract |
 | `coding-pdf` | PDF AI Coding | Renderable PDF | Page locators remain attached to mapped fields |
 | `coding-exam-omml` | Exam-specific AI Coding | DOCX with native OMML | Exam profile, native equation evidence, and rejection |
+| `pdf-table` | PDF AI Coding (structured) | Minimal stdlib-generated PDF | A structured stem carries its table and formula through review (#18) |
 
 All materials are original synthetic fixtures. The cases contain no provider,
 credential, private prompt, production database field, or real question-bank
