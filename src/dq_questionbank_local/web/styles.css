@@ -545,3 +545,49 @@ input:focus, select:focus, textarea:focus { border-color: var(--blue); outline: 
 .formula-error:empty { display: none; }
 .formula-dialog.has-error .formula-preview { border-color: var(--danger); }
 .formula-actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+/* Paginated list controls (#96). */
+.pagination-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.4rem 0 0.6rem 0;
+}
+
+.pagination-controls.hidden {
+  display: none;
+}
+
+.pagination-controls .pagination-page {
+  min-width: 2.1rem;
+  padding: 0.2rem 0.5rem;
+  border: 0.06rem solid currentColor;
+  border-radius: 0.3rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.pagination-controls .pagination-page.active {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.pagination-controls .pagination-page[disabled] {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.pagination-controls .pagination-pages {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.pagination-controls .pagination-size {
+  margin-left: auto;
+}
+
+.pagination-controls .pagination-status {
+  color: inherit;
+  opacity: 0.8;
+}

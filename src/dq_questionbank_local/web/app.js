@@ -27,6 +27,16 @@ const bankView = document.querySelector("#bank-view");
 const emptyState = document.querySelector("#empty-state");
 const caseLoadError = document.querySelector("#case-load-error");
 const questionList = document.querySelector("#question-list");
+const questionPaginationContainer = document.querySelector("#question-pagination");
+const paginationAvailable = typeof createPagination === "function";
+const questionPagination = paginationAvailable
+  ? createPagination({ pageSize: 25 })
+  : {
+      setTotal() { return this; },
+      setMode() { return this; },
+      setPage() { return this; },
+      sliceFor(items) { return items; },
+    };
 const questionTemplate = document.querySelector("#question-template");
 const questionResults = document.querySelector("#question-results");
 const status = document.querySelector("#status");
@@ -359,7 +369,8 @@ function setStatus(message, isError = false) {
 }
 
 async function request(path, options = {}) {
-  const response = await fetch(path, options);
+  const fetcher = typeof fetchWithRetries === "function" ? fetchWithRetries : fetch;
+  const response = await fetcher(path, options);
   const body = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(body.error || "Request failed.");
   return body;
@@ -437,12 +448,12 @@ function renderFilters() {
   setFilterOptions(subjectFilter, state.subject, questions.map((item) => item.subject), (value) => {
     state.subject = value;
     renderFilters();
-    renderQuestionResults();
+    applyQuestionFilters();
   });
   setFilterOptions(typeFilter, state.type, questions.map((item) => item.type), (value) => {
     state.type = value;
     renderFilters();
-    renderQuestionResults();
+    applyQuestionFilters();
   });
 }
 
@@ -661,6 +672,11 @@ function renderQuestionResults() {
     .map((question, index) => ({ question, index }))
     .filter(({ question }) => !state.recycleIds.includes(question.id) && matchesFilters(question));
   document.querySelector("#result-count").textContent = `${matches.length} result${matches.length === 1 ? "" : "s"}`;
+  questionPagination.setTotal(matches.length);
+  questionPagination.setMode(matches.length ? "ready" : "empty");
+  if (paginationAvailable && questionPaginationContainer) {
+    renderPaginationControls(questionPaginationContainer, questionPagination, renderQuestionResults);
+  }
   questionResults.replaceChildren();
   if (!matches.length) {
     const message = document.createElement("p");
@@ -669,7 +685,14 @@ function renderQuestionResults() {
     questionResults.append(message);
     return;
   }
-  for (const { question, index } of matches) questionResults.append(makeQuestionCard(question, index));
+  for (const { question, index } of questionPagination.sliceFor(matches)) {
+    questionResults.append(makeQuestionCard(question, index));
+  }
+}
+
+function applyQuestionFilters() {
+  questionPagination.setPage(1);
+  renderQuestionResults();
 }
 
 function renderBank(payload) {
@@ -1757,9 +1780,9 @@ document.querySelector("#quality-view").addEventListener("click", (event) => {
   }
   renderQualityCenter();
 });
-searchInput.addEventListener("input", renderQuestionResults);
-searchScope.addEventListener("change", renderQuestionResults);
-yearInput.addEventListener("input", renderQuestionResults);
+searchInput.addEventListener("input", applyQuestionFilters);
+searchScope.addEventListener("change", applyQuestionFilters);
+yearInput.addEventListener("input", applyQuestionFilters);
 collectionSearch.addEventListener("input", () => renderSetList());
 editorQuestionSelect.addEventListener("change", () => {
   state.selectedQuestionIndex = Number(editorQuestionSelect.value);

@@ -43,7 +43,9 @@ _KATEX_FONT_FILES = {
 _STATIC_FILES = {
     "/": "index.html",
     "/app.js": "app.js",
+    "/fetch_with_retries.js": "fetch_with_retries.js",
     "/formula.js": "formula.js",
+    "/pagination.js": "pagination.js",
     "/styles.css": "styles.css",
     "/vendor/katex/katex.min.css": "vendor/katex/katex.min.css",
     "/vendor/katex/katex.min.js": "vendor/katex/katex.min.js",
