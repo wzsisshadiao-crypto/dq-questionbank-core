@@ -9,8 +9,8 @@
  * each table stood; mergeEditableContent parses the edited text back into
  * blocks and swaps each marker for the (possibly re-edited) table block in
  * order. Deleting a marker deletes its table; duplicating a marker inserts
- * the table once (first occurrence wins). Everything is pure and mirrors
- * dqFormula's flatten/parse round-trip for math and text.
+ * the table once (first occurrence wins). The split/merge helpers stay pure
+ * and mirror dqFormula's flatten/parse round-trip for math and text.
  */
 
 (function (global) {
@@ -73,10 +73,41 @@
     return { blocks };
   }
 
+  function editorRows(grid) {
+    return [...grid.querySelectorAll(".table-edit-row")].map((row) =>
+      [...row.querySelectorAll(".table-cell-input")].map((cell) => cell.value)
+    );
+  }
+
+  function installShapePreservingCollector() {
+    const collect = global.collectTableBlocks;
+    if (typeof collect !== "function" || collect.__dqPreservesTableRowShape) return;
+    function collectWithRowShape(field) {
+      const blocks = collect(field);
+      const grids = [...field.querySelectorAll(".table-edit-grid")];
+      return blocks.map((block, index) => {
+        const grid = grids[index];
+        return grid ? { ...block, rows: editorRows(grid) } : block;
+      });
+    }
+    collectWithRowShape.__dqPreservesTableRowShape = true;
+    global.collectTableBlocks = collectWithRowShape;
+  }
+
   global.dqTableEdit = {
     MARKER_RE,
     markerFor,
     splitEditableContent,
     mergeEditableContent,
   };
+
+  // table_edit.js is loaded before app.js. Install the DOM bridge only after
+  // app.js has declared collectTableBlocks, while keeping the core helpers pure.
+  if (global.document) {
+    if (global.document.readyState === "loading") {
+      global.document.addEventListener("DOMContentLoaded", installShapePreservingCollector, { once: true });
+    } else {
+      global.setTimeout(installShapePreservingCollector, 0);
+    }
+  }
 })(globalThis);

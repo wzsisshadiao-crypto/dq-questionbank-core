@@ -21,6 +21,10 @@ const APP_SOURCE = fs.readFileSync(
   path.join(REPOSITORY_ROOT, "src", "dq_questionbank_local", "web", "app.js"),
   "utf-8",
 );
+const TABLE_EDIT_SOURCE = fs.readFileSync(
+  path.join(REPOSITORY_ROOT, "src", "dq_questionbank_local", "web", "table_edit.js"),
+  "utf-8",
+);
 const FIXTURE = JSON.parse(
   fs.readFileSync(
     path.join(REPOSITORY_ROOT, "tests", "fixtures", "rendering", "table-math-question.json"),
@@ -116,14 +120,18 @@ function makeKatex(options) {
 }
 
 function loadApp(katexStub) {
+  const documentListeners = {};
   const documentStub = {
     body: makeStubElement("body"),
+    readyState: "loading",
     createElement: (tag) => makeStubElement(tag),
     createTextNode: (text) => ({ nodeType: 3, textContent: String(text) }),
     querySelector: () => makeStubElement(),
     querySelectorAll: () => [],
     getElementById: () => makeStubElement(),
-    addEventListener: () => {},
+    addEventListener(type, callback) {
+      (documentListeners[type] ||= []).push(callback);
+    },
   };
   const sandbox = {
     console,
@@ -144,7 +152,9 @@ function loadApp(katexStub) {
   sandbox.dqFormula = require("../../src/dq_questionbank_local/web/formula.js");
   sandbox.katex = katexStub;
   vm.createContext(sandbox);
+  vm.runInContext(TABLE_EDIT_SOURCE, sandbox, { filename: "table_edit.js" });
   vm.runInContext(APP_SOURCE, sandbox, { filename: "app.js" });
+  for (const callback of documentListeners.DOMContentLoaded || []) callback();
   return sandbox;
 }
 
@@ -225,5 +235,46 @@ check("a blank cell stays an empty cell, not a missing row or column", () => {
   assert.equal(textOf(runCells[1]), "", "the blank cell renders empty but present");
 });
 
-console.log("rendering checks passed");
+function makeEditableGrid(block) {
+  const rowNodes = block.rows.map((values, rowIndex) => {
+    const cells = values.map((value, columnIndex) => ({
+      value,
+      dataset: { row: String(rowIndex), column: String(columnIndex) },
+    }));
+    return {
+      querySelectorAll(selector) {
+        return selector === ".table-cell-input" ? cells : [];
+      },
+    };
+  });
+  return {
+    dataset: { originalBlock: JSON.stringify(block) },
+    querySelectorAll(selector) {
+      if (selector === ".table-edit-row") return rowNodes;
+      if (selector === ".table-cell-input") {
+        return rowNodes.flatMap((row) => row.querySelectorAll(".table-cell-input"));
+      }
+      return [];
+    },
+    querySelector() { return null; },
+  };
+}
 
+check("table collection preserves ragged and empty rows", () => {
+  const original = {
+    type: "table",
+    rows: [["A", "B"], ["C"], []],
+    metadata: { header_rows: 1 },
+  };
+  const grid = makeEditableGrid(original);
+  const field = {
+    querySelectorAll(selector) {
+      return selector === ".table-edit-grid" ? [grid] : [];
+    },
+  };
+  const collected = JSON.parse(JSON.stringify(sandbox.collectTableBlocks(field)[0]));
+  assert.deepEqual(collected.rows, original.rows);
+  assert.deepEqual(collected.metadata, original.metadata);
+});
+
+console.log("rendering checks passed");
