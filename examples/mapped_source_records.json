@@ -1,0 +1,19 @@
+[
+  {
+    "Prompt": "Which number is prime?",
+    "Options": [
+      { "id": "A", "text": "4" },
+      { "id": "B", "text": "7" },
+      { "id": "C", "text": "9" }
+    ],
+    "Correct answer": "B",
+    "Explanation": "Only 7 has no divisors other than 1 and itself.",
+    "Topic": "Number theory"
+  },
+  {
+    "Question": "State the sum of two and three.",
+    "Rationale": "Two plus three equals five.",
+    "Worked solution": "2 + 3 = 5.",
+    "Difficulty": "easy"
+  }
+]

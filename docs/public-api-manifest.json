@@ -44,6 +44,9 @@
     "OmmlFormula",
     "parse_omml_element",
     "read_docx_math",
+    "FieldMapping",
+    "apply_mapping",
+    "load_mapping",
     "AIProvider",
     "ValidationIssue",
     "list_migrations",
@@ -275,6 +278,10 @@
       "kind": "value",
       "value": "'formula_image'"
     },
+    "FieldMapping": {
+      "kind": "class",
+      "signature": "(labels, set_id='mapped-import', set_title='Mapped import', language='en')"
+    },
     "FilesystemStorageAdapter": {
       "kind": "class",
       "signature": "(root)"
@@ -423,6 +430,10 @@
       "kind": "class",
       "signature": "(*args)"
     },
+    "apply_mapping": {
+      "kind": "function",
+      "signature": "(mapping, records)"
+    },
     "available_plugins": {
       "kind": "function",
       "signature": "(*, group='dq_questionbank.plugins')"
@@ -494,6 +505,10 @@
     "list_migrations": {
       "kind": "function",
       "signature": "()"
+    },
+    "load_mapping": {
+      "kind": "function",
+      "signature": "(path)"
     },
     "load_schema": {
       "kind": "function",

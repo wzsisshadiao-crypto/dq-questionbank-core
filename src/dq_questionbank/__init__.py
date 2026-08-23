@@ -44,6 +44,11 @@ from .latex_repair import (
     repair_latex_source,
     repair_operator_spacing,
 )
+from .mapping_import import (
+    FieldMapping,
+    apply_mapping,
+    load_mapping,
+)
 from .migration import list_migrations, migrate, register_migration
 from .models import (
     Answer,
@@ -150,6 +155,9 @@ __all__ = [
     "OmmlFormula",
     "parse_omml_element",
     "read_docx_math",
+    "FieldMapping",
+    "apply_mapping",
+    "load_mapping",
     "AIProvider",
     "ValidationIssue",
     "list_migrations",

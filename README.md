@@ -197,6 +197,7 @@ database table or one AI service the definition of the question.
 - Convention-based DOCX import/export with image extraction
 - Managed Word content-control export, revision-bound refresh, local bridge, and bundled VBA template
 - OMML-to-LaTeX import: native Word math (`m:oMath`) read back into deterministic LaTeX with fail-closed unknown-construct reporting
+- Configurable document-to-question mapping: explicit source-label mappings with documented alternates, unmapped content reported for review
 - Five executable import cases behind one evidence, proposal, review, and export contract
 - `QuestionImporter`, `QuestionExporter`, `StorageAdapter`, and `AIProvider` interfaces
 - Formula-image transcription candidates: digest-bound review records for rasterized formulas, with human transcription and fail-closed evidence checks
