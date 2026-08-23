@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "id": "latex-rule-set",
+  "title": "Synthetic LaTeX Repair Rule Set",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "q-rules-1",
+      "type": "short_answer",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Show that the identity holds for the wrapped expression "
+          },
+          {
+            "type": "math",
+            "latex": "\\left(\\sin x + \\cos x\\right)",
+            "metadata": { "display": false }
+          },
+          {
+            "type": "text",
+            "text": " and explain why the labeled spacing "
+          },
+          {
+            "type": "math",
+            "latex": "\\text{a  +  b}",
+            "metadata": { "display": false }
+          },
+          {
+            "type": "text",
+            "text": " must stay exactly as written."
+          }
+        ]
+      },
+      "answer": { "kind": "text", "value": "The three bounded rules compose in one pass and never touch prose spacing." }
+    },
+    {
+      "schema_version": "1.0",
+      "id": "q-rules-2",
+      "type": "short_answer",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "The malformed interval "
+          },
+          {
+            "type": "math",
+            "latex": "(x+1]",
+            "metadata": { "display": false }
+          },
+          {
+            "type": "text",
+            "text": " cannot be repaired deterministically and must stay for manual review."
+          }
+        ]
+      },
+      "answer": { "kind": "text", "value": "A mismatched delimiter is reported as a finding; the source is never rewritten." }
+    }
+  ]
+}

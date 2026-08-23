@@ -10,6 +10,27 @@ All public core models, quality checks, synthetic test fixtures, and visual work
 
 ---
 
+## Deterministic LaTeX Repair Rule Set
+
+Beyond detection rules, `src/dq_questionbank/latex_repair.py` ships a small
+set of deterministic, fail-closed repair rules with a shared contract:
+
+- every rule has a stable ID (`latex-missing-closing-brace`,
+  `latex-bare-function-names`, `latex-delimiter-spacing`,
+  `latex-operator-spacing`);
+- each outcome keeps the original `source` next to the proposed `latex`, so
+  the workflow always shows the result **before** a question is changed;
+- `repair_latex_source` composes the safe rules in a fixed order and reports
+  every applied rule ID on `applied_rules`;
+- ambiguous input — mismatched plain delimiters such as `(x+1]`, a missing
+  opening brace, multiple brace breaks — is never rewritten; it is returned
+  as a `finding_code` + `finding_message` pair for manual review.
+
+Synthetic before/after specimen pairs live in
+`tests/fixtures/quality/` (`missing-brace-repair`, `rule-set`) and are
+executed by `tests/test_latex_repair.py`, including idempotency and the
+preserved-prose guarantee (`\text{a  +  b}` stays verbatim).
+
 ## Repository Layout: Where Code and Assets Belong
 
 When contributing a new correction rule, files are organized as follows:

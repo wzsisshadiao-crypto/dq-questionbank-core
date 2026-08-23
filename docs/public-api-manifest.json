@@ -48,7 +48,11 @@
     "review_import_session",
     "run_import_case",
     "LatexRepairOutcome",
+    "repair_bare_function_names",
+    "repair_delimiter_spacing",
     "repair_latex_braces",
+    "repair_latex_source",
+    "repair_operator_spacing",
     "ENVELOPE_VERSION",
     "BlockResult",
     "WordPublisher",
@@ -255,7 +259,7 @@
     },
     "LatexRepairOutcome": {
       "kind": "class",
-      "signature": "(source, latex, rule_id=None, finding_code=None, finding_message=None)"
+      "signature": "(source, latex, rule_id=None, finding_code=None, finding_message=None, applied_rules=())"
     },
     "PLUGIN_ENTRY_POINT_GROUP": {
       "kind": "value",
@@ -397,7 +401,23 @@
       "kind": "function",
       "signature": "(from_version, to_version)"
     },
+    "repair_bare_function_names": {
+      "kind": "function",
+      "signature": "(latex)"
+    },
+    "repair_delimiter_spacing": {
+      "kind": "function",
+      "signature": "(latex)"
+    },
     "repair_latex_braces": {
+      "kind": "function",
+      "signature": "(latex)"
+    },
+    "repair_latex_source": {
+      "kind": "function",
+      "signature": "(latex)"
+    },
+    "repair_operator_spacing": {
       "kind": "function",
       "signature": "(latex)"
     },
