@@ -59,7 +59,6 @@ raises `TypeError`.
 Create a caller-owned `FormatRegistry` and register format instances explicitly.
 Explicit registration keeps import behavior auditable and avoids executing unknown
 package entry points.
-
 For reusable public plugins, publish one registrar under the stable
 `dq_questionbank.plugins` entry-point group:
 
@@ -89,6 +88,38 @@ discover_plugins(registry)
 application decision because loading an installed package executes its code.
 `available_plugins()` lists entry-point names without loading them; malformed,
 duplicate, or failing plugins raise `PluginDiscoveryError`.
+
+## A safe end-to-end example
+
+[`examples/plugin_discovery_demo.py`](../examples/plugin_discovery_demo.py)
+walks the whole discovery contract without installing anything or loading
+unknown code. Run it locally from a repository clone:
+
+```bash
+python examples/plugin_discovery_demo.py
+```
+
+Expected output in a clean environment (no plugins installed):
+
+```text
+entry-point group: dq_questionbank.plugins
+installed plugins (listing only, nothing loaded): 0
+listing is read-only; pass --opt-in-load to run discover_plugins()
+```
+
+The default run only calls `available_plugins()`, which reads distribution
+metadata and never imports plugin code. Passing `--opt-in-load` is the one
+moment third-party code runs — it calls `discover_plugins()` against a fresh
+registry, the same opt-in step an application takes deliberately:
+
+```bash
+python examples/plugin_discovery_demo.py --opt-in-load
+```
+
+With plugins installed, the listing shows their entry-point names and the
+opt-in run reports which registrars were invoked. The example uses only
+public interfaces, executes no repository code beyond itself, and fetches
+nothing; a focused test in `tests/test_plugins.py` pins its output.
 
 ## Private adapters
 
