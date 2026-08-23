@@ -385,8 +385,9 @@ Python 3.10-3.12. See [`docs/compatibility.md`](docs/compatibility.md) for forma
 [`docs/filesystem-storage.md`](docs/filesystem-storage.md) for the local reference adapter,
 [`docs/formula-images.md`](docs/formula-images.md) for formula-image transcription candidates,
 [`docs/asset-repair.md`](docs/asset-repair.md) for the image-repair evidence contract,
-[`docs/omml-import.md`](docs/omml-import.md) for importing native Word math, and
-[`docs/backup-restore.md`](docs/backup-restore.md) for the safe backup-and-restore drill.
+[`docs/omml-import.md`](docs/omml-import.md) for importing native Word math,
+[`docs/backup-restore.md`](docs/backup-restore.md) for the safe backup-and-restore drill, and
+[`docs/schema-migrations.md`](docs/schema-migrations.md) for upgrading stored documents between schema versions.
 
 ## Language policy
 

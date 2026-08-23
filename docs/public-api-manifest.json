@@ -57,6 +57,8 @@
     "migrate",
     "register_migration",
     "schema_path",
+    "LATEST_SCHEMA_VERSION",
+    "SUPPORTED_SCHEMA_VERSIONS",
     "validate_question",
     "validate_question_set",
     "validate_with_schema",
@@ -326,6 +328,10 @@
       "kind": "class",
       "signature": "(id, title, route, source_type, summary, has_ai_proposal=False)"
     },
+    "LATEST_SCHEMA_VERSION": {
+      "kind": "value",
+      "value": "'1.1'"
+    },
     "LatexRepairOutcome": {
       "kind": "class",
       "signature": "(source, latex, rule_id=None, finding_code=None, finding_message=None, applied_rules=())"
@@ -352,7 +358,7 @@
     },
     "Question": {
       "kind": "class",
-      "signature": "(id, type, stem, language='en', subject=None, choices=<factory>, answer=None, solution=None, hints=<factory>, assets=<factory>, tags=<factory>, difficulty=None, source=None, taxonomy=<factory>, subquestions=<factory>, metadata=<factory>, schema_version='1.0')"
+      "signature": "(id, type, stem, language='en', subject=None, choices=<factory>, answer=None, solution=None, analysis=None, hints=<factory>, assets=<factory>, tags=<factory>, difficulty=None, source=None, taxonomy=<factory>, subquestions=<factory>, metadata=<factory>, schema_version='1.0')"
     },
     "QuestionBankError": {
       "kind": "class",
@@ -377,6 +383,10 @@
     "SEVERITIES": {
       "kind": "value",
       "value": "('error', 'warning', 'info')"
+    },
+    "SUPPORTED_SCHEMA_VERSIONS": {
+      "kind": "value",
+      "value": "('1.0', '1.1')"
     },
     "SchemaError": {
       "kind": "class",
@@ -512,7 +522,7 @@
     },
     "load_schema": {
       "kind": "function",
-      "signature": "()"
+      "signature": "(version='1.0')"
     },
     "migrate": {
       "kind": "function",
@@ -576,7 +586,7 @@
     },
     "schema_path": {
       "kind": "function",
-      "signature": "()"
+      "signature": "(version='1.0')"
     },
     "validate_envelope": {
       "kind": "function",

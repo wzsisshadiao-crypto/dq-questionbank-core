@@ -59,3 +59,18 @@ Missing opening braces, multiple breaks, and trailing escapes are never
 rewritten; they are reported as findings instead. This is the first bounded
 slice of the deterministic repair rule set described in the
 [Correction Rule Workflow](correction-rule-workflow.md).
+
+## Schema versions and migrations
+
+The package exports the multi-version schema surface:
+
+- `SUPPORTED_SCHEMA_VERSIONS` (`("1.0", "1.1")`) and `LATEST_SCHEMA_VERSION`
+  describe what the installed library can read and validate.
+- `load_schema` and `schema_path` take an optional `version` argument
+  (default `"1.0"`) and raise `SchemaVersionError` for unknown versions.
+- `migrate` upgrades a payload along registered paths; the built-in
+  `1.0 -> 1.1` edge promotes `metadata.analysis` to the first-class
+  `analysis` field and never mutates the input payload.
+
+See [Schema Versions and Migrations](schema-migrations.md) for the
+behavioral contract, failure modes, and fixtures.

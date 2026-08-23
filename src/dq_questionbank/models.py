@@ -6,6 +6,8 @@ from dataclasses import asdict, dataclass, field
 from typing import Any
 
 SCHEMA_VERSION = "1.0"
+LATEST_SCHEMA_VERSION = "1.1"
+SUPPORTED_SCHEMA_VERSIONS = ("1.0", "1.1")
 QUESTION_TYPES = {
     "single_choice",
     "multiple_choice",
@@ -237,6 +239,7 @@ class Question:
     choices: list[Choice] = field(default_factory=list)
     answer: Answer | None = None
     solution: Content | None = None
+    analysis: Content | None = None
     hints: list[Content] = field(default_factory=list)
     assets: list[Asset] = field(default_factory=list)
     tags: list[str] = field(default_factory=list)
@@ -259,6 +262,9 @@ class Question:
             answer=Answer.from_dict(data.get("answer")),
             solution=Content.from_dict(data["solution"])
             if data.get("solution") is not None
+            else None,
+            analysis=Content.from_dict(data["analysis"])
+            if data.get("analysis") is not None
             else None,
             hints=[Content.from_dict(item) for item in data.get("hints", [])],
             assets=[Asset.from_dict(item) for item in data.get("assets", [])],
@@ -284,6 +290,7 @@ class Question:
             "choices": [item.to_dict() for item in self.choices],
             "answer": self.answer.to_dict() if self.answer else None,
             "solution": self.solution.to_dict() if self.solution else None,
+            "analysis": self.analysis.to_dict() if self.analysis else None,
             "hints": [item.to_dict() for item in self.hints],
             "assets": [item.to_dict() for item in self.assets],
             "tags": self.tags,
