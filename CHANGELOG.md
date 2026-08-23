@@ -1,8 +1,15 @@
 # Changelog
 
-All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
+All notable changes will be documented here. The project follows semantic versioning.
 
-## [Unreleased]
+## [1.0.0] - 2026-08-23
+
+First stable release: the five planned migration batches are shipped, the four
+architecture issues (#1 schema migration, #2 quality contract, #5 review
+workflow, #6 Word publishing) are closed, and a 2026-08-23 file-level audit
+confirmed the public repository is a clean re-implementation with no private
+module copies or production data. Remaining eligible-after-review extractions
+are tracked publicly in the roadmap issue (#83).
 
 ### Added
 
@@ -19,6 +26,12 @@ All notable changes will be documented here. The project follows semantic versio
   constants `SUPPORTED_SCHEMA_VERSIONS` and `LATEST_SCHEMA_VERSION`; guide
   in `docs/schema-migrations.md`; source/expected fixture and path-selection
   tests included.
+
+### Changed
+
+- Package version bumped to 1.0.0 and the development status classifier
+  raised from Alpha to Beta. The public Python API recorded in
+  `docs/public-api-manifest.json` is stable from this release onward.
 
 ## [0.15.0] - 2026-08-23
 
