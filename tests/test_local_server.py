@@ -195,6 +195,46 @@ class LocalServerTests(unittest.TestCase):
         self.assertEqual(200, status)
         self.assertEqual("synthetic-database-case", payload["id"])
 
+    def test_source_year_filter_contract(self):
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+        connection.request("GET", "/")
+        response = connection.getresponse()
+        page = response.read().decode("utf-8")
+        connection.close()
+        self.assertEqual(200, response.status)
+        self.assertIn('id="question-year"', page)
+        self.assertIn('placeholder="All"', page)
+
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
+        connection.request("GET", "/app.js")
+        response = connection.getresponse()
+        script = response.read().decode("utf-8")
+        connection.close()
+        self.assertIn(
+            'question.source?.year ?? question.metadata?.year ?? ""', script
+        )
+        self.assertIn("String(questionYear) === year", script)
+        self.assertIn("yearInput.addEventListener(\"input\", renderQuestionResults)", script)
+        self.assertIn("No questions match these filters.", script)
+
+        status, payload = self.request("POST", "/api/case/load")
+        self.assertEqual(200, status)
+        years = {}
+        for question in payload["questions"]:
+            year = question.get("source", {}).get("year")
+            years[year] = years.get(year, 0) + 1
+        self.assertEqual(4, years.get(2025))
+        matched = [
+            question["id"]
+            for question in payload["questions"]
+            if question.get("source", {}).get("year") == 2025
+        ]
+        self.assertEqual(
+            ["DEMO_MATH_004", "DEMO_MATH_005", "DEMO_MATH_006", "DEMO_MATH_010"],
+            matched,
+        )
+        self.assertNotIn(9999, years)
+
     def test_search_empty_state_names_recovery_actions(self):
         connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)
         connection.request("GET", "/")
