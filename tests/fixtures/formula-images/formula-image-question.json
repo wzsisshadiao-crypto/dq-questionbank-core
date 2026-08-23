@@ -1,0 +1,40 @@
+{
+  "fixture_note": "Original synthetic specimen for formula-image candidate records.",
+  "image_png_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR42mPQAgAALAArYfKSawAAAABJRU5ErkJggg==",
+  "image_sha256": "ed68458231f63a4d7664c8f9806447b0e8da1b81ca34ab0dfad1ccc697c2b296",
+  "question": {
+    "schema_version": "1.0",
+    "id": "q-formula-image-1",
+    "type": "short_answer",
+    "language": "en",
+    "stem": {
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Derive the identity shown in the image below."
+        },
+        {
+          "type": "image",
+          "asset_id": "formula-1",
+          "alt_text": "Formula rasterized by the source document",
+          "metadata": {
+            "formula_image": true
+          }
+        }
+      ]
+    },
+    "answer": {
+      "kind": "text",
+      "value": "A human transcribes the formula into LaTeX."
+    },
+    "assets": [
+      {
+        "id": "formula-1",
+        "kind": "image",
+        "uri": "assets/formula-1.png",
+        "media_type": "image/png",
+        "sha256": "ed68458231f63a4d7664c8f9806447b0e8da1b81ca34ab0dfad1ccc697c2b296"
+      }
+    ]
+  }
+}

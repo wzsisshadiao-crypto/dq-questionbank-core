@@ -198,6 +198,7 @@ database table or one AI service the definition of the question.
 - Managed Word content-control export, revision-bound refresh, local bridge, and bundled VBA template
 - Five executable import cases behind one evidence, proposal, review, and export contract
 - `QuestionImporter`, `QuestionExporter`, `StorageAdapter`, and `AIProvider` interfaces
+- Formula-image transcription candidates: digest-bound review records for rasterized formulas, with human transcription and fail-closed evidence checks
 - Reference local filesystem storage with atomic canonical JSON writes
 - Writable reference SQLite storage adapter built on the standard-library `sqlite3` module
 - English-language CLI, lightweight playground, and operational local question-bank workspace
@@ -378,7 +379,8 @@ The test suite covers model serialization, schema conformance, validation, unsaf
 
 Python 3.10-3.12. See [`docs/compatibility.md`](docs/compatibility.md) for format-specific notes,
 [`docs/public-api.md`](docs/public-api.md) for the stable Python API,
-[`docs/filesystem-storage.md`](docs/filesystem-storage.md) for the local reference adapter, and
+[`docs/filesystem-storage.md`](docs/filesystem-storage.md) for the local reference adapter,
+[`docs/formula-images.md`](docs/formula-images.md) for formula-image transcription candidates, and
 [`docs/backup-restore.md`](docs/backup-restore.md) for the safe backup-and-restore drill.
 
 ## Language policy
