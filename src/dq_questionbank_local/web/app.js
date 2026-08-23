@@ -1366,6 +1366,7 @@ function updateEditorSelection() {
 }
 
 function setActiveEditorField(field) {
+  state.activeEditorField = field;
   for (const button of document.querySelectorAll("#editor-field-nav [data-editor-field]")) {
     const active = button.dataset.editorField === field;
     button.classList.toggle("active", active);
@@ -1373,6 +1374,32 @@ function setActiveEditorField(field) {
     else button.removeAttribute("aria-current");
   }
 }
+
+let editorNavScrollLockUntil = 0;
+
+function activeEditorFieldFromScroll() {
+  const card = document.querySelector(".edit-question-card:not([hidden])");
+  if (!card || state.view !== "editor") return;
+  const sections = [...card.querySelectorAll("[data-editor-section]")];
+  if (!sections.length) return;
+  const reference = editorNav.getBoundingClientRect().bottom + 24;
+  let active = sections[0].dataset.editorSection;
+  for (const section of sections) {
+    if (section.getBoundingClientRect().top <= reference) {
+      active = section.dataset.editorSection;
+    }
+  }
+  setActiveEditorField(active);
+}
+
+window.addEventListener(
+  "scroll",
+  () => {
+    if (Date.now() < editorNavScrollLockUntil) return;
+    requestAnimationFrame(activeEditorFieldFromScroll);
+  },
+  { passive: true },
+);
 
 function populateEditor(payload) {
   document.querySelector("#editor-title").textContent = payload.title;
@@ -1750,6 +1777,7 @@ document.querySelector("#editor-field-nav").addEventListener("click", (event) =>
   const button = event.target.closest("[data-editor-field]");
   if (!button) return;
   setActiveEditorField(button.dataset.editorField);
+  editorNavScrollLockUntil = Date.now() + 700;
   const card = document.querySelector(".edit-question-card:not([hidden])");
   card?.querySelector(`[data-editor-section="${button.dataset.editorField}"]`)
     ?.scrollIntoView({ behavior: "smooth", block: "start" });
