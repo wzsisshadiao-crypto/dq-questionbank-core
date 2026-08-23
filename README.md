@@ -6,6 +6,8 @@
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
 [![Release](https://img.shields.io/badge/release-v1.0.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![PyPI](https://img.shields.io/pypi/v/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
+[![Downloads](https://img.shields.io/pypi/dm/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 
 
 > **Community fixture call: help us test every legal question format.**
@@ -48,7 +50,7 @@ points without creating a second API or schema specification.
 
 ## Visual quick start
 
-The fastest way to try the visual workspace and make your first contribution is:
+The package is on PyPI: `pip install dq-questionbank-core` provides the `dq` CLI and the `dq-local` visual workspace launcher. The fastest way to try the visual workspace and make your first contribution is the clone path:
 
 1. Clone the repository and check it out.
 

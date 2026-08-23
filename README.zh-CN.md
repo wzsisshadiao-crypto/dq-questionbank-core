@@ -14,7 +14,9 @@ AI 辅助修正和多格式导出。题目内容可以使用中文或其他语�
 
 ## 快速开始
 
-需要 Python 3.10 或更新版本：
+需要 Python 3.10 或更新版本。包已发布到 PyPI：`pip install dq-questionbank-core` 提供 `dq` 命令行工具与 `dq-local` 可视化工作台启动器。
+
+从源码运行：
 
 ```bash
 python run.py
