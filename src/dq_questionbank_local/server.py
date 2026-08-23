@@ -43,6 +43,7 @@ _KATEX_FONT_FILES = {
 _STATIC_FILES = {
     "/": "index.html",
     "/app.js": "app.js",
+    "/draft_recovery.js": "draft_recovery.js",
     "/fetch_with_retries.js": "fetch_with_retries.js",
     "/formula.js": "formula.js",
     "/pagination.js": "pagination.js",
