@@ -199,6 +199,15 @@ database table or one AI service the definition of the question.
 - OMML-to-LaTeX import: native Word math (`m:oMath`) read back into deterministic LaTeX with fail-closed unknown-construct reporting
 - Configurable document-to-question mapping: explicit source-label mappings with documented alternates, unmapped content reported for review
 - Five executable import cases behind one evidence, proposal, review, and export contract
+- Import hardening: triage decisions (patch / full redo / needs human), duplicate preflight with normalized fingerprints, batch acceptance reports, conservative image-placement inference (explicit `unknown`, never a guess), shared-passage and bilingual stem splitters, and `(1)(2)` subpart inference onto canonical subquestions
+- Synthetic PDF toolchain: deterministic per-question splitting, auditable worksets with recall verification, and transcription skeletons pre-filled from deterministic prefixes
+- Safe-repair gate: every candidate edit must prove it only touched allowed fields, fixed the finding, and introduced no new errors
+- Pure question-id allocation helpers with collision-checked, bounded suffixing
+- Graded LaTeX normalization engine: `autoFixable` rules apply mechanically, `reviewReason` rules only ever propose
+- Conservative arithmetic consistency checks for numeric LaTeX answers (free variables and anything fishy are skipped with a reason)
+- Resumable batch quality-scan runs with leases, checkpoints, and exactly-once item semantics
+- `dq audit`: read-only workspace health checks (broken references, orphan assets, SQLite index drift) that never repair
+- Workspace frontend: paginated question lists, bounded-retry fetches, rich formula editing (visible empty slots, Tab navigation, caret repair, drag reordering), and structural table editing that keeps table blocks intact across saves
 - `QuestionImporter`, `QuestionExporter`, `StorageAdapter`, and `AIProvider` interfaces
 - Formula-image transcription candidates: digest-bound review records for rasterized formulas, with human transcription and fail-closed evidence checks
 - Reference local filesystem storage with atomic canonical JSON writes
@@ -243,6 +252,12 @@ Import a DOCX document:
 
 ```bash
 dq import exam.docx -o questions.json --assets-dir imported_assets
+```
+
+Audit a workspace read-only (never repairs):
+
+```bash
+dq audit path/to/workspace --database path/to/bank.db
 ```
 
 Publish reviewed canonical questions as refreshable Word blocks:
@@ -392,6 +407,12 @@ the packaging classifier remains `Development Status :: 4 - Beta`. See
 [`docs/omml-import.md`](docs/omml-import.md) for importing native Word math,
 [`docs/backup-restore.md`](docs/backup-restore.md) for the safe backup-and-restore drill, and
 [`docs/schema-migrations.md`](docs/schema-migrations.md) for upgrading stored documents between schema versions.
+Newer guides cover the import hardening and quality wave:
+[`docs/pdf-toolchain.md`](docs/pdf-toolchain.md),
+[`docs/image-placement.md`](docs/image-placement.md),
+[`docs/scan-runs.md`](docs/scan-runs.md),
+[`docs/arithmetic-checks.md`](docs/arithmetic-checks.md), and
+[`docs/latex-normalization.md`](docs/latex-normalization.md).
 
 ## Language policy
 
