@@ -14,6 +14,12 @@ from .exceptions import (
     SchemaVersionError,
     StaleFindingError,
 )
+from .formula_images import (
+    FORMULA_IMAGE_FLAG,
+    FormulaImageCandidate,
+    detect_formula_image_candidates,
+    fill_transcription,
+)
 from .intake import (
     ImportCase,
     export_reviewed_questions,
@@ -112,6 +118,10 @@ __all__ = [
     "SchemaValidationError",
     "SchemaVersionError",
     "StaleFindingError",
+    "FORMULA_IMAGE_FLAG",
+    "FormulaImageCandidate",
+    "detect_formula_image_candidates",
+    "fill_transcription",
     "Answer",
     "Asset",
     "Choice",

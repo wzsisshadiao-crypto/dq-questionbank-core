@@ -22,6 +22,10 @@
     "SchemaValidationError",
     "SchemaVersionError",
     "StaleFindingError",
+    "FORMULA_IMAGE_FLAG",
+    "FormulaImageCandidate",
+    "detect_formula_image_candidates",
+    "fill_transcription",
     "Answer",
     "Asset",
     "Choice",
@@ -257,6 +261,10 @@
       "kind": "value",
       "value": "'0.2'"
     },
+    "FORMULA_IMAGE_FLAG": {
+      "kind": "value",
+      "value": "'formula_image'"
+    },
     "FilesystemStorageAdapter": {
       "kind": "class",
       "signature": "(root)"
@@ -280,6 +288,10 @@
     "FormatWriteError": {
       "kind": "class",
       "signature": "(*args)"
+    },
+    "FormulaImageCandidate": {
+      "kind": "class",
+      "signature": "(question_id, target_field, asset_id, asset_uri, asset_sha256, latex='', transcribed_by=None, status='pending')"
     },
     "ImportBundleError": {
       "kind": "class",
@@ -413,6 +425,10 @@
       "kind": "function",
       "signature": "()"
     },
+    "detect_formula_image_candidates": {
+      "kind": "function",
+      "signature": "(question)"
+    },
     "detect_quality_findings": {
       "kind": "function",
       "signature": "(question)"
@@ -436,6 +452,10 @@
     "field_fingerprint": {
       "kind": "function",
       "signature": "(value)"
+    },
+    "fill_transcription": {
+      "kind": "function",
+      "signature": "(candidate, question, latex, contributor)"
     },
     "finding_state": {
       "kind": "function",
