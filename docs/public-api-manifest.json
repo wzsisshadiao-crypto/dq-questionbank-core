@@ -41,6 +41,9 @@
     "SourceMetadata",
     "StorageAdapter",
     "TaxonomyRef",
+    "OmmlFormula",
+    "parse_omml_element",
+    "read_docx_math",
     "AIProvider",
     "ValidationIssue",
     "list_migrations",
@@ -320,6 +323,10 @@
       "kind": "class",
       "signature": "(source, latex, rule_id=None, finding_code=None, finding_message=None, applied_rules=())"
     },
+    "OmmlFormula": {
+      "kind": "class",
+      "signature": "(latex, display, unsupported)"
+    },
     "PLUGIN_ENTRY_POINT_GROUP": {
       "kind": "value",
       "value": "'dq_questionbank.plugins'"
@@ -496,6 +503,10 @@
       "kind": "function",
       "signature": "(payload, target_version)"
     },
+    "parse_omml_element": {
+      "kind": "function",
+      "signature": "(element)"
+    },
     "prepare_import_bundle": {
       "kind": "function",
       "signature": "(bundle)"
@@ -511,6 +522,10 @@
     "question_fingerprint": {
       "kind": "function",
       "signature": "(question)"
+    },
+    "read_docx_math": {
+      "kind": "function",
+      "signature": "(source)"
     },
     "register_migration": {
       "kind": "function",
