@@ -380,7 +380,8 @@ The test suite covers model serialization, schema conformance, validation, unsaf
 Python 3.10-3.12. See [`docs/compatibility.md`](docs/compatibility.md) for format-specific notes,
 [`docs/public-api.md`](docs/public-api.md) for the stable Python API,
 [`docs/filesystem-storage.md`](docs/filesystem-storage.md) for the local reference adapter,
-[`docs/formula-images.md`](docs/formula-images.md) for formula-image transcription candidates, and
+[`docs/formula-images.md`](docs/formula-images.md) for formula-image transcription candidates,
+[`docs/asset-repair.md`](docs/asset-repair.md) for the image-repair evidence contract, and
 [`docs/backup-restore.md`](docs/backup-restore.md) for the safe backup-and-restore drill.
 
 ## Language policy

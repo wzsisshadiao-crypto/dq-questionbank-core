@@ -22,6 +22,9 @@
     "SchemaValidationError",
     "SchemaVersionError",
     "StaleFindingError",
+    "AssetRepairProposal",
+    "bind_asset_repair",
+    "preview_asset_repair",
     "FORMULA_IMAGE_FLAG",
     "FormulaImageCandidate",
     "detect_formula_image_candidates",
@@ -225,6 +228,10 @@
       "kind": "class",
       "signature": "(id, kind, uri, media_type=None, sha256=None, width=None, height=None, metadata=<factory>)"
     },
+    "AssetRepairProposal": {
+      "kind": "class",
+      "signature": "(question_id, target_field, asset_id, asset_uri, current_sha256, replacement_path, replacement_sha256, status='proposed')"
+    },
     "BlockResult": {
       "kind": "class",
       "signature": "(block_id, status, content=None, reason=None)"
@@ -413,6 +420,10 @@
       "kind": "function",
       "signature": "(*, group='dq_questionbank.plugins')"
     },
+    "bind_asset_repair": {
+      "kind": "function",
+      "signature": "(question, target_field, asset_id, replacement_path, assets_root)"
+    },
     "build_envelope": {
       "kind": "function",
       "signature": "(question_set, question_ids=None, *, document_id=None, service_origin='http://127.0.0.1:8766', mode='compose', roles=None)"
@@ -492,6 +503,10 @@
     "prepare_import_case": {
       "kind": "function",
       "signature": "(case_id)"
+    },
+    "preview_asset_repair": {
+      "kind": "function",
+      "signature": "(proposal, question, assets_root)"
     },
     "question_fingerprint": {
       "kind": "function",
