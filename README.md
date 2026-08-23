@@ -5,7 +5,7 @@
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v0.15.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![Release](https://img.shields.io/badge/release-v1.0.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 
 
 > **Community fixture call: help us test every legal question format.**
@@ -18,8 +18,8 @@
 **Three tasks we recommend right now**
 
 - **No code (LaTeX only):** [share one complex formula missing a single component](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/43)
-- **15-minute fixture:** [add a blank-cell table fixture](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/37)
-- **Small coding task:** [add a source-year filter regression test](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/9)
+- **15-minute fixture:** [share a tricky question format we can legally test](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/40)
+- **Small coding task:** [pick a bite-sized roadmap item](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/83)
 
 New small tasks are released a few at a time. Browse every open [good first issue](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for docs, multilingual-math, and frontend options.
 
@@ -380,7 +380,11 @@ The test suite covers model serialization, schema conformance, validation, unsaf
 
 ## Compatibility
 
-Python 3.10-3.12. See [`docs/compatibility.md`](docs/compatibility.md) for format-specific notes,
+Python 3.10-3.12. As of v1.0.0 the **public Python API, canonical schema, and
+storage contracts are stable**; the end-user application layer (visual
+workspace UX and real-world import coverage) is still maturing, which is why
+the packaging classifier remains `Development Status :: 4 - Beta`. See
+[`docs/compatibility.md`](docs/compatibility.md) for format-specific notes,
 [`docs/public-api.md`](docs/public-api.md) for the stable Python API,
 [`docs/filesystem-storage.md`](docs/filesystem-storage.md) for the local reference adapter,
 [`docs/formula-images.md`](docs/formula-images.md) for formula-image transcription candidates,
