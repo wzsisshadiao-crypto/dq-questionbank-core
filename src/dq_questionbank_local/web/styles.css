@@ -591,3 +591,20 @@ input:focus, select:focus, textarea:focus { border-color: var(--blue); outline: 
   color: inherit;
   opacity: 0.8;
 }
+
+/* Rich formula editing host (#93). */
+.formula-rich-host {
+  min-height: 5.2rem;
+  padding: 0.5rem 0.6rem;
+  border: 0.06rem dashed currentColor;
+  border-radius: 0.35rem;
+  font-family: monospace;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  outline: none;
+}
+
+.formula-rich-host:focus {
+  border-style: solid;
+}
