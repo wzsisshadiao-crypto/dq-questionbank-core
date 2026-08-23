@@ -19,7 +19,7 @@
 
 - **No code (LaTeX only):** [share one complex formula missing a single component](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/43)
 - **15-minute fixture:** [add a blank-cell table fixture](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/37)
-- **Small coding task:** [check that an empty search feels helpful](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/31)
+- **Small coding task:** [add a source-year filter regression test](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/9)
 
 New small tasks are released a few at a time. Browse every open [good first issue](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for docs, multilingual-math, and frontend options.
 
@@ -91,7 +91,7 @@ The fastest way to try the visual workspace and make your first contribution is:
 
    * [Issue #43](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/43) — add a complex LaTeX formula (no code)
    * [Issue #37](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/37) — add a blank-cell table fixture (15 min)
-   * [Issue #31](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/31) — check that an empty search feels helpful (small coding task)
+   * [Issue #9](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/9) — add a source-year filter regression test (small coding task)
 
 All examples in this quick start use the bundled synthetic case. The repository does not require access to the private application or production data.
 
