@@ -56,6 +56,11 @@ from .models import (
     SourceMetadata,
     TaxonomyRef,
 )
+from .omml_import import (
+    OmmlFormula,
+    parse_omml_element,
+    read_docx_math,
+)
 from .plugins import PLUGIN_ENTRY_POINT_GROUP, available_plugins, discover_plugins
 from .quality_findings import (
     DECISIONS,
@@ -142,6 +147,9 @@ __all__ = [
     "SourceMetadata",
     "StorageAdapter",
     "TaxonomyRef",
+    "OmmlFormula",
+    "parse_omml_element",
+    "read_docx_math",
     "AIProvider",
     "ValidationIssue",
     "list_migrations",
