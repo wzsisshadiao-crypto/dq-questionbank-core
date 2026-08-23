@@ -159,10 +159,14 @@ function renderTextWithMath(container, value, annotate = false) {
       math.classList.add("formula-block");
       math.dataset.formulaStart = String(cursor);
       math.dataset.formulaEnd = String(closing + delimiter.length);
+      math.dataset.formulaIndex = String(
+        container.querySelectorAll(".formula-block").length
+      );
+      math.draggable = true;
       math.setAttribute("role", "button");
       math.setAttribute("tabindex", "0");
       math.setAttribute("aria-label", delimiter === "$$" ? "Edit display formula" : "Edit inline formula");
-      math.title = "Edit formula";
+      math.title = "Click to edit, drag to reorder";
     }
     container.append(math);
     cursor = closing + delimiter.length;
@@ -1311,15 +1315,110 @@ function exportPaperDraft() {
   setStatus("Paper draft exported as canonical JSON.");
 }
 
+function splitEditableField(content) {
+  if (globalThis.dqTableEdit) return globalThis.dqTableEdit.splitEditableContent(content);
+  return { text: contentText(content), tables: [] };
+}
+
+function mergeEditableField(text, tables, language) {
+  if (globalThis.dqTableEdit) {
+    return globalThis.dqTableEdit.mergeEditableContent(text, tables, language);
+  }
+  return parseEditableContent(text, language);
+}
+
+function renderTableGrids(textarea, tables) {
+  if (!textarea || !globalThis.dqTableEdit) return;
+  const field = textarea.closest(".editor-field") || textarea.parentElement;
+  field.querySelectorAll(".table-edit-grid").forEach((grid) => grid.remove());
+  let anchor = textarea;
+  tables.forEach((block, index) => {
+    const grid = document.createElement("div");
+    grid.className = "table-edit-grid";
+    grid.dataset.tableIndex = String(index);
+    grid.dataset.originalBlock = JSON.stringify(block);
+    const label = document.createElement("p");
+    label.className = "table-edit-label";
+    label.textContent = `Table ${index + 1} — the marker [[table-${index + 1}]] in the text keeps its position; edit cells below.`;
+    grid.append(label);
+    const headerRows = Number(block.metadata?.header_rows || 0);
+    const headerColumns = Number(block.metadata?.header_columns || 0);
+    (block.rows || []).forEach((row, rowIndex) => {
+      const rowWrapper = document.createElement("div");
+      rowWrapper.className = "table-edit-row";
+      row.forEach((value, columnIndex) => {
+        const cell = document.createElement("textarea");
+        cell.className = "table-cell-input";
+        cell.rows = 1;
+        cell.value = String(value ?? "");
+        cell.dataset.row = String(rowIndex);
+        cell.dataset.column = String(columnIndex);
+        cell.setAttribute(
+          "aria-label",
+          `Table ${index + 1} cell row ${rowIndex + 1} column ${columnIndex + 1}`
+        );
+        if (rowIndex < headerRows || columnIndex < headerColumns) {
+          cell.classList.add("table-cell-header");
+        }
+        rowWrapper.append(cell);
+      });
+      grid.append(rowWrapper);
+    });
+    const caption = document.createElement("input");
+    caption.type = "text";
+    caption.className = "table-caption-input";
+    caption.value = block.metadata?.caption || "";
+    caption.setAttribute("aria-label", `Table ${index + 1} caption`);
+    caption.placeholder = "Table caption (optional)";
+    grid.append(caption);
+    anchor.insertAdjacentElement("afterend", grid);
+    anchor = grid;
+  });
+}
+
+function collectTableBlocks(field) {
+  if (!globalThis.dqTableEdit) return [];
+  return [...field.querySelectorAll(".table-edit-grid")].map((grid) => {
+    const original = JSON.parse(grid.dataset.originalBlock || "{}");
+    const cells = new Map();
+    let maxRow = -1;
+    let maxColumn = -1;
+    for (const cell of grid.querySelectorAll(".table-cell-input")) {
+      const row = Number(cell.dataset.row);
+      const column = Number(cell.dataset.column);
+      cells.set(`${row}:${column}`, cell.value);
+      maxRow = Math.max(maxRow, row);
+      maxColumn = Math.max(maxColumn, column);
+    }
+    const rows = [];
+    for (let row = 0; row <= maxRow; row += 1) {
+      const values = [];
+      for (let column = 0; column <= maxColumn; column += 1) {
+        values.push(cells.get(`${row}:${column}`) ?? "");
+      }
+      rows.push(values);
+    }
+    const metadata = { ...(original.metadata || {}) };
+    const caption = grid.querySelector(".table-caption-input")?.value.trim();
+    if (caption) metadata.caption = caption;
+    else delete metadata.caption;
+    return { ...original, type: "table", rows, metadata };
+  });
+}
+
 function addQuestion(question, index = questionList.children.length) {
   const fragment = questionTemplate.content.cloneNode(true);
   const card = fragment.querySelector(".edit-question-card");
   card.dataset.questionIndex = String(index);
   card.dataset.original = JSON.stringify(question);
-  card.dataset.originalStem = stemText(question);
+  const stemSplit = splitEditableField(question.stem);
+  const solutionSplit = splitEditableField(question.solution);
+  card.dataset.originalStem = stemSplit.text;
   card.dataset.originalAnswer = answerText(question.answer);
   card.dataset.originalAnalysis = String(question.metadata?.analysis || "");
-  card.dataset.originalSolution = contentText(question.solution);
+  card.dataset.originalSolution = solutionSplit.text;
+  card.dataset.originalStemTables = JSON.stringify(stemSplit.tables);
+  card.dataset.originalSolutionTables = JSON.stringify(solutionSplit.tables);
   fragment.querySelector(".question-number").textContent = `Question ${index + 1}`;
   fragment.querySelector(".question-editor-summary").textContent = [
     question.subject,
@@ -1337,7 +1436,8 @@ function addQuestion(question, index = questionList.children.length) {
   fragment.querySelector(".question-tags").value = (question.tags || []).join(", ");
   fragment.querySelector(".question-source-title").value = question.source?.title || "";
   fragment.querySelector(".question-source-year").value = question.source?.year ?? "";
-  fragment.querySelector(".question-stem").value = stemText(question);
+  fragment.querySelector(".question-stem").value = stemSplit.text;
+  renderTableGrids(fragment.querySelector(".question-stem"), stemSplit.tables);
   const stemPreview = fragment.querySelector(".stem-preview");
   stemPreview.hidden = false;
   if (hasStructuredBlocks(question.stem)) {
@@ -1355,7 +1455,8 @@ function addQuestion(question, index = questionList.children.length) {
     question.metadata?.analysis || "",
   );
   const solution = contentText(question.solution);
-  fragment.querySelector(".question-solution").value = solution;
+  fragment.querySelector(".question-solution").value = solutionSplit.text;
+  renderTableGrids(fragment.querySelector(".question-solution"), solutionSplit.tables);
   const solutionPreview = fragment.querySelector(".solution-preview");
   if (hasStructuredBlocks(question.solution)) renderStructuredContent(solutionPreview, question.solution);
   else renderEditorTextPreview(solutionPreview, solution);
@@ -1526,8 +1627,13 @@ function collectPayload() {
     else delete question.source.year;
     if (!Object.keys(question.source).length) delete question.source;
     const editedStem = card.querySelector(".question-stem").value;
-    if (editedStem !== card.dataset.originalStem) {
-      question.stem = parseEditableContent(editedStem, question.language);
+    const stemField = card.querySelector(".question-stem").closest(".editor-field")
+      || card.querySelector(".question-stem").parentElement;
+    const stemTables = collectTableBlocks(stemField);
+    const stemTablesChanged =
+      JSON.stringify(stemTables) !== card.dataset.originalStemTables;
+    if (editedStem !== card.dataset.originalStem || stemTablesChanged) {
+      question.stem = mergeEditableField(editedStem, stemTables, question.language);
     }
     const rows = choiceRows(card);
     if (rows.length || question.choices?.length) {
@@ -1575,9 +1681,19 @@ function collectPayload() {
       else delete question.metadata.analysis;
     }
     const editedSolution = card.querySelector(".question-solution").value;
-    if (editedSolution !== card.dataset.originalSolution) {
-      if (editedSolution) question.solution = parseEditableContent(editedSolution, question.language);
-      else delete question.solution;
+    const solutionField = card.querySelector(".question-solution").closest(".editor-field")
+      || card.querySelector(".question-solution").parentElement;
+    const solutionTables = collectTableBlocks(solutionField);
+    const solutionTablesChanged =
+      JSON.stringify(solutionTables) !== card.dataset.originalSolutionTables;
+    if (editedSolution !== card.dataset.originalSolution || solutionTablesChanged) {
+      if (editedSolution || solutionTables.length) {
+        question.solution = mergeEditableField(
+          editedSolution, solutionTables, question.language
+        );
+      } else {
+        delete question.solution;
+      }
     }
     if (!Object.keys(question.metadata).length) delete question.metadata;
     return question;
@@ -1848,6 +1964,11 @@ editorForm.addEventListener("click", (event) => {
   }
   const insertFormulaButton = event.target.closest(".editor-formula-insert, .choice-formula-insert");
   if (insertFormulaButton) {
+    const active = document.activeElement;
+    if (active && active.classList?.contains("table-cell-input")) {
+      openFormulaEditor(active, null);
+      return;
+    }
     const scope = insertFormulaButton.closest(".choice-row") || insertFormulaButton.closest(".editor-field");
     const textarea = scope?.querySelector("textarea");
     if (textarea) {
@@ -1886,6 +2007,49 @@ editorForm.addEventListener("keydown", (event) => {
   event.preventDefault();
   formulaBlock.click();
 });
+let formulaDragIndex = null;
+editorForm.addEventListener("dragstart", (event) => {
+  const formulaBlock = event.target.closest?.(".formula-block");
+  if (!formulaBlock) return;
+  formulaDragIndex = Number(formulaBlock.dataset.formulaIndex);
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", String(formulaDragIndex));
+  }
+});
+editorForm.addEventListener("dragover", (event) => {
+  if (formulaDragIndex === null) return;
+  if (!event.target.closest?.(".formula-block")) return;
+  event.preventDefault();
+  if (event.dataTransfer) event.dataTransfer.dropEffect = "move";
+});
+editorForm.addEventListener("drop", (event) => {
+  if (formulaDragIndex === null) return;
+  const target = event.target.closest?.(".formula-block");
+  if (!target) return;
+  event.preventDefault();
+  const targetIndex = Number(target.dataset.formulaIndex);
+  const sourceIndex = formulaDragIndex;
+  formulaDragIndex = null;
+  if (!Number.isInteger(sourceIndex) || !Number.isInteger(targetIndex)) return;
+  if (sourceIndex === targetIndex) return;
+  const field = target.closest(".editor-field");
+  const textarea = field?.querySelector("textarea");
+  if (!textarea || !globalThis.dqRichEdit) return;
+  const reordered = globalThis.dqRichEdit.moveMathBlock(
+    textarea.value, sourceIndex, targetIndex - sourceIndex
+  );
+  if (reordered === textarea.value) return;
+  textarea.value = reordered;
+  setEditorDirty(true);
+  const preview = field.querySelector(
+    ".stem-preview, .answer-preview, .analysis-preview, .solution-preview"
+  );
+  if (preview) renderEditorTextPreview(preview, reordered);
+});
+editorForm.addEventListener("dragend", () => {
+  formulaDragIndex = null;
+});
 formulaDialog.addEventListener("close", () => {
   formulaTarget = null;
 });
@@ -1911,6 +2075,8 @@ questionList.addEventListener("input", (event) => {
     renderEditorTextPreview(card.querySelector(".analysis-preview"), event.target.value);
   } else if (event.target.matches(".question-solution")) {
     renderEditorTextPreview(card.querySelector(".solution-preview"), event.target.value);
+  } else if (event.target.matches(".table-cell-input, .table-caption-input")) {
+    setEditorDirty(true);
   } else if (event.target.matches(".choice-id")) {
     refreshChoiceAnswerControls(card);
     card.querySelectorAll(".choice-content").forEach((content) => {

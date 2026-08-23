@@ -11,16 +11,16 @@ from pathlib import Path
 from dq_questionbank_local.server import create_server
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
-RICH_EDIT_SCRIPT = REPOSITORY_ROOT / "tests" / "js" / "test_rich_edit.js"
+TABLE_EDIT_SCRIPT = REPOSITORY_ROOT / "tests" / "js" / "test_table_edit.js"
 
 
-class RichFormulaEditingContractTests(unittest.TestCase):
-    def test_focused_rich_edit_workflow_runs_in_node(self):
+class TableEditingContractTests(unittest.TestCase):
+    def test_focused_table_edit_workflow_runs_in_node(self):
         node = shutil.which("node")
         if node is None:
-            self.skipTest("Node.js is required for the focused rich-edit tests")
+            self.skipTest("Node.js is required for the focused table-edit tests")
         completed = subprocess.run(
-            [node, str(RICH_EDIT_SCRIPT)],
+            [node, str(TABLE_EDIT_SCRIPT)],
             cwd=REPOSITORY_ROOT,
             capture_output=True,
             text=True,
@@ -29,11 +29,11 @@ class RichFormulaEditingContractTests(unittest.TestCase):
         self.assertEqual(
             0,
             completed.returncode,
-            f"rich-edit checks failed:\n{completed.stdout}\n{completed.stderr}",
+            f"table-edit checks failed:\n{completed.stdout}\n{completed.stderr}",
         )
-        self.assertIn("rich-edit checks passed", completed.stdout)
+        self.assertIn("table-edit checks passed", completed.stdout)
 
-    def test_served_workspace_exposes_the_rich_formula_editor(self):
+    def test_served_workspace_exposes_structural_table_editing(self):
         with tempfile.TemporaryDirectory() as temporary:
             server = create_server(Path(temporary), port=0)
             thread = threading.Thread(target=server.serve_forever)
@@ -42,7 +42,7 @@ class RichFormulaEditingContractTests(unittest.TestCase):
                 connection = http.client.HTTPConnection(
                     "127.0.0.1", server.server_port
                 )
-                connection.request("GET", "/rich_edit.js")
+                connection.request("GET", "/table_edit.js")
                 script = connection.getresponse().read().decode("utf-8")
                 connection.request("GET", "/app.js")
                 app = connection.getresponse().read().decode("utf-8")
@@ -54,21 +54,15 @@ class RichFormulaEditingContractTests(unittest.TestCase):
                 thread.join()
                 server.server_close()
 
-        self.assertIn("function createRichFormulaEditor", script)
-        self.assertIn("function moveMathBlock", script)
-        self.assertIn("function projectForEditing", script)
-        self.assertIn("function repairCaret", script)
-        self.assertIn('id="formula-rich-host"', page)
-        self.assertIn("rich_edit.js", page)
-        self.assertIn("createRichFormulaEditor(formulaRichHost", app)
-        self.assertIn("formulaRichEditor.refresh()", app)
-        self.assertIn("formulaRichHost.focus()", app)
-        self.assertIn("moveMathBlock(", app)
-        self.assertIn('"dragstart"', app)
-        self.assertIn('"dragover"', app)
-        self.assertIn('"drop"', app)
-        self.assertIn("math.draggable = true", app)
-        self.assertIn("dataset.formulaIndex", app)
+        self.assertIn("function splitEditableContent", script)
+        self.assertIn("function mergeEditableContent", script)
+        self.assertIn("[[table-", script)
+        self.assertIn("table_edit.js", page)
+        self.assertIn("function renderTableGrids(", app)
+        self.assertIn("function collectTableBlocks(", app)
+        self.assertIn("mergeEditableField(", app)
+        self.assertIn("table-cell-input", app)
+        self.assertIn("originalStemTables", app)
 
 
 if __name__ == "__main__":
