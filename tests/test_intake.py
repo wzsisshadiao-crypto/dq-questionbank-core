@@ -23,11 +23,18 @@ from dq_questionbank.cli import main
 
 ROOT = Path(__file__).resolve().parents[1]
 CASES = ROOT / "src" / "dq_questionbank" / "data" / "import_cases"
-CASE_IDS = ("manual-web", "web-ai", "coding-word", "coding-pdf", "coding-exam-omml")
+CASE_IDS = (
+    "manual-web",
+    "web-ai",
+    "coding-word",
+    "coding-pdf",
+    "coding-exam-omml",
+    "pdf-table",
+)
 
 
 class ImportCaseTests(unittest.TestCase):
-    def test_five_routes_are_discoverable(self):
+    def test_six_routes_are_discoverable(self):
         cases = list_import_cases()
         self.assertEqual(tuple(case.id for case in cases), CASE_IDS)
         self.assertEqual(

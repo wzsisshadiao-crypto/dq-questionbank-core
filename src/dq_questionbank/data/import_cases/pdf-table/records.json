@@ -1,0 +1,54 @@
+{
+  "records": [
+    {
+      "answer": "8 outcomes in total",
+      "external_id": "pdf-table-001",
+      "extraction_profile": "synthetic-pdf-table-v1",
+      "prompt": {
+        "blocks": [
+          {
+            "text": "The table below lists the outcomes of a synthetic experiment. Using the identity ",
+            "type": "text"
+          },
+          {
+            "latex": "\\sum_{k=0}^{n} \\binom{n}{k} = 2^n",
+            "metadata": {
+              "display": false
+            },
+            "type": "math"
+          },
+          {
+            "text": ", compute the total count of outcomes.",
+            "type": "text"
+          },
+          {
+            "metadata": {
+              "header_rows": 1
+            },
+            "rows": [
+              [
+                "Outcome",
+                "Count"
+              ],
+              [
+                "Success",
+                "3"
+              ],
+              [
+                "Failure",
+                "5"
+              ]
+            ],
+            "type": "table"
+          }
+        ]
+      },
+      "solution": "Adding the table column gives 3 + 5 = 8 outcomes.",
+      "subject": "Statistics",
+      "tags": [
+        "tables",
+        "binomial-identity"
+      ]
+    }
+  ]
+}

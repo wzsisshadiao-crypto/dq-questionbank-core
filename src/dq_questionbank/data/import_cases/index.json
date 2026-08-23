@@ -38,5 +38,13 @@
     "source_type": "docx",
     "summary": "An exam profile preserves native OMML evidence and demonstrates candidate rejection.",
     "title": "Exam-specific AI Coding intake with OMML"
+  },
+  {
+    "has_ai_proposal": false,
+    "id": "pdf-table",
+    "route": "ai_coding_pdf",
+    "source_type": "pdf",
+    "summary": "A PDF worksheet keeps page evidence while a structured stem carries its table and formula through review.",
+    "title": "PDF intake with structured table and formula"
   }
 ]
