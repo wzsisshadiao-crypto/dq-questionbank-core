@@ -13,7 +13,9 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 
 from .exceptions import ImportBundleError
-from .models import SCHEMA_VERSION, QuestionSet
+from .models import SCHEMA_VERSION, Question, QuestionSet
+from .quality_findings import detect_quality_findings
+from .safe_repair import evaluate_repair
 from .validation import validate_with_schema
 
 BUNDLE_VERSION = "1.0"
@@ -574,6 +576,24 @@ def review_import_session(
             if errors:
                 raise ImportBundleError(
                     f"Reviewed edit is invalid at {errors[0].path}: {errors[0].message}"
+                )
+            original_question = Question.from_dict(candidate["question"])
+            edited_question = Question.from_dict(edited)
+            declaration = entry.get("progress_note")
+            if declaration is not None and not isinstance(declaration, str):
+                raise ImportBundleError(
+                    "A safe-repair progress declaration must be a string."
+                )
+            gate = evaluate_repair(
+                original_question,
+                edited_question,
+                detect_quality_findings(original_question),
+                progress_declaration=declaration,
+            )
+            if not gate.allowed:
+                raise ImportBundleError(
+                    "Reviewed edit was denied by the safe-repair gate: "
+                    + ", ".join(gate.reasons)
                 )
             candidate["question"] = copy.deepcopy(edited)
             candidate["question_sha256"] = _digest(edited)

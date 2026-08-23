@@ -48,6 +48,32 @@ Bounded proposals (including AI-assisted ones) ride along as session
 metadata marked `requires_human_review` — they never change a candidate
 until a human decision applies them.
 
+## The safe-repair gate
+
+Every reviewed edit (`decide` with an `edited_question` payload) must
+pass the gate in `dq_questionbank.safe_repair` before it replaces a
+candidate. The gate fail-closes — an edit is allowed only when it
+proves it is safe, per three rules:
+
+1. **Field allowlist.** Only pre-declared question fields may change
+   (`stem`, `choices`, `answer`, `solution`, `analysis`, `hints`,
+   `tags`, `difficulty`, `metadata`, `subject`, `subquestions`). Ids,
+   question type, language, schema version, `source` provenance,
+   taxonomy, and assets are protected.
+2. **Proven progress.** When the candidate carries open quality
+   findings (from `detect_quality_findings`), the edit must resolve at
+   least one of them, or the decision must carry an explicit
+   `progress_note` declaration naming why not. An edit on a candidate
+   with no open findings has nothing to prove.
+3. **No new errors.** The edited question must not introduce new
+   semantic validation errors or new quality findings.
+
+A denied edit raises `ImportBundleError` with the machine-readable gate
+reason (`field-allowlist-violation`, `no-proven-progress`,
+`new-validation-errors`, `new-quality-findings`, or `malformed-edit`).
+Allowed edits leave the session document byte-identical to the legacy
+behavior — the gate records nothing, it only decides.
+
 ## Fixtures
 
 Stable serialized examples — pending, reviewed (accepted with edit,
