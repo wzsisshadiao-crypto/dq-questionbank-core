@@ -2,6 +2,23 @@
 
 All notable changes will be documented here. The project follows semantic versioning. `0.x` releases may introduce breaking changes.
 
+## [0.11.0] - 2026-08-23
+
+### Added
+
+- Writable reference SQLite storage adapter (`dq_questionbank.sqlite_storage`)
+  implementing the public `StorageAdapter` save/load contract with only the
+  standard-library `sqlite3` module.
+- Deterministic canonical-JSON persistence per question-set identifier;
+  saving an existing identifier replaces the row in one transaction
+  (documented last-write-wins behavior).
+- `contains` and `stored_ids` helpers for deterministic state inspection.
+- Runnable demo `examples/sqlite_storage_demo.py` that builds a disposable
+  database from the bundled synthetic fixture and validates the round trip
+  through the public validation API.
+- Storage documentation in `docs/sqlite-storage.md` covering the workflow,
+  duplicate-id behavior, and the trust boundary.
+
 ## [0.10.0] - 2026-08-23
 
 ### Added

@@ -10,6 +10,7 @@
     "QuestionBankError",
     "FormatRegistry",
     "FilesystemStorageAdapter",
+    "SqliteStorageAdapter",
     "PLUGIN_ENTRY_POINT_GROUP",
     "SchemaError",
     "SchemaNotFoundError",
@@ -338,6 +339,10 @@
     "SourceMetadata": {
       "kind": "class",
       "signature": "(title=None, author=None, year=None, uri=None, license=None, attribution=None, locator=None, metadata=<factory>)"
+    },
+    "SqliteStorageAdapter": {
+      "kind": "class",
+      "signature": "(path)"
     },
     "StaleFindingError": {
       "kind": "class",
