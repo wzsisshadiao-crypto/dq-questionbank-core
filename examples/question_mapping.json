@@ -1,0 +1,15 @@
+{
+  "set_id": "training-exam",
+  "set_title": "Training exam (mapped)",
+  "language": "en",
+  "labels": [
+    { "source": "Prompt", "canonical": "stem" },
+    { "source": "Question", "canonical": "stem" },
+    { "source": "Options", "canonical": "choices" },
+    { "source": "Correct answer", "canonical": "answer" },
+    { "source": "Explanation", "canonical": "analysis" },
+    { "source": "Rationale", "canonical": "analysis" },
+    { "source": "Worked solution", "canonical": "solution" },
+    { "source": "Topic", "canonical": "subject" }
+  ]
+}
