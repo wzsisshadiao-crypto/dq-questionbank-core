@@ -47,6 +47,7 @@ _STATIC_FILES = {
     "/formula.js": "formula.js",
     "/pagination.js": "pagination.js",
     "/rich_edit.js": "rich_edit.js",
+    "/table_edit.js": "table_edit.js",
     "/styles.css": "styles.css",
     "/vendor/katex/katex.min.css": "vendor/katex/katex.min.css",
     "/vendor/katex/katex.min.js": "vendor/katex/katex.min.js",

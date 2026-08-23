@@ -608,3 +608,49 @@ input:focus, select:focus, textarea:focus { border-color: var(--blue); outline: 
 .formula-rich-host:focus {
   border-style: solid;
 }
+
+/* Draggable formula blocks in editor previews (#93 slice 4). */
+.formula-block[draggable="true"] {
+  cursor: grab;
+}
+
+.formula-block[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+/* Structural table editing grids (#121). */
+.table-edit-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0.4rem 0;
+  padding: 0.5rem;
+  border: 0.06rem dashed currentColor;
+  border-radius: 0.35rem;
+}
+
+.table-edit-grid .table-edit-label {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.table-edit-grid .table-edit-row {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.table-edit-grid .table-cell-input {
+  flex: 1;
+  min-width: 4rem;
+  resize: vertical;
+  font-family: monospace;
+}
+
+.table-edit-grid .table-cell-header {
+  font-weight: 700;
+}
+
+.table-edit-grid .table-caption-input {
+  width: 100%;
+}
