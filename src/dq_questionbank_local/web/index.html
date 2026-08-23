@@ -26,7 +26,7 @@
               <button class="more-nav-item" type="button" disabled title="Requires the public asset-evidence contract">Image Repair</button>
               <button id="export-nav" class="more-nav-item" type="button" disabled>Export Center</button>
               <button id="theme-toggle" class="more-nav-item" type="button">Light theme</button>
-              <button class="more-nav-item recycle-nav-item" type="button" disabled title="Planned public migration">Recycle Bin</button>
+              <button id="recycle-nav" class="more-nav-item" type="button">Recycle Bin</button>
             </div>
           </div>
         </nav>
@@ -214,6 +214,13 @@
               <code>dq convert collection.json --output-format docx -o paper.docx</code>
             </article>
           </div>
+        </section>
+
+        <section id="recycle-view" class="view" hidden>
+          <header class="view-title-row">
+            <div><h1>Recycle Bin</h1><p class="view-subtitle">Recycled questions stay in the collection until restored or permanently deleted.</p></div>
+          </header>
+          <div id="recycle-list" class="work-list"></div>
         </section>
 
         <form id="editor-form" class="view editor-form" hidden>

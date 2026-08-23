@@ -14,6 +14,7 @@ const state = {
   qualityFilter: "all",
   qualityHasRun: false,
   reviewedQuestionIds: [],
+  recycleIds: [],
   importSummary: null,
   editorDirty: false,
   saveInFlight: false,
@@ -51,6 +52,9 @@ const dataNav = document.querySelector("#data-nav");
 const qualityNav = document.querySelector("#quality-nav");
 const reviewNav = document.querySelector("#review-nav");
 const exportNav = document.querySelector("#export-nav");
+const recycleView = document.querySelector("#recycle-view");
+const recycleNav = document.querySelector("#recycle-nav");
+const recycleList = document.querySelector("#recycle-list");
 
 const viewElements = {
   bank: bankView,
@@ -61,6 +65,7 @@ const viewElements = {
   quality: qualityView,
   review: reviewView,
   export: exportView,
+  recycle: recycleView,
 };
 
 const viewNavigation = {
@@ -72,6 +77,7 @@ const viewNavigation = {
   quality: qualityNav,
   review: reviewNav,
   export: exportNav,
+  recycle: recycleNav,
 };
 
 function newQuestion(number) {
@@ -409,6 +415,7 @@ function setView(view) {
   else if (view === "quality") renderQualityCenter();
   else if (view === "review") renderReviewCenter();
   else if (view === "export") renderExportCenter();
+  else if (view === "recycle") renderRecycleBin();
 }
 
 function setFilterOptions(container, selected, values, onSelect) {
@@ -573,17 +580,86 @@ function makeQuestionCard(question, index) {
     editCurrentQuestion();
   });
   actions.append(edit);
+  const recycle = document.createElement("button");
+  recycle.className = "expand-btn";
+  recycle.type = "button";
+  recycle.textContent = "Recycle";
+  recycle.addEventListener("click", () => recycleQuestion(question.id));
+  actions.append(recycle);
   footer.append(meta, actions);
   card.append(header, body, footer);
   if (details) card.append(details);
   return card;
 }
 
+function activeQuestions() {
+  return (state.current?.questions || []).filter(
+    (question) => !state.recycleIds.includes(question.id),
+  );
+}
+
+function recycleQuestion(questionId) {
+  if (!state.current || state.recycleIds.includes(questionId)) return;
+  state.recycleIds.push(questionId);
+  state.paperQuestionIds = state.paperQuestionIds.filter((id) => id !== questionId);
+  renderQuestionResults();
+  renderPaperCenter();
+  setStatus(`${questionId} moved to the Recycle Bin; restore it any time.`);
+}
+
+function restoreQuestion(questionId) {
+  state.recycleIds = state.recycleIds.filter((id) => id !== questionId);
+  renderQuestionResults();
+  renderRecycleBin();
+  setStatus(`${questionId} restored to its original position.`);
+}
+
+function permanentlyDeleteQuestion(questionId) {
+  if (!state.current) return;
+  state.current.questions = state.current.questions.filter(
+    (question) => question.id !== questionId,
+  );
+  state.recycleIds = state.recycleIds.filter((id) => id !== questionId);
+  state.paperQuestionIds = state.paperQuestionIds.filter((id) => id !== questionId);
+  state.persisted = false;
+  renderBank(state.current);
+  renderRecycleBin();
+  setStatus(`${questionId} permanently deleted from the collection.`);
+}
+
+function renderRecycleBin() {
+  recycleList.replaceChildren();
+  if (!state.current) return;
+  const removed = (state.current.questions || []).filter((question) =>
+    state.recycleIds.includes(question.id),
+  );
+  if (!removed.length) {
+    const message = document.createElement("p");
+    message.className = "work-empty";
+    message.textContent = "The Recycle Bin is empty; recycled questions wait here until restored or permanently deleted.";
+    recycleList.append(message);
+    return;
+  }
+  for (const question of removed) {
+    const row = createWorkRow(question, "Restore", () => restoreQuestion(question.id));
+    const controls = document.createElement("div");
+    controls.className = "row-controls";
+    const purge = document.createElement("button");
+    purge.className = "action-btn secondary compact-action";
+    purge.type = "button";
+    purge.textContent = "Delete permanently";
+    purge.addEventListener("click", () => permanentlyDeleteQuestion(question.id));
+    controls.append(purge, row.lastElementChild);
+    row.append(controls);
+    recycleList.append(row);
+  }
+}
+
 function renderQuestionResults() {
   const questions = state.current?.questions || [];
   const matches = questions
     .map((question, index) => ({ question, index }))
-    .filter(({ question }) => matchesFilters(question));
+    .filter(({ question }) => !state.recycleIds.includes(question.id) && matchesFilters(question));
   document.querySelector("#result-count").textContent = `${matches.length} result${matches.length === 1 ? "" : "s"}`;
   questionResults.replaceChildren();
   if (!matches.length) {
@@ -1324,6 +1400,7 @@ function renderWorkspace(payload, persisted = true, view = "bank") {
   if (collectionChanged) {
     state.paperQuestionIds = [];
     state.reviewedQuestionIds = [];
+state.recycleIds = [];
   }
   for (const navigation of [paperNav, editorNav, dataNav, qualityNav]) navigation.disabled = false;
   document.querySelector("#review-nav").disabled = false;
@@ -1607,6 +1684,13 @@ exportNav.addEventListener("click", () => {
   if (state.current) {
     discardEditorChanges();
     setView("export");
+  }
+  setMoreMenu(false);
+});
+recycleNav.addEventListener("click", () => {
+  if (state.current) {
+    discardEditorChanges();
+    setView("recycle");
   }
   setMoreMenu(false);
 });
