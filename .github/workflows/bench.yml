@@ -18,5 +18,7 @@ jobs:
           python-version: "3.12"
       - name: Install
         run: python -m pip install -e .
-      - name: Benchmark 10k-question workspace
-        run: python scripts/bench_workspace.py --questions 10000 --sets 20
+      - name: Benchmark 10k-question workspace against budgets
+        run: |
+          python scripts/bench_workspace.py --questions 10000 --sets 20 \
+            --budget benchmarks/workspace-budgets.json | tee -a "$GITHUB_STEP_SUMMARY"
