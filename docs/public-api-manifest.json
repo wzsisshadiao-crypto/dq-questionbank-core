@@ -707,7 +707,7 @@
     },
     "load_regression_cases": {
       "kind": "function",
-      "signature": "(path=WindowsPath('C:/Users/wzsis/Desktop/every-day/system/dq-questionbank-core/src/dq_questionbank/data/latex_regression_cases.json'))"
+      "signature": "(path=None)"
     },
     "load_schema": {
       "kind": "function",

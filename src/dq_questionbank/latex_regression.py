@@ -134,8 +134,15 @@ def run_case(case: dict) -> dict:
     return {"name": name, "ok": not errors, "errors": errors}
 
 
-def load_cases(path: str | Path = DEFAULT_CASES_PATH) -> list[dict]:
-    """Load trinity cases from a JSON file (must be a list of case objects)."""
+def load_cases(path: str | Path | None = None) -> list[dict]:
+    """Load trinity cases from a JSON file (must be a list of case objects).
+
+    ``path`` defaults to the checked-in case file; the default is resolved
+    inside the function body so no filesystem path ever leaks into an
+    introspected signature (and from there into the public API manifest).
+    """
+    if path is None:
+        path = DEFAULT_CASES_PATH
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     if not isinstance(data, list):
         raise ValueError(f"regression cases must be a JSON list: {path}")
