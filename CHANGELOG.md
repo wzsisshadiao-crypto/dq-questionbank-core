@@ -2,6 +2,46 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.1.1] - 2026-08-27
+
+The delivery-path wave: the AI-import inbox contract, the LaTeX
+detect-count-repair regression lock, and the two guides that teach the
+complete OCR -> AI coding -> independent review -> registration path.
+
+### Added
+
+- AI-import inbox contract (`dq_questionbank.import_inbox`, schema
+  `ai-inbox-batch/v1`): channels deliver a batch directory, the receiver
+  **computes** the manifest SHA-256 itself (declared digests are never
+  trusted), `register_batch` anchors `batch_id + manifest` into a
+  `confirmation_digest` or leaves the batch `blocked` with findings
+  (missing/undeclared question files, malformed ids, unknown verdicts),
+  and `verify_receipt` recomputes the anchor before transfer so any
+  post-registration edit is detected. Human verdicts (`passed`/`fixed`/
+  `rejected`) are validated against the declared file list.
+- LaTeX regression lock (`dq_questionbank.latex_regression` +
+  `data/latex_regression_cases.json`): every case pins detect
+  (`expect_issue_types`: double superscript/subscript, malformed `\frac`),
+  count (`expect_fix_count` via the shared stats contract), and repair
+  (`expect_equals`/`expect_contains`/`expect_not_contains`/
+  `expect_no_faults_after`) in one assertion. Nine checked-in cases lock
+  the hard-won edges (coordinates and intervals never merge; three-column
+  relation chains rejoin pair by pair; upright differentials only inside
+  integrals). Run anywhere with
+  `python -m dq_questionbank.latex_regression`.
+- Guide: `docs/ocr-ai-coding-import.md` - the complete six-stage delivery
+  path (OCR pass -> first import -> model self cross-check -> independent
+  checker thread -> inbox registration -> human review + anchored
+  transfer), each stage mapped to its public module.
+- Guide: `docs/latex-regression.md` - the LaTeX discipline: one shared
+  detector for the correction panel and the quality scan, the trinity
+  assertion, and the change ritual for locked cases.
+
+### Changed
+
+- Package version bumped to 1.1.1; new module exports join the stable
+  public API manifest.
+
 ## [1.1.0] - 2026-08-27
 
 The coding-agent import wave: the contracts that a workspace-access coding
