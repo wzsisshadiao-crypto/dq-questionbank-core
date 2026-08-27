@@ -1,0 +1,13 @@
+{
+  "_about": "Ceilings for the weekly 10k-question Bench workflow (bench-workspace/1). Calibrated 2026-08-27 from two agreeing CI baseline runs (max observed value x5 headroom) so runner noise never trips an alarm but order-of-magnitude regressions always do. To re-baseline: dispatch the Bench workflow twice, compare the tables, update the limits, and record the change in the PR.",
+  "_baselines_2026_08_27_seconds": {
+    "filesystem_load": [0.1395, 0.1369],
+    "sqlite_load": [0.1368, 0.1339],
+    "quality_scan": [0.2180, 0.2249],
+    "json_serialize": [0.1623, 0.1637]
+  },
+  "filesystem_load_seconds": 0.7,
+  "sqlite_load_seconds": 0.7,
+  "quality_scan_seconds": 1.2,
+  "json_serialize_seconds": 0.9
+}

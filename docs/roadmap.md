@@ -13,6 +13,8 @@ Each batch must use synthetic data and preserve the public/private boundary.
 - JSON, Markdown, LaTeX, and convention-based DOCX adapters
 - Stable public API manifest and opt-in plugin discovery
 - Atomic filesystem storage and a reviewed read-only SQLite case adapter
+- Weekly 10k-question workspace benchmark with CI performance budgets
+  ([benchmarks/workspace-budgets.json](../benchmarks/workspace-budgets.json))
 - CI, public-tree audit, release gate, and English-language public contract
 
 ## 2. Visual workspace
