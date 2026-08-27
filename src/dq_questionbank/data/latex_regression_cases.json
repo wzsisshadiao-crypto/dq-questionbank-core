@@ -1,0 +1,63 @@
+[
+  {
+    "name": "degraded-relation-pair-rejoined",
+    "text": "let $u=\\xi+\\eta$，$\\quad v=\\xi-\\eta$",
+    "transform": "restore_degraded_relation_pairs",
+    "expect_fix_count": 1,
+    "expect_contains": ["$u=\\xi+\\eta$，$v=\\xi-\\eta$"],
+    "expect_not_contains": ["\\quad"],
+    "expect_no_faults_after": true
+  },
+  {
+    "name": "three-column-chain-rejoined-in-pairs",
+    "text": "$a=1$，$\\quad b=2$，$\\qquad c=3$",
+    "transform": "restore_degraded_relation_pairs",
+    "expect_fix_count": 2,
+    "expect_equals": "$a=1$，$b=2$，$c=3$",
+    "expect_no_faults_after": true
+  },
+  {
+    "name": "coordinates-never-merge",
+    "text": "points $(x,y)$，$\\quad (u,v)$",
+    "transform": "restore_degraded_relation_pairs",
+    "expect_fix_count": 0,
+    "expect_equals": "points $(x,y)$，$\\quad (u,v)$"
+  },
+  {
+    "name": "intervals-never-merge",
+    "text": "range $[a,b]$，$\\qquad (c,d)$",
+    "transform": "restore_degraded_relation_pairs",
+    "expect_fix_count": 0,
+    "expect_equals": "range $[a,b]$，$\\qquad (c,d)$"
+  },
+  {
+    "name": "bare-differential-upright-inside-integral",
+    "text": "$\\int_0^1 x\\,dx$",
+    "transform": "normalize_integral_differentials",
+    "expect_fix_count": 1,
+    "expect_equals": "$\\int_0^1 x\\,\\mathrm dx$",
+    "expect_no_faults_after": true
+  },
+  {
+    "name": "derivative-notation-untouched-outside-integrals",
+    "text": "$\\frac{dy}{dx}$",
+    "transform": "normalize_integral_differentials",
+    "expect_fix_count": 0,
+    "expect_equals": "$\\frac{dy}{dx}$"
+  },
+  {
+    "name": "double-superscript-detected",
+    "text": "$x^2^3$",
+    "expect_issue_types": ["double-superscript"]
+  },
+  {
+    "name": "double-subscript-and-malformed-frac-detected",
+    "text": "$a_1_2$ and $\\frac{a} b$",
+    "expect_issue_types": ["double-subscript", "malformed-frac"]
+  },
+  {
+    "name": "clean-latex-has-no-faults",
+    "text": "$\\frac{\\partial^2 z}{\\partial x\\,\\mathrm dy}$",
+    "expect_issue_types": []
+  }
+]
