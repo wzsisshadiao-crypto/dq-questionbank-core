@@ -413,8 +413,9 @@ Newer guides cover the import hardening and quality wave:
 [`docs/pdf-toolchain.md`](docs/pdf-toolchain.md),
 [`docs/image-placement.md`](docs/image-placement.md),
 [`docs/scan-runs.md`](docs/scan-runs.md),
-[`docs/arithmetic-checks.md`](docs/arithmetic-checks.md), and
-[`docs/latex-normalization.md`](docs/latex-normalization.md).
+[`docs/arithmetic-checks.md`](docs/arithmetic-checks.md),
+[`docs/latex-normalization.md`](docs/latex-normalization.md), and
+[`docs/coding-agent-import.md`](docs/coding-agent-import.md).
 
 ## Language policy
 
