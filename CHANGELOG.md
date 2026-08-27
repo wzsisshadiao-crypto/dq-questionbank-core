@@ -2,6 +2,62 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.1.0] - 2026-08-27
+
+The coding-agent import wave: the contracts that a workspace-access coding
+agent, the Word publishing macro, and the PDF postflight gate rely on,
+extracted as pure modules with deterministic tests.
+
+### Added
+
+- Word macro question-ID expansion (`dq_questionbank.word_macro_id`): the
+  insert box accepts short references (`6`, `DLLG_2025_6`,
+  `KY SX SF SEU 2025 4`) and expands them against a `WordMacroIdMemory`
+  holding the last used subject, school, and year. Whitespace and
+  underscores are interchangeable, comma batches expand all-or-nothing,
+  legacy ranges pass through, reserved tokens never become a school, and
+  ambiguous input returns `None` so the caller can hand the raw text to
+  the server instead of guessing.
+- Coding-agent work-file contract
+  (`dq_questionbank.coding_agent_workfile`, schema
+  `coding-agent-workfile/v1`): `validate_work_file` reports schema-tag,
+  duplicate-number, unknown-status, empty-transcribed-text, and
+  missing-note violations plus any pipeline-owned field (`question_id`,
+  evidence bindings, runtime bookkeeping) the agent file must not carry;
+  `transition_work_status` enforces the transcription loop
+  (`pending -> transcribed -> needs_review -> transcribed`) without
+  mutating its input; `write_work_file`/`read_work_file` publish and read
+  atomically with BOM tolerance. Guide: `docs/coding-agent-import.md`.
+- Read-only PDF postflight scanner (`dq_questionbank.pdf_postflight`,
+  report `pdf-postflight-report/v1`): `scan_candidate_dir` verifies a
+  staged `qNN.json` candidate directory — numbering starts at 1 with no
+  gaps or duplicates, required identity fields present, declared
+  `content_sha256` matches the canonical content hash, and an optional
+  `manifest.json` digest map agrees — returning findings as data.
+- Paper metadata contract (`dq_questionbank.pdf_metadata`, schema
+  `pdf-paper-metadata/v1`): `canonical_paper_metadata` fails closed
+  without an explicit subject, controlled-vocabulary question type, and
+  source; `metadata_from_questions` requires every question in a volume
+  to agree with the first row; `assert_metadata_matches` compares
+  recorded blocks. Deployments may supply their own vocabulary.
+- Import tag identity (`dq_questionbank.pdf_identity`):
+  `normalize_import_tag` canonicalizes `AH2026`/`ah_2026` (and spaces) to
+  `AH_2026`; `job_matches_tag` accepts a job id only when it equals the
+  canonical tag or extends it with exactly one known runtime namespace.
+- LaTeX compatibility repairs (`dq_questionbank.latex_compat`):
+  `restore_degraded_relation_pairs` removes the stray `\quad`/`\qquad`
+  from the `$A$，$\quad B$` PDF degradation footprint only when both
+  sides are relation expressions (coordinates, intervals, and function
+  arguments stay separate spans; three-column chains converge pair by
+  pair), and `normalize_integral_differentials` rewrites bare
+  differentials to upright `\mathrm{d}` only inside integral math spans.
+  Both count their fixes in a caller-supplied stats dictionary.
+
+### Changed
+
+- Package version bumped to 1.1.0; the new module exports join the stable
+  public API recorded in `docs/public-api-manifest.json`.
+
 ## [1.0.0] - 2026-08-23
 
 First stable release: the five planned migration batches are shipped, the four

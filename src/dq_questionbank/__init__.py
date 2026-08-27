@@ -5,6 +5,19 @@ from .asset_repair import (
     bind_asset_repair,
     preview_asset_repair,
 )
+from .coding_agent_workfile import (
+    CODING_AGENT_WORKFILE_SCHEMA,
+    FORBIDDEN_WORKFILE_FIELDS,
+    TEXT_FIELDS,
+    WORK_STATUS_NEEDS_REVIEW,
+    WORK_STATUS_PENDING,
+    WORK_STATUS_TRANSCRIBED,
+    WORK_STATUSES,
+    read_work_file,
+    transition_work_status,
+    validate_work_file,
+    write_work_file,
+)
 from .exceptions import (
     FormatDetectionError,
     FormatError,
@@ -36,6 +49,13 @@ from .intake import (
     run_import_case,
 )
 from .interfaces import AIProvider, QuestionExporter, QuestionImporter, StorageAdapter
+from .latex_compat import (
+    DEGRADED_PAIR_STATS_KEY,
+    DIFFERENTIAL_STATS_KEY,
+    is_relation_expression,
+    normalize_integral_differentials,
+    restore_degraded_relation_pairs,
+)
 from .latex_repair import (
     LatexRepairOutcome,
     repair_bare_function_names,
@@ -68,6 +88,16 @@ from .omml_import import (
     parse_omml_element,
     read_docx_math,
 )
+from .pdf_identity import job_matches_tag, normalize_import_tag
+from .pdf_metadata import (
+    PAPER_QUESTION_TYPES,
+    PDF_METADATA_SCHEMA,
+    PaperMetadataError,
+    assert_metadata_matches,
+    canonical_paper_metadata,
+    metadata_from_questions,
+)
+from .pdf_postflight import POSTFLIGHT_REPORT_SCHEMA, scan_candidate_dir
 from .plugins import PLUGIN_ENTRY_POINT_GROUP, available_plugins, discover_plugins
 from .quality_findings import (
     DECISIONS,
@@ -96,6 +126,15 @@ from .validation import (
     validate_question,
     validate_question_set,
     validate_with_schema,
+)
+from .word_macro_id import (
+    FULL_ID_PREFIX,
+    RESERVED_TOKENS,
+    SUBJECT_TOKENS,
+    WordMacroIdMemory,
+    expand_question_spec,
+    is_year_token,
+    normalize_spec_separators,
 )
 from .word_publishing import (
     ENVELOPE_VERSION,
@@ -209,6 +248,39 @@ __all__ = [
     "question_fingerprint",
     "validate_envelope",
     "word_macro_source",
+    "CODING_AGENT_WORKFILE_SCHEMA",
+    "FORBIDDEN_WORKFILE_FIELDS",
+    "TEXT_FIELDS",
+    "WORK_STATUSES",
+    "WORK_STATUS_NEEDS_REVIEW",
+    "WORK_STATUS_PENDING",
+    "WORK_STATUS_TRANSCRIBED",
+    "read_work_file",
+    "transition_work_status",
+    "validate_work_file",
+    "write_work_file",
+    "DEGRADED_PAIR_STATS_KEY",
+    "DIFFERENTIAL_STATS_KEY",
+    "is_relation_expression",
+    "normalize_integral_differentials",
+    "restore_degraded_relation_pairs",
+    "PAPER_QUESTION_TYPES",
+    "PDF_METADATA_SCHEMA",
+    "PaperMetadataError",
+    "assert_metadata_matches",
+    "canonical_paper_metadata",
+    "metadata_from_questions",
+    "POSTFLIGHT_REPORT_SCHEMA",
+    "scan_candidate_dir",
+    "job_matches_tag",
+    "normalize_import_tag",
+    "FULL_ID_PREFIX",
+    "RESERVED_TOKENS",
+    "SUBJECT_TOKENS",
+    "WordMacroIdMemory",
+    "expand_question_spec",
+    "is_year_token",
+    "normalize_spec_separators",
 ]
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"

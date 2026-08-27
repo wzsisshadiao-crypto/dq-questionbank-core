@@ -95,7 +95,40 @@
     "extract_managed_blocks",
     "question_fingerprint",
     "validate_envelope",
-    "word_macro_source"
+    "word_macro_source",
+    "CODING_AGENT_WORKFILE_SCHEMA",
+    "FORBIDDEN_WORKFILE_FIELDS",
+    "TEXT_FIELDS",
+    "WORK_STATUSES",
+    "WORK_STATUS_NEEDS_REVIEW",
+    "WORK_STATUS_PENDING",
+    "WORK_STATUS_TRANSCRIBED",
+    "read_work_file",
+    "transition_work_status",
+    "validate_work_file",
+    "write_work_file",
+    "DEGRADED_PAIR_STATS_KEY",
+    "DIFFERENTIAL_STATS_KEY",
+    "is_relation_expression",
+    "normalize_integral_differentials",
+    "restore_degraded_relation_pairs",
+    "PAPER_QUESTION_TYPES",
+    "PDF_METADATA_SCHEMA",
+    "PaperMetadataError",
+    "assert_metadata_matches",
+    "canonical_paper_metadata",
+    "metadata_from_questions",
+    "POSTFLIGHT_REPORT_SCHEMA",
+    "scan_candidate_dir",
+    "job_matches_tag",
+    "normalize_import_tag",
+    "FULL_ID_PREFIX",
+    "RESERVED_TOKENS",
+    "SUBJECT_TOKENS",
+    "WordMacroIdMemory",
+    "expand_question_spec",
+    "is_year_token",
+    "normalize_spec_separators"
   ],
   "manifest_version": 1,
   "members": {
@@ -244,6 +277,10 @@
       "kind": "class",
       "signature": "(block_id, status, content=None, reason=None)"
     },
+    "CODING_AGENT_WORKFILE_SCHEMA": {
+      "kind": "value",
+      "value": "'coding-agent-workfile/v1'"
+    },
     "Choice": {
       "kind": "class",
       "signature": "(id, content, metadata=<factory>)"
@@ -272,13 +309,29 @@
       "kind": "value",
       "value": "'rejected'"
     },
+    "DEGRADED_PAIR_STATS_KEY": {
+      "kind": "value",
+      "value": "'degraded_relation_pair_fixes'"
+    },
+    "DIFFERENTIAL_STATS_KEY": {
+      "kind": "value",
+      "value": "'integral_differential_fixes'"
+    },
     "ENVELOPE_VERSION": {
       "kind": "value",
       "value": "'0.2'"
     },
+    "FORBIDDEN_WORKFILE_FIELDS": {
+      "kind": "value",
+      "value": "('schema', 'job_id', 'workset_id', 'run_id', 'question_id', 'evidence_dir', 'evidence_pages', 'evidence_sha256', 'complete', 'cards')"
+    },
     "FORMULA_IMAGE_FLAG": {
       "kind": "value",
       "value": "'formula_image'"
+    },
+    "FULL_ID_PREFIX": {
+      "kind": "value",
+      "value": "'KY_SX_'"
     },
     "FieldMapping": {
       "kind": "class",
@@ -340,9 +393,25 @@
       "kind": "class",
       "signature": "(latex, display, unsupported)"
     },
+    "PAPER_QUESTION_TYPES": {
+      "kind": "value",
+      "value": "('exam', 'mock', 'textbook', 'term')"
+    },
+    "PDF_METADATA_SCHEMA": {
+      "kind": "value",
+      "value": "'pdf-paper-metadata/v1'"
+    },
     "PLUGIN_ENTRY_POINT_GROUP": {
       "kind": "value",
       "value": "'dq_questionbank.plugins'"
+    },
+    "POSTFLIGHT_REPORT_SCHEMA": {
+      "kind": "value",
+      "value": "'pdf-postflight-report/v1'"
+    },
+    "PaperMetadataError": {
+      "kind": "class",
+      "signature": "(*args)"
     },
     "PluginDiscoveryError": {
       "kind": "class",
@@ -376,6 +445,10 @@
       "kind": "class",
       "signature": "(id, title, questions=<factory>, description=None, language='en', metadata=<factory>, schema_version='1.0')"
     },
+    "RESERVED_TOKENS": {
+      "kind": "value",
+      "value": "('KY', 'SX', 'SF', 'GD')"
+    },
     "RULESET_VERSION": {
       "kind": "value",
       "value": "'quality/1'"
@@ -383,6 +456,10 @@
     "SEVERITIES": {
       "kind": "value",
       "value": "('error', 'warning', 'info')"
+    },
+    "SUBJECT_TOKENS": {
+      "kind": "value",
+      "value": "('SF', 'GD')"
     },
     "SUPPORTED_SCHEMA_VERSIONS": {
       "kind": "value",
@@ -420,6 +497,10 @@
       "kind": "class",
       "signature": "(*args, **kwargs)"
     },
+    "TEXT_FIELDS": {
+      "kind": "value",
+      "value": "('body', 'answer', 'explanation')"
+    },
     "TaxonomyRef": {
       "kind": "class",
       "signature": "(system, code, label=None)"
@@ -427,6 +508,26 @@
     "ValidationIssue": {
       "kind": "class",
       "signature": "(path, code, message, severity='error')"
+    },
+    "WORK_STATUSES": {
+      "kind": "value",
+      "value": "('pending_transcription', 'transcribed', 'needs_review')"
+    },
+    "WORK_STATUS_NEEDS_REVIEW": {
+      "kind": "value",
+      "value": "'needs_review'"
+    },
+    "WORK_STATUS_PENDING": {
+      "kind": "value",
+      "value": "'pending_transcription'"
+    },
+    "WORK_STATUS_TRANSCRIBED": {
+      "kind": "value",
+      "value": "'transcribed'"
+    },
+    "WordMacroIdMemory": {
+      "kind": "class",
+      "signature": "(subject='SF', school='', year='')"
     },
     "WordPublisher": {
       "kind": "class",
@@ -444,6 +545,10 @@
       "kind": "function",
       "signature": "(mapping, records)"
     },
+    "assert_metadata_matches": {
+      "kind": "function",
+      "signature": "(actual, expected, *, label='metadata')"
+    },
     "available_plugins": {
       "kind": "function",
       "signature": "(*, group='dq_questionbank.plugins')"
@@ -460,6 +565,10 @@
       "kind": "function",
       "signature": "(value)"
     },
+    "canonical_paper_metadata": {
+      "kind": "function",
+      "signature": "(*, subject, question_type, source, grade='', allowed_question_types=('exam', 'mock', 'textbook', 'term'))"
+    },
     "default_registry": {
       "kind": "function",
       "signature": "()"
@@ -475,6 +584,10 @@
     "discover_plugins": {
       "kind": "function",
       "signature": "(registry, *, group='dq_questionbank.plugins')"
+    },
+    "expand_question_spec": {
+      "kind": "function",
+      "signature": "(spec, memory)"
     },
     "export_reviewed_questions": {
       "kind": "function",
@@ -504,6 +617,18 @@
       "kind": "function",
       "signature": "(case_id)"
     },
+    "is_relation_expression": {
+      "kind": "function",
+      "signature": "(fragment)"
+    },
+    "is_year_token": {
+      "kind": "function",
+      "signature": "(token)"
+    },
+    "job_matches_tag": {
+      "kind": "function",
+      "signature": "(job_id, tag)"
+    },
     "judge_finding": {
       "kind": "function",
       "signature": "(finding, question, decision)"
@@ -524,9 +649,25 @@
       "kind": "function",
       "signature": "(version='1.0')"
     },
+    "metadata_from_questions": {
+      "kind": "function",
+      "signature": "(questions, allowed_question_types=('exam', 'mock', 'textbook', 'term'))"
+    },
     "migrate": {
       "kind": "function",
       "signature": "(payload, target_version)"
+    },
+    "normalize_import_tag": {
+      "kind": "function",
+      "signature": "(tag)"
+    },
+    "normalize_integral_differentials": {
+      "kind": "function",
+      "signature": "(text, stats=None)"
+    },
+    "normalize_spec_separators": {
+      "kind": "function",
+      "signature": "(spec)"
     },
     "parse_omml_element": {
       "kind": "function",
@@ -552,6 +693,10 @@
       "kind": "function",
       "signature": "(source)"
     },
+    "read_work_file": {
+      "kind": "function",
+      "signature": "(path)"
+    },
     "register_migration": {
       "kind": "function",
       "signature": "(from_version, to_version)"
@@ -576,6 +721,10 @@
       "kind": "function",
       "signature": "(latex)"
     },
+    "restore_degraded_relation_pairs": {
+      "kind": "function",
+      "signature": "(text, stats=None)"
+    },
     "review_import_session": {
       "kind": "function",
       "signature": "(session, decisions)"
@@ -584,9 +733,17 @@
       "kind": "function",
       "signature": "(case_id, output_dir)"
     },
+    "scan_candidate_dir": {
+      "kind": "function",
+      "signature": "(root)"
+    },
     "schema_path": {
       "kind": "function",
       "signature": "(version='1.0')"
+    },
+    "transition_work_status": {
+      "kind": "function",
+      "signature": "(payload, question_number, new_status)"
     },
     "validate_envelope": {
       "kind": "function",
@@ -604,9 +761,17 @@
       "kind": "function",
       "signature": "(payload, schema=None)"
     },
+    "validate_work_file": {
+      "kind": "function",
+      "signature": "(payload)"
+    },
     "word_macro_source": {
       "kind": "function",
       "signature": "()"
+    },
+    "write_work_file": {
+      "kind": "function",
+      "signature": "(path, payload)"
     }
   }
 }
