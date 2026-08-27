@@ -128,6 +128,34 @@ Refusals are data, not exceptions: a marker-less PDF fails recall
 verification and batching with these reasons instead of producing
 half-parsed chunks.
 
+## Postflight scan and volume identity
+
+The toolchain above turns a PDF into skeletons; three pure modules guard
+what happens after a coding agent finishes transcribing them (see
+[Coding-Agent Import Contract](coding-agent-import.md)):
+
+| Module | Marker | Stage |
+|---|---|---|
+| `dq_questionbank.pdf_postflight` | `pdf-postflight-report/v1` | Read-only scan of staged `qNN.json` candidates |
+| `dq_questionbank.pdf_metadata` | `pdf-paper-metadata/v1` | Whole-volume paper metadata must agree |
+| `dq_questionbank.pdf_identity` | - | Canonical import tags vs. runtime job ids |
+
+`scan_candidate_dir(root)` returns a report dictionary — never raises for
+content problems — listing findings for numbering gaps, duplicates,
+missing identity fields (`question_number`, `question_id`, `source`),
+declared-vs-computed content hashes, and an optional `manifest.json` with
+per-file SHA-256 digests. `ok` is False when any finding exists.
+
+`canonical_paper_metadata` fails closed unless subject, question type
+(from a controlled vocabulary), and source are explicit;
+`metadata_from_questions` additionally requires every question in the
+volume to agree with the first row.
+
+`normalize_import_tag` canonicalizes `AH2026`/`ah_2026` to `AH_2026`, and
+`job_matches_tag` accepts a job id only when it equals the tag or extends
+it with exactly one known runtime namespace (`_JOB`, `_BATCH`, `_RUN`,
+`_PDFREG`, `_NEWLOGIC`, `_W1`, `_20260825_W3`, ...).
+
 ## Boundary
 
 This toolchain covers synthetic vector PDFs only - the deterministic
