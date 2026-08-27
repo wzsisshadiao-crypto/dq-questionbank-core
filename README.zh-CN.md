@@ -18,6 +18,9 @@ AI 辅助修正和多格式导出。题目内容可以使用中文或其他语�
 
 从源码运行：
 
+- Windows：双击仓库根目录的 `start.bat`（macOS/Linux 运行 `sh start.sh`）；
+- 或在终端执行（与上等价）：
+
 ```bash
 python run.py
 ```

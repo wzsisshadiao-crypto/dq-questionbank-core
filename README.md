@@ -67,7 +67,7 @@ The package is on PyPI: `pip install dq-questionbank-core` provides the `dq` CLI
 
    If this reports 3.9 or earlier (or Python is missing), install a supported version before continuing.
 
-3. Start the local visual workspace.
+3. Start the local visual workspace - double-click `start.bat` on Windows (or run `sh start.sh` on macOS/Linux), which is the same as:
 
 ```bash
    python run.py

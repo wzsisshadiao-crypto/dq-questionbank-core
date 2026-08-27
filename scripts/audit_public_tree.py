@@ -45,6 +45,8 @@ TEXT_SUFFIXES = {
     ".txt",
     ".example",
     ".in",
+    ".bat",
+    ".sh",
 }
 SECRET_RULES = {
     "OpenAI-style secret": re.compile(r"\bsk-[A-Za-z0-9_-]{20,}\b"),
