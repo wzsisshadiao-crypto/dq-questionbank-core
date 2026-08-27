@@ -19,7 +19,7 @@ class WikiSyncTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp_name:
             destination = Path(temp_name) / "wiki"
             exported = export_wiki(destination)
-            self.assertEqual(len(exported), 9)
+            self.assertEqual(len(exported), 11)
             self.assertEqual(check_wiki(destination), [])
 
             changed = destination / "Home.md"

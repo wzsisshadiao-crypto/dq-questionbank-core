@@ -4,6 +4,11 @@
 - [Getting Started](Getting-Started.md)
 - [Installation](Installation.md)
 
+## Understand
+
+- [Architecture](Architecture.md)
+- [Mechanisms](Mechanisms.md)
+
 ## Reference
 
 - [Schema Reference](Schema-Reference.md)
