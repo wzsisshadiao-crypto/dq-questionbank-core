@@ -38,6 +38,18 @@ from .formula_images import (
     detect_formula_image_candidates,
     fill_transcription,
 )
+from .import_inbox import (
+    BATCH_STATUS_BLOCKED,
+    BATCH_STATUS_REGISTERED,
+    BATCH_TERMINAL_STATUSES,
+    IMPORT_INBOX_SCHEMA,
+    QUESTION_VERDICTS,
+    ImportInboxError,
+    batch_manifest_digest,
+    register_batch,
+    validate_batch,
+    verify_receipt,
+)
 from .intake import (
     ImportCase,
     export_reviewed_questions,
@@ -55,6 +67,14 @@ from .latex_compat import (
     is_relation_expression,
     normalize_integral_differentials,
     restore_degraded_relation_pairs,
+)
+from .latex_regression import (
+    FAULT_DOUBLE_SUBSCRIPT,
+    FAULT_DOUBLE_SUPERSCRIPT,
+    FAULT_MALFORMED_FRAC,
+    detect_common_latex_faults,
+    load_regression_cases,
+    run_regression_cases,
 )
 from .latex_repair import (
     LatexRepairOutcome,
@@ -274,6 +294,22 @@ __all__ = [
     "scan_candidate_dir",
     "job_matches_tag",
     "normalize_import_tag",
+    "BATCH_STATUS_BLOCKED",
+    "BATCH_STATUS_REGISTERED",
+    "BATCH_TERMINAL_STATUSES",
+    "IMPORT_INBOX_SCHEMA",
+    "ImportInboxError",
+    "QUESTION_VERDICTS",
+    "batch_manifest_digest",
+    "register_batch",
+    "validate_batch",
+    "verify_receipt",
+    "FAULT_DOUBLE_SUBSCRIPT",
+    "FAULT_DOUBLE_SUPERSCRIPT",
+    "FAULT_MALFORMED_FRAC",
+    "detect_common_latex_faults",
+    "load_regression_cases",
+    "run_regression_cases",
     "FULL_ID_PREFIX",
     "RESERVED_TOKENS",
     "SUBJECT_TOKENS",
@@ -283,4 +319,4 @@ __all__ = [
     "normalize_spec_separators",
 ]
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"

@@ -122,6 +122,22 @@
     "scan_candidate_dir",
     "job_matches_tag",
     "normalize_import_tag",
+    "BATCH_STATUS_BLOCKED",
+    "BATCH_STATUS_REGISTERED",
+    "BATCH_TERMINAL_STATUSES",
+    "IMPORT_INBOX_SCHEMA",
+    "ImportInboxError",
+    "QUESTION_VERDICTS",
+    "batch_manifest_digest",
+    "register_batch",
+    "validate_batch",
+    "verify_receipt",
+    "FAULT_DOUBLE_SUBSCRIPT",
+    "FAULT_DOUBLE_SUPERSCRIPT",
+    "FAULT_MALFORMED_FRAC",
+    "detect_common_latex_faults",
+    "load_regression_cases",
+    "run_regression_cases",
     "FULL_ID_PREFIX",
     "RESERVED_TOKENS",
     "SUBJECT_TOKENS",
@@ -273,6 +289,18 @@
       "kind": "class",
       "signature": "(question_id, target_field, asset_id, asset_uri, current_sha256, replacement_path, replacement_sha256, status='proposed')"
     },
+    "BATCH_STATUS_BLOCKED": {
+      "kind": "value",
+      "value": "'blocked'"
+    },
+    "BATCH_STATUS_REGISTERED": {
+      "kind": "value",
+      "value": "'registered'"
+    },
+    "BATCH_TERMINAL_STATUSES": {
+      "kind": "value",
+      "value": "('transferred', 'rejected', 'archived', 'purged')"
+    },
     "BlockResult": {
       "kind": "class",
       "signature": "(block_id, status, content=None, reason=None)"
@@ -321,6 +349,18 @@
       "kind": "value",
       "value": "'0.2'"
     },
+    "FAULT_DOUBLE_SUBSCRIPT": {
+      "kind": "value",
+      "value": "'double-subscript'"
+    },
+    "FAULT_DOUBLE_SUPERSCRIPT": {
+      "kind": "value",
+      "value": "'double-superscript'"
+    },
+    "FAULT_MALFORMED_FRAC": {
+      "kind": "value",
+      "value": "'malformed-frac'"
+    },
     "FORBIDDEN_WORKFILE_FIELDS": {
       "kind": "value",
       "value": "('schema', 'job_id', 'workset_id', 'run_id', 'question_id', 'evidence_dir', 'evidence_pages', 'evidence_sha256', 'complete', 'cards')"
@@ -365,6 +405,10 @@
       "kind": "class",
       "signature": "(question_id, target_field, asset_id, asset_uri, asset_sha256, latex='', transcribed_by=None, status='pending')"
     },
+    "IMPORT_INBOX_SCHEMA": {
+      "kind": "value",
+      "value": "'ai-inbox-batch/v1'"
+    },
     "ImportBundleError": {
       "kind": "class",
       "signature": "(*args)"
@@ -380,6 +424,10 @@
     "ImportCase": {
       "kind": "class",
       "signature": "(id, title, route, source_type, summary, has_ai_proposal=False)"
+    },
+    "ImportInboxError": {
+      "kind": "class",
+      "signature": "(code, detail='')"
     },
     "LATEST_SCHEMA_VERSION": {
       "kind": "value",
@@ -416,6 +464,10 @@
     "PluginDiscoveryError": {
       "kind": "class",
       "signature": "(*args)"
+    },
+    "QUESTION_VERDICTS": {
+      "kind": "value",
+      "value": "('passed', 'fixed', 'rejected')"
     },
     "QualityFinding": {
       "kind": "class",
@@ -553,6 +605,10 @@
       "kind": "function",
       "signature": "(*, group='dq_questionbank.plugins')"
     },
+    "batch_manifest_digest": {
+      "kind": "function",
+      "signature": "(questions_dir)"
+    },
     "bind_asset_repair": {
       "kind": "function",
       "signature": "(question, target_field, asset_id, replacement_path, assets_root)"
@@ -572,6 +628,10 @@
     "default_registry": {
       "kind": "function",
       "signature": "()"
+    },
+    "detect_common_latex_faults": {
+      "kind": "function",
+      "signature": "(text)"
     },
     "detect_formula_image_candidates": {
       "kind": "function",
@@ -645,6 +705,10 @@
       "kind": "function",
       "signature": "(path)"
     },
+    "load_regression_cases": {
+      "kind": "function",
+      "signature": "(path=None)"
+    },
     "load_schema": {
       "kind": "function",
       "signature": "(version='1.0')"
@@ -697,6 +761,10 @@
       "kind": "function",
       "signature": "(path)"
     },
+    "register_batch": {
+      "kind": "function",
+      "signature": "(batch, questions_dir)"
+    },
     "register_migration": {
       "kind": "function",
       "signature": "(from_version, to_version)"
@@ -733,6 +801,10 @@
       "kind": "function",
       "signature": "(case_id, output_dir)"
     },
+    "run_regression_cases": {
+      "kind": "function",
+      "signature": "(cases)"
+    },
     "scan_candidate_dir": {
       "kind": "function",
       "signature": "(root)"
@@ -744,6 +816,10 @@
     "transition_work_status": {
       "kind": "function",
       "signature": "(payload, question_number, new_status)"
+    },
+    "validate_batch": {
+      "kind": "function",
+      "signature": "(batch)"
     },
     "validate_envelope": {
       "kind": "function",
@@ -764,6 +840,10 @@
     "validate_work_file": {
       "kind": "function",
       "signature": "(payload)"
+    },
+    "verify_receipt": {
+      "kind": "function",
+      "signature": "(record, questions_dir)"
     },
     "word_macro_source": {
       "kind": "function",

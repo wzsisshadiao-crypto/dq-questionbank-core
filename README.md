@@ -5,7 +5,7 @@
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v1.1.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![Release](https://img.shields.io/badge/release-v1.1.1-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 [![PyPI](https://img.shields.io/pypi/v/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 [![Downloads](https://img.shields.io/pypi/dm/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 
@@ -432,8 +432,12 @@ Newer guides cover the import hardening and quality wave:
 [`docs/image-placement.md`](docs/image-placement.md),
 [`docs/scan-runs.md`](docs/scan-runs.md),
 [`docs/arithmetic-checks.md`](docs/arithmetic-checks.md),
-[`docs/latex-normalization.md`](docs/latex-normalization.md), and
-[`docs/coding-agent-import.md`](docs/coding-agent-import.md).
+[`docs/latex-normalization.md`](docs/latex-normalization.md),
+[`docs/coding-agent-import.md`](docs/coding-agent-import.md),
+[`docs/ocr-ai-coding-import.md`](docs/ocr-ai-coding-import.md) (the full
+OCR -> AI coding -> independent review -> inbox registration path), and
+[`docs/latex-regression.md`](docs/latex-regression.md) (detect-count-repair
+trinity and locked edge cases).
 
 ## Language policy
 

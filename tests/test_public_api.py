@@ -18,7 +18,11 @@ class PublicApiManifestTests(unittest.TestCase):
         self.assertEqual([], MODULE.check_manifest())
 
     def test_manifest_has_no_process_specific_values(self):
-        self.assertNotIn("0x", json.dumps(MODULE.build_manifest()))
+        dump = json.dumps(MODULE.build_manifest())
+        self.assertNotIn("0x", dump)
+        self.assertNotIn("C:", dump)
+        self.assertNotIn("/home/", dump)
+        self.assertNotIn("/Users/", dump)
 
     def test_removed_symbol_or_signature_is_detected(self):
         manifest = MODULE.build_manifest()

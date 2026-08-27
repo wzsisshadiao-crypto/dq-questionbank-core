@@ -57,5 +57,7 @@ material.
 
 - [Architecture](Architecture.md) - the complete system guide
 - [Mechanisms](Mechanisms.md) - how every engine works
+- Import a real paper with OCR + AI coding: [ocr-ai-coding-import](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/blob/main/docs/ocr-ai-coding-import.md)
+- LaTeX rules and locked edge cases: [latex-regression](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/blob/main/docs/latex-regression.md)
 - [Schema Reference](Schema-Reference.md) and [Format Guide](Format-Guide.md)
 - [FAQ](FAQ.md)
