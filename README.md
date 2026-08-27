@@ -5,7 +5,7 @@
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v1.0.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![Release](https://img.shields.io/badge/release-v1.1.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 [![PyPI](https://img.shields.io/pypi/v/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 [![Downloads](https://img.shields.io/pypi/dm/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 
@@ -47,6 +47,24 @@ points without creating a second API or schema specification.
 ![DQ QuestionBank Core visual workspace](docs/assets/question-bank-workspace.png)
 
 **Local-first · Canonical schema · Extensible imports · Reviewable workflows**
+
+## Launch in 60 seconds
+
+| Your situation | Do this |
+|---|---|
+| Just want to see it | Install Python 3.10+, then double-click `start.bat` from a clone or ZIP download (macOS/Linux: `sh start.sh`) |
+| Prefer pip | `pip install dq-questionbank-core` then run `dq-local` |
+| From a terminal | `python run.py` in the checkout |
+
+Your browser opens `http://127.0.0.1:8766` with the visual workspace and a
+bundled ten-question synthetic case. Everything runs on your machine; your
+data stays in the local `workspace/` directory. First-session walkthrough:
+[Wiki Getting Started](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/wiki/Getting-Started).
+To understand the system end to end, read the Wiki's
+[Architecture](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/wiki/Architecture)
+and
+[Mechanisms](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/wiki/Mechanisms)
+guides.
 
 ## Visual quick start
 
@@ -431,7 +449,7 @@ See [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Documentation
 
-- [GitHub Wiki](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/wiki): installation, getting started, formats, CLI, schema, and plugin development.
+- [GitHub Wiki](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/wiki): the user guide - [Getting Started](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/wiki/Getting-Started) (hands-on paths), [Architecture](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/wiki/Architecture) (the complete system guide), and [Mechanisms](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/wiki/Mechanisms) (how every engine works), plus formats, CLI, schema, and plugin reference.
 - [`docs/`](docs): technical architecture, compatibility, public API, storage, migration, and workflow references.
 
 The README is the project landing page, the Wiki is the user guide, and
