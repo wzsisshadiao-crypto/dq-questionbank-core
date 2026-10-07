@@ -2,6 +2,13 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.1.2] - 2026-10-07
+
+Windows test portability maintenance release. The workspace-audit regression
+test now closes its SQLite adapter before temporary-directory cleanup. This
+prevents a Windows file-lock failure during a clean test run. No runtime API,
+question schema, or production data changed.
+
 ## [1.1.1] - 2026-08-27
 
 The delivery-path wave: the AI-import inbox contract, the LaTeX

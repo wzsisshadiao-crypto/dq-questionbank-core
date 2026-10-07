@@ -319,4 +319,4 @@ __all__ = [
     "normalize_spec_separators",
 ]
 
-__version__ = "1.1.1"
+__version__ = "1.1.2"
