@@ -5,7 +5,7 @@
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v1.1.1-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![Release](https://img.shields.io/badge/release-v1.1.2-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 [![PyPI](https://img.shields.io/pypi/v/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 [![Downloads](https://img.shields.io/pypi/dm/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 
