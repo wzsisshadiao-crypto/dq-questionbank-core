@@ -92,7 +92,8 @@ class WorkspaceAuditTests(unittest.TestCase):
     def test_index_drift_is_detected_read_only(self):
         database = self.root / "bank.db"
         question_set = QuestionSet(id="set-a", title="Set A", questions=[_question("q1")])
-        SqliteStorageAdapter(database).save(question_set)
+        with SqliteStorageAdapter(database) as storage:
+            storage.save(question_set)
         drift = sqlite3.connect(database)
         drift.execute("UPDATE question_sets SET question_count = 9 WHERE id = 'set-a'")
         drift.commit()
