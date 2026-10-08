@@ -55,12 +55,15 @@ executable memory:
 - a three-column relation chain **must** rejoin pair by pair (count 2);
 - `dy/dx` stays italic outside integrals; only integral differentials go
   upright.
+- Fraction arguments may be braced groups or single TeX tokens; valid
+  `\frac a b` and `\frac{a} b` are not flagged, while a missing denominator
+  is. This is a structural guard, not a complete TeX renderer.
 
 Run them anywhere:
 
 ```bash
 python -m dq_questionbank.latex_regression
-# cases=9 failed=0
+# cases=11 failed=0
 ```
 
 ### The change ritual

@@ -48,7 +48,7 @@ FAULT_MALFORMED_FRAC = "malformed-frac"
 
 _DOUBLE_SUP_RE = re.compile(r"\^(?:\{[^{}]*\}|\S)(?:\s*\^(?:\{[^{}]*\}|\S))")
 _DOUBLE_SUB_RE = re.compile(r"_(?:\{[^{}]*\}|\S)(?:\s*_(?:\{[^{}]*\}|\S))")
-_MALFORMED_FRAC_RE = re.compile(r"\\frac\s*\{[^{}]*\}\s*(?![{\\A-Za-z])")
+_FRAC_COMMAND_RE = re.compile(r"\\frac(?![A-Za-z@])")
 
 DEFAULT_CASES_PATH = (
     Path(__file__).resolve().parent / "data" / "latex_regression_cases.json"
@@ -60,6 +60,62 @@ _TRANSFORMS = {
 }
 
 
+def _read_tex_argument(value: str, position: int) -> int | None:
+    """Return the end of one braced group or TeX token, if it is complete.
+
+    This is deliberately a structural check, not a full TeX parser. A single
+    character or control sequence is a valid fraction argument; braces are
+    needed only to group multiple tokens.
+    """
+    while position < len(value) and value[position].isspace():
+        position += 1
+    if position >= len(value) or value[position] in "$}":
+        return None
+    if value.startswith((r"\)", r"\]"), position):
+        return None
+    if value[position] == "{":
+        depth = 1
+        position += 1
+        while position < len(value):
+            if value[position] == "\\" and position + 1 < len(value):
+                if value[position + 1] in "{}":
+                    position += 2
+                    continue
+            if value[position] == "{":
+                depth += 1
+            elif value[position] == "}":
+                depth -= 1
+                if depth == 0:
+                    return position + 1
+            position += 1
+        return None
+    if value[position] == "\\":
+        position += 1
+        if position >= len(value):
+            return None
+        if value[position].isalpha() or value[position] == "@":
+            while position < len(value) and (value[position].isalpha() or value[position] == "@"):
+                position += 1
+            return position
+        return position + 1
+    return position + 1
+
+
+def _has_malformed_frac(value: str) -> bool:
+    for match in _FRAC_COMMAND_RE.finditer(value):
+        preceding_slashes = 0
+        cursor = match.start() - 1
+        while cursor >= 0 and value[cursor] == "\\":
+            preceding_slashes += 1
+            cursor -= 1
+        if preceding_slashes % 2:
+            continue  # The backslash is part of a preceding control symbol.
+        numerator_end = _read_tex_argument(value, match.end())
+        if numerator_end is None or _read_tex_argument(value, numerator_end) is None:
+            return True
+    return False
+
+
 def detect_common_latex_faults(text: str) -> list[dict]:
     """Detect structural LaTeX faults that no repair should ever introduce."""
     value = str(text or "")
@@ -68,7 +124,7 @@ def detect_common_latex_faults(text: str) -> list[dict]:
         faults.append({"type": FAULT_DOUBLE_SUPERSCRIPT})
     if _DOUBLE_SUB_RE.search(value):
         faults.append({"type": FAULT_DOUBLE_SUBSCRIPT})
-    if _MALFORMED_FRAC_RE.search(value):
+    if _has_malformed_frac(value):
         faults.append({"type": FAULT_MALFORMED_FRAC})
     return faults
 
@@ -192,4 +248,3 @@ __all__ = [
     "run_case",
     "run_regression_cases",
 ]
-
