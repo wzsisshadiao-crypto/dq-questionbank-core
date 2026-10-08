@@ -2,6 +2,13 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.1.3] - 2026-10-08
+
+LaTeX fraction-argument detection now accepts a single TeX token as either
+argument (for example, `\frac a b` and `\frac{a} b`) while still reporting
+missing or unbalanced arguments. Original synthetic regression cases lock
+both valid and invalid forms. No question schema or production data changed.
+
 ## [1.1.2] - 2026-10-07
 
 Windows test portability maintenance release. The workspace-audit regression

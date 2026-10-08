@@ -51,9 +51,19 @@
     "expect_issue_types": ["double-superscript"]
   },
   {
-    "name": "double-subscript-and-malformed-frac-detected",
+    "name": "double-subscript-with-valid-single-token-fraction",
     "text": "$a_1_2$ and $\\frac{a} b$",
-    "expect_issue_types": ["double-subscript", "malformed-frac"]
+    "expect_issue_types": ["double-subscript"]
+  },
+  {
+    "name": "unbraced-single-token-fraction-is-valid",
+    "text": "$\\frac x2$",
+    "expect_issue_types": []
+  },
+  {
+    "name": "missing-fraction-denominator-is-detected",
+    "text": "$\\frac{a}$",
+    "expect_issue_types": ["malformed-frac"]
   },
   {
     "name": "clean-latex-has-no-faults",

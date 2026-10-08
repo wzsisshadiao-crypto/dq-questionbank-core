@@ -20,8 +20,25 @@ class DetectCommonLatexFaultsTests(unittest.TestCase):
         types = [f["type"] for f in detect_common_latex_faults("$a_1_2$")]
         self.assertIn("double-subscript", types)
 
-    def test_malformed_frac(self) -> None:
-        types = [f["type"] for f in detect_common_latex_faults(r"$\frac{a} b$")]
+    def test_single_token_frac_arguments_are_valid(self) -> None:
+        for source in (
+            r"$\frac a b$",
+            r"$\frac{a} b$",
+            r"$\frac 1 2$",
+            r"$\frac\alpha2$",
+            r"$\frac{{a+b}}{\sqrt{x}}$",
+        ):
+            with self.subTest(source=source):
+                self.assertEqual([], detect_common_latex_faults(source))
+
+    def test_missing_or_unbalanced_frac_argument_is_detected(self) -> None:
+        for source in (r"$\frac{a}$", r"$\frac 1$", r"$\frac{a}{b$", r"$\frac$"):
+            with self.subTest(source=source):
+                types = [f["type"] for f in detect_common_latex_faults(source)]
+                self.assertIn("malformed-frac", types)
+
+    def test_fraction_before_closing_math_delimiter_is_incomplete(self) -> None:
+        types = [f["type"] for f in detect_common_latex_faults(r"\(\frac a\)")]
         self.assertIn("malformed-frac", types)
 
     def test_clean_source_has_no_faults(self) -> None:
