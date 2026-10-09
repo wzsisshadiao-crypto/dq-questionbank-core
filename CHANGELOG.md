@@ -2,6 +2,14 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.1.4] - 2026-10-09
+
+Packaging metadata maintenance release. Declare Apache-2.0 using the SPDX
+license expression and ship the LICENSE file through PEP 639 metadata, with
+setuptools 77.0.3 or later as the build backend. Remove the deprecated license
+classifier and setuptools-specific license-files setting. Runtime behavior,
+question schema, and public APIs are unchanged.
+
 ## [1.1.3] - 2026-10-08
 
 LaTeX fraction-argument detection now accepts a single TeX token as either
