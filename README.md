@@ -5,10 +5,23 @@
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v1.1.4-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![Release](https://img.shields.io/badge/release-v1.1.5-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 [![PyPI](https://img.shields.io/pypi/v/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 [![Downloads](https://img.shields.io/pypi/dm/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 
+## Current development focus
+
+**Next planned milestone: v1.2.0 — Search.** The near-term work is to design a
+SQLite FTS adapter and fallback against synthetic data, add legally shareable
+import/LaTeX regression fixtures, and split the frontend `app.js` in small,
+separate steps. These are plans, not features in the current release.
+[Issue #122](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/122)
+tracks the broader roadmap; it is not a ready-to-start task list.
+
+New contributors can start with the [currently open `good first issue`
+list](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+and the [contribution guide](CONTRIBUTING.md). Check that an Issue is still open
+before beginning work.
 
 > **Community fixture call: help us test every legal question format.**
 >
@@ -17,15 +30,19 @@
 > **Start here:** [propose a fixture in the pinned community Issue #28](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/28) · [read the provenance and format guide](docs/test-fixture-contributions.md)
 >
 > Do not upload private data, production database extracts, credentials, or content whose redistribution rights are unclear. A public URL alone is not permission to copy.
-**Three tasks we recommend right now**
 
-- **No code (LaTeX only):** [share one complex formula missing a single component](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/43)
-- **15-minute fixture:** [share a tricky question format we can legally test](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/40)
-- **Small coding task:** [pick a bite-sized roadmap item](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/83)
+**Open beginner tasks right now**
 
-New small tasks are released a few at a time. Browse every open [good first issue](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) for docs, multilingual-math, and frontend options.
+- **LaTeX, no code:** [share one complex formula missing a single component](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/43)
+- **Multilingual math, no code:** [share one legally redistributable question](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/30)
+
+There is no open ready-to-start coding Issue at present. For a code
+contribution, propose a narrow, testable slice on the [roadmap
+discussion](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/122)
+before starting; do not treat a closed Issue as available work.
 
 You can start with a fixture or a small wording change; you do not need access to the private application.
+
 An open-source, local-first visual question bank workspace for LaTeX authoring,
 importing, reviewing, editing, and publishing math-rich questions.
 
@@ -109,9 +126,11 @@ The package is on PyPI: `pip install dq-questionbank-core` provides the `dq` CLI
 
    Read [`CONTRIBUTING.md`](CONTRIBUTING.md), then browse the open [`good first issue`](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) list. Current small tasks include:
 
-   * [Issue #43](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/43) — add a complex LaTeX formula (no code)
-   * [Issue #37](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/37) — add a blank-cell table fixture (15 min)
-   * [Issue #9](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/9) — add a source-year filter regression test (small coding task)
+   * [Issue #43](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/43) — share a complex LaTeX formula (no code)
+   * [Issue #30](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/30) — share a multilingual math question (no code)
+
+   No beginner-sized coding Issue is currently open. Check the live Issue list
+   rather than starting from a closed task.
 
 All examples in this quick start use the bundled synthetic case. The repository does not require access to the private application or production data.
 

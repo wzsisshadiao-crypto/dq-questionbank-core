@@ -9,6 +9,10 @@ defined and tested in this repository.
 ## Where to start
 
 - Browse issues labeled [`good first issue`](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
+- The currently open beginner tasks are [a LaTeX specimen (#43)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/43)
+  and [a multilingual math specimen (#30)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/30).
+  Both require clear redistribution rights and no code. Check their open state
+  before starting; no ready-to-start coding Issue is currently advertised.
 - Improve synthetic examples, tests, and user documentation.
 - Contribute legally redistributable question fixtures using the
   [test fixture contribution guide](docs/test-fixture-contributions.md).
