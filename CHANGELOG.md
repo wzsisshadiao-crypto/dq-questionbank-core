@@ -2,6 +2,14 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.1.5] - 2026-10-10
+
+Docs-only contributor-entry release. The README now states the planned search
+focus, points to currently open beginner tasks, and removes links that
+presented completed Issues as available work. The contribution guide agrees
+with the live Issue list. Runtime behavior, public APIs, and question schema
+are unchanged. This GitHub release does not imply a PyPI publication.
+
 ## [1.1.4] - 2026-10-09
 
 Packaging metadata maintenance release. Declare Apache-2.0 using the SPDX
