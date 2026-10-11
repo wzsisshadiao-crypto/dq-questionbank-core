@@ -2,6 +2,15 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.1.6] - 2026-10-11
+
+Add a synthetic, in-memory stem-search benchmark to the SQLite scaling script.
+It compares `LIKE` with optional FTS5 `MATCH`, checks equal result rows before
+timing, and reports both query plans. Regression tests and documentation cover
+the generated tokens and optional-FTS behavior. This does not ship an FTS
+adapter or claim production search speedups; public APIs and question schema
+are unchanged.
+
 ## [1.1.5] - 2026-10-10
 
 Docs-only contributor-entry release. The README now states the planned search
