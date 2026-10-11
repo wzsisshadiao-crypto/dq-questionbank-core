@@ -172,5 +172,12 @@ python scripts/bench_sqlite_scaling.py
 ```
 
 The benchmark builds a synthetic projection in memory, measures each scenario
-`--repeats` times, and prints medians next to the query plans, so the recipes
-above can be re-verified after any schema change.
+`--repeats` times, and prints medians next to the query plans. Its stem-search
+case compares `LIKE '%markerneedle%'` with FTS5 `MATCH 'markerneedle'` on the
+same generated rows and checks that both return identical row IDs before
+timing. Index construction is excluded from query timings. If this SQLite
+build lacks FTS5, that case reports a skip; the other scenarios still run.
+The controlled marker makes these queries comparable here; `LIKE` substring
+matching and FTS token matching are not generally equivalent. These numbers
+describe only this synthetic projection, not production search latency or an
+FTS adapter shipped by the core.
