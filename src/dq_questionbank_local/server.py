@@ -10,14 +10,16 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from importlib.resources import files
 from pathlib import Path
 from typing import Any
-from urllib.parse import unquote, urlparse
+from urllib.parse import parse_qs, unquote, urlparse
 
 from .case_database import CaseDatabase, CaseDatabaseError, bundled_case_database
+from .stem_search import StemSearchIndex
 from .storage import WorkspaceStorage
 from .validation import ValidationError
 
 _MAX_BODY_BYTES = 5 * 1024 * 1024
 _SET_ROUTE = re.compile(r"^/api/sets/([^/]+)$")
+_STEM_SEARCH_ROUTE = re.compile(r"^/api/sets/([^/]+)/stem-search$")
 _KATEX_FONT_FILES = {
     "KaTeX_AMS-Regular.woff2",
     "KaTeX_Caligraphic-Bold.woff2",
@@ -72,10 +74,12 @@ def create_server(
         raise ValueError("DQ QuestionBank Local only permits loopback hosts.")
     storage = WorkspaceStorage(workspace)
     case = CaseDatabase(case_database or bundled_case_database())
+    stem_search = StemSearchIndex(storage)
 
     class WorkspaceHandler(_Handler):
         workspace_storage = storage
         public_case = case
+        stem_search_index = stem_search
 
     return ThreadingHTTPServer((host, port), WorkspaceHandler)
 
@@ -83,11 +87,13 @@ def create_server(
 class _Handler(BaseHTTPRequestHandler):
     workspace_storage: WorkspaceStorage
     public_case: CaseDatabase
+    stem_search_index: StemSearchIndex
     server_version = "DQQuestionBankLocal/0.1"
     sys_version = ""
 
     def do_GET(self) -> None:  # noqa: N802
-        path = urlparse(self.path).path
+        parsed = urlparse(self.path)
+        path = parsed.path
         if path == "/api/sets":
             self._send_json(HTTPStatus.OK, {"sets": self.workspace_storage.list_sets()})
             return
@@ -99,6 +105,19 @@ class _Handler(BaseHTTPRequestHandler):
                 self._send_json(HTTPStatus.OK, self.public_case.info())
             except CaseDatabaseError as exc:
                 self._send_error(HTTPStatus.BAD_REQUEST, str(exc))
+            return
+        search_match = _STEM_SEARCH_ROUTE.fullmatch(path)
+        if search_match:
+            try:
+                query = parse_qs(parsed.query, keep_blank_values=True).get("q", [""])[0]
+                result = self.stem_search_index.search(unquote(search_match.group(1)), query)
+            except FileNotFoundError:
+                self._send_error(HTTPStatus.NOT_FOUND, "Question set not found.")
+                return
+            except (ValueError, OSError, json.JSONDecodeError):
+                self._send_error(HTTPStatus.BAD_REQUEST, "Stem search cannot be read safely.")
+                return
+            self._send_json(HTTPStatus.OK, result)
             return
         match = _SET_ROUTE.fullmatch(path)
         if match:
@@ -146,6 +165,7 @@ class _Handler(BaseHTTPRequestHandler):
             else:
                 payload = self.public_case.load()
                 self.workspace_storage.save(payload)
+                self.stem_search_index.invalidate(payload["id"])
         except (CaseDatabaseError, ValidationError, ValueError, OSError) as exc:
             self._send_error(HTTPStatus.BAD_REQUEST, str(exc))
             return
@@ -168,6 +188,7 @@ class _Handler(BaseHTTPRequestHandler):
             if expected_id is not None and payload.get("id") != expected_id:
                 raise ValidationError("The request id does not match the URL.")
             self.workspace_storage.save(payload)
+            self.stem_search_index.invalidate(payload["id"])
         except (ValidationError, ValueError) as exc:
             self._send_error(HTTPStatus.BAD_REQUEST, str(exc))
             return

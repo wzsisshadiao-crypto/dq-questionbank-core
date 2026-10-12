@@ -63,6 +63,7 @@
             <div class="filter-row filter-controls">
               <label class="filter-control narrow" for="question-year"><span>Year</span><input id="question-year" type="text" inputmode="numeric" maxlength="4" placeholder="All" autocomplete="off"></label>
               <label class="filter-control search-control" for="question-search"><span>Search</span><input id="question-search" type="search" placeholder="Search question content" autocomplete="off"></label>
+              <label class="filter-control search-mode-control" for="question-search-mode"><span>Mode</span><select id="question-search-mode"><option value="contains">Contains text</option><option value="stem-phrase">Stem phrase (FTS)</option></select></label>
               <label class="filter-control scope-control" for="question-search-scope"><span>Scope</span><select id="question-search-scope">
                 <option value="all">All fields</option>
                 <option value="id">ID</option>
@@ -75,6 +76,7 @@
               </select></label>
               <div class="filter-pair type-control"><span>Question type</span><div id="type-filter" class="chip-group compact" role="group" aria-label="Question type"></div></div>
             </div>
+            <p id="search-mode-help" class="search-mode-help" aria-live="polite">Contains text searches the loaded collection. Stem phrase uses whole-term FTS5 when available.</p>
           </section>
 
           <div class="content-layout">

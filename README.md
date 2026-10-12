@@ -5,16 +5,17 @@
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v1.1.6-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![Release](https://img.shields.io/badge/release-v1.2.0-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 [![PyPI](https://img.shields.io/pypi/v/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 [![Downloads](https://img.shields.io/pypi/dm/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 
 ## Current development focus
 
-**Next planned milestone: v1.2.0 — Search.** The near-term work is to design a
-SQLite FTS adapter and fallback against synthetic data, add legally shareable
-import/LaTeX regression fixtures, and split the frontend `app.js` in small,
-separate steps. These are plans, not features in the current release.
+**v1.2.0 — Search.** The local workspace now offers an opt-in,
+[SQLite FTS5 stem phrase mode](docs/stem-search.md) with a rebuildable sidecar
+and an explicit substring fallback. The original Contains text mode remains
+the default. Broader search scopes, legally shareable import/LaTeX regression
+fixtures, and staged frontend module splits remain separate future work.
 [Issue #122](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/issues/122)
 tracks the broader roadmap; it is not a ready-to-start task list.
 
