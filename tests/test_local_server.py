@@ -86,6 +86,8 @@ class LocalServerTests(unittest.TestCase):
             'id="review-nav"',
             'id="export-nav"',
             'id="question-search"',
+            'id="question-search-mode"',
+            'id="search-mode-help"',
             'id="question-year"',
             'id="question-search-scope"',
             'id="collection-search"',
@@ -139,6 +141,8 @@ class LocalServerTests(unittest.TestCase):
         self.assertIn("beforeunload", script)
         self.assertIn("question.choices = rows.map", script)
         self.assertIn('searchScope.value === "all"', script)
+        self.assertIn('function scheduleStemSearch()', script)
+        self.assertIn('result.mode === "fts5-phrase"', script)
         self.assertIn("question.source?.year ?? question.metadata?.year", script)
         self.assertIn("Expand answer and solution", script)
         self.assertNotIn("innerHTML", script)
@@ -159,6 +163,23 @@ class LocalServerTests(unittest.TestCase):
                 self.assertEqual(200, response.status)
                 self.assertIn(content_type, response.getheader("Content-Type"))
                 self.assertTrue(content.startswith(marker) or marker in content)
+
+    def test_stem_search_endpoint_tracks_saves_and_validates_query(self):
+        payload = sample_payload()
+        payload["questions"][0]["stem"]["blocks"][0]["text"] = "A synthetic cobalt compass."
+        self.assertEqual(201, self.request("POST", "/api/import", payload)[0])
+        status, body = self.request("GET", "/api/sets/synthetic-set/stem-search?q=cobalt")
+        self.assertEqual(200, status)
+        self.assertEqual(["q-1"], body["ids"])
+        self.assertIn(body["mode"], {"fts5-phrase", "substring-fallback"})
+        payload["questions"][0]["stem"]["blocks"][0]["text"] = "A synthetic copper compass."
+        self.assertEqual(200, self.request("PUT", "/api/sets/synthetic-set", payload)[0])
+        old_result = self.request("GET", "/api/sets/synthetic-set/stem-search?q=cobalt")[1]
+        new_result = self.request("GET", "/api/sets/synthetic-set/stem-search?q=copper")[1]
+        self.assertEqual([], old_result["ids"])
+        self.assertEqual(["q-1"], new_result["ids"])
+        self.assertEqual(400, self.request("GET", "/api/sets/synthetic-set/stem-search?q=")[0])
+        self.assertEqual(404, self.request("GET", "/api/sets/missing/stem-search?q=copper")[0])
 
     def test_editor_empty_choices_hint_names_next_action(self):
         connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port)

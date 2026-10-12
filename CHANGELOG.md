@@ -2,6 +2,17 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.2.0] - 2026-10-12
+
+Add an opt-in FTS5 stem phrase search to the loopback-only visual workspace.
+Canonical JSON files remain authoritative; a versioned SQLite sidecar is
+rebuildable and invalidated after saves. The API returns result IDs and the
+actual search mode. Missing FTS5, unusable sidecars, and request failures have
+explicit stem-substring fallbacks. The existing all-field Contains text search
+remains the default; token/phrase matching is not claimed to be equivalent to
+substring matching. Only original synthetic tests were added. No production
+data, question schema, or PyPI publication is involved.
+
 ## [1.1.6] - 2026-10-11
 
 Add a synthetic, in-memory stem-search benchmark to the SQLite scaling script.

@@ -18,6 +18,8 @@ const state = {
   importSummary: null,
   editorDirty: false,
   saveInFlight: false,
+  stemSearchIds: null,
+  stemSearchPhase: "idle",
 };
 
 const setList = document.querySelector("#set-list");
@@ -44,7 +46,12 @@ const loadCaseButton = document.querySelector("#load-case");
 const bankNav = document.querySelector("#question-bank-nav");
 const editorNav = document.querySelector("#editor-nav");
 const searchInput = document.querySelector("#question-search");
+const searchMode = document.querySelector("#question-search-mode");
+const searchModeHelp = document.querySelector("#search-mode-help");
 const searchScope = document.querySelector("#question-search-scope");
+let stemSearchTicket = 0;
+let stemSearchTimer = null;
+let containsScope = "all";
 const yearInput = document.querySelector("#question-year");
 const collectionSearch = document.querySelector("#collection-search");
 const subjectFilter = document.querySelector("#subject-filter");
@@ -479,9 +486,17 @@ function matchesFilters(question) {
     ...scopedValues,
     ...(searchScope.value === "all" ? [question.subject, question.type, question.metadata?.question_category] : []),
   ].filter(Boolean).join(" ").toLocaleLowerCase();
+  let searchMatches = !search || searchable.includes(search);
+  if (searchMode.value === "stem-phrase" && search) {
+    searchMatches = state.stemSearchPhase === "ready"
+      ? state.stemSearchIds.has(question.id)
+      : state.stemSearchPhase === "local-fallback"
+        ? stemText(question).toLocaleLowerCase().includes(search)
+        : false;
+  }
   const year = yearInput.value.trim();
   const questionYear = question.source?.year ?? question.metadata?.year ?? "";
-  return (!search || searchable.includes(search))
+  return searchMatches
     && (!year || String(questionYear) === year)
     && (!state.subject || question.subject === state.subject)
     && (!state.type || question.type === state.type);
@@ -685,7 +700,9 @@ function renderQuestionResults() {
   if (!matches.length) {
     const message = document.createElement("p");
     message.className = "no-results";
-    message.textContent = "No questions match these filters. Clear the Search and Year boxes, or turn off the active Subject and Question type chips, to see every question again.";
+    message.textContent = state.stemSearchPhase === "pending"
+      ? "Searching question stems…"
+      : "No questions match these filters. Clear the Search and Year boxes, or turn off the active Subject and Question type chips, to see every question again.";
     questionResults.append(message);
     return;
   }
@@ -697,6 +714,61 @@ function renderQuestionResults() {
 function applyQuestionFilters() {
   questionPagination.setPage(1);
   renderQuestionResults();
+}
+
+function scheduleStemSearch() {
+  stemSearchTicket += 1;
+  clearTimeout(stemSearchTimer);
+  state.stemSearchIds = null;
+  const query = searchInput.value.trim();
+  if (searchMode.value !== "stem-phrase" || !query) {
+    state.stemSearchPhase = "idle";
+    searchModeHelp.textContent = searchMode.value === "stem-phrase"
+      ? "Stem phrase matches whole terms; enter text to search."
+      : "Contains text searches the loaded collection. Stem phrase uses whole-term FTS5 when available.";
+    applyQuestionFilters();
+    return;
+  }
+  if (!state.persisted) {
+    state.stemSearchPhase = "local-fallback";
+    searchModeHelp.textContent = "Unsaved collection: using stem substring search.";
+    applyQuestionFilters();
+    return;
+  }
+  const ticket = stemSearchTicket;
+  const setId = state.selectedId;
+  state.stemSearchPhase = "pending";
+  searchModeHelp.textContent = "Searching the local stem index…";
+  applyQuestionFilters();
+  stemSearchTimer = setTimeout(async () => {
+    try {
+      const path = `/api/sets/${encodeURIComponent(setId)}/stem-search?q=${encodeURIComponent(query)}`;
+      const result = await request(path);
+      if (ticket !== stemSearchTicket) return;
+      state.stemSearchIds = new Set(result.ids);
+      state.stemSearchPhase = "ready";
+      searchModeHelp.textContent = result.mode === "fts5-phrase"
+        ? "FTS5 stem phrase: whole terms, not substring matching."
+        : "FTS5 unavailable: stem substring fallback is active.";
+    } catch (error) {
+      if (ticket !== stemSearchTicket) return;
+      state.stemSearchPhase = "local-fallback";
+      searchModeHelp.textContent = "Search service unavailable: using loaded stem substring search.";
+    }
+    applyQuestionFilters();
+  }, 150);
+}
+
+function changeSearchMode() {
+  if (searchMode.value === "stem-phrase") {
+    containsScope = searchScope.value;
+    searchScope.value = "stem";
+    searchScope.disabled = true;
+  } else {
+    searchScope.disabled = false;
+    searchScope.value = containsScope;
+  }
+  scheduleStemSearch();
 }
 
 function renderBank(payload) {
@@ -1558,6 +1630,8 @@ function populateEditor(payload) {
 }
 
 function renderWorkspace(payload, persisted = true, view = "bank") {
+  stemSearchTicket += 1;
+  clearTimeout(stemSearchTimer);
   const collectionChanged = state.selectedId !== payload.id;
   state.current = payload;
   state.selectedId = payload.id;
@@ -1576,7 +1650,13 @@ state.recycleIds = [];
   document.querySelector("#review-nav").disabled = false;
   document.querySelector("#export-nav").disabled = false;
   searchInput.value = "";
+  searchMode.value = "contains";
+  searchScope.disabled = false;
+  searchModeHelp.textContent = "Contains text searches the loaded collection. Stem phrase uses whole-term FTS5 when available.";
+  state.stemSearchIds = null;
+  state.stemSearchPhase = "idle";
   searchScope.value = "all";
+  containsScope = "all";
   yearInput.value = "";
   populateEditor(payload);
   renderBank(payload);
@@ -1915,7 +1995,8 @@ document.querySelector("#quality-view").addEventListener("click", (event) => {
   }
   renderQualityCenter();
 });
-searchInput.addEventListener("input", applyQuestionFilters);
+searchInput.addEventListener("input", scheduleStemSearch);
+searchMode.addEventListener("change", changeSearchMode);
 searchScope.addEventListener("change", applyQuestionFilters);
 yearInput.addEventListener("input", applyQuestionFilters);
 collectionSearch.addEventListener("input", () => renderSetList());
