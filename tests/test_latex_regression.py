@@ -46,6 +46,56 @@ class DetectCommonLatexFaultsTests(unittest.TestCase):
             [], detect_common_latex_faults(r"$\frac{a}{b} + c^2 + d_i$")
         )
 
+    def test_commands_and_scripts_in_tex_comments_are_ignored(self) -> None:
+        for source in (
+            "% " + r"\frac{a}" + "\n$x+1$",
+            r"$x$ % synthetic x^2^3 and a_1_2",
+            r"\\% synthetic \frac{a}" + "\n$x$",
+        ):
+            with self.subTest(source=source):
+                self.assertEqual([], detect_common_latex_faults(source))
+
+    def test_comments_do_not_supply_fraction_arguments_or_closing_braces(self) -> None:
+        for source in (
+            r"\(\frac a% synthetic denominator b" + "\n" + r"\)",
+            r"$\frac{a}{b% synthetic closer }" + "\n$",
+            r"$\frac{a}% synthetic denominator b",
+        ):
+            with self.subTest(source=source):
+                self.assertIn(
+                    "malformed-frac", [f["type"] for f in detect_common_latex_faults(source)]
+                )
+
+    def test_fraction_arguments_can_follow_comments(self) -> None:
+        for newline in ("\n", "\r\n", "\r"):
+            for source in (
+                r"\(\frac a% synthetic note" + newline + r"b\)",
+                r"\(\frac% synthetic note" + newline + r"{a}% synthetic note" + newline + r"{b}\)",
+            ):
+                with self.subTest(newline=newline, source=source):
+                    self.assertEqual([], detect_common_latex_faults(source))
+
+    def test_escaped_percent_keeps_following_source_visible(self) -> None:
+        self.assertEqual([], detect_common_latex_faults(r"$\frac\%2$"))
+        self.assertIn(
+            "malformed-frac",
+            [f["type"] for f in detect_common_latex_faults(r"$\% \frac{a}$")],
+        )
+
+    def test_comments_do_not_join_control_word_fragments(self) -> None:
+        source = r"$\frac\al% synthetic note" + "\npha$"
+        self.assertEqual([], detect_common_latex_faults(source))
+        source = r"$\fr% synthetic note" + "\nac{a}$"
+        self.assertEqual([], detect_common_latex_faults(source))
+
+    def test_active_script_faults_across_comments_are_still_detected(self) -> None:
+        for source, expected in (
+            ("$x^% synthetic note\n2^3$", "double-superscript"),
+            ("$a_1% synthetic note\n_2$", "double-subscript"),
+        ):
+            with self.subTest(source=source):
+                self.assertIn(expected, [f["type"] for f in detect_common_latex_faults(source)])
+
 
 class BuiltinCasesTests(unittest.TestCase):
     def test_all_builtin_cases_pass(self) -> None:

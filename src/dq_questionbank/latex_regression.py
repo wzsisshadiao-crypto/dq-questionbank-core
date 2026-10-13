@@ -116,9 +116,50 @@ def _has_malformed_frac(value: str) -> bool:
     return False
 
 
+def _without_tex_comments(value: str) -> str:
+    r"""Build the detector's view using ordinary TeX percent-comment rules.
+
+    Consume control symbols together so ``\%`` stays literal. A separator
+    after a control word keeps comments from manufacturing a longer command
+    when the next line begins with letters. The caller's source is untouched.
+    """
+    parts: list[str] = []
+    position = 0
+    after_control_word = False
+    while position < len(value):
+        character = value[position]
+        if character == "\\":
+            start = position
+            position += 1
+            after_control_word = position < len(value) and (
+                value[position].isalpha() or value[position] == "@"
+            )
+            if after_control_word:
+                while position < len(value) and (value[position].isalpha() or value[position] == "@"):
+                    position += 1
+            elif position < len(value):
+                position += 1
+            parts.append(value[start:position])
+        elif character == "%":
+            while position < len(value) and value[position] not in "\r\n":
+                position += 1
+            if value.startswith("\r\n", position):
+                position += 2
+            elif position < len(value):
+                position += 1
+            if after_control_word:
+                parts.append(" ")
+            after_control_word = False
+        else:
+            parts.append(character)
+            position += 1
+            after_control_word = False
+    return "".join(parts)
+
+
 def detect_common_latex_faults(text: str) -> list[dict]:
     """Detect structural LaTeX faults that no repair should ever introduce."""
-    value = str(text or "")
+    value = _without_tex_comments(str(text or ""))
     faults: list[dict] = []
     if _DOUBLE_SUP_RE.search(value):
         faults.append({"type": FAULT_DOUBLE_SUPERSCRIPT})

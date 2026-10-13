@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dq-questionbank-core"
-version = "1.2.0"
+version = "1.2.1"
 description = "Open infrastructure for structured educational questions."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -54,7 +54,12 @@ include-package-data = true
 where = ["src"]
 
 [tool.setuptools.package-data]
-dq_questionbank = ["web/*", "data/import_cases/**/*", "data/word_macro/*"]
+dq_questionbank = [
+  "web/*",
+  "data/import_cases/**/*",
+  "data/word_macro/*",
+  "data/latex_regression_cases.json",
+]
 dq_questionbank_local = [
   "web/*",
   "web/vendor/katex/*",

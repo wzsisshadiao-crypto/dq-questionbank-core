@@ -66,6 +66,36 @@
     "expect_issue_types": ["malformed-frac"]
   },
   {
+    "name": "commented-fraction-command-is-ignored",
+    "text": "% synthetic note: \\frac{a}\n$x+1$",
+    "expect_issue_types": [],
+    "expect_equals": "% synthetic note: \\frac{a}\n$x+1$"
+  },
+  {
+    "name": "comment-cannot-supply-missing-denominator",
+    "text": "\\(\\frac a% synthetic denominator b\n\\)",
+    "expect_issue_types": ["malformed-frac"],
+    "expect_equals": "\\(\\frac a% synthetic denominator b\n\\)"
+  },
+  {
+    "name": "fraction-argument-after-comment-is-valid",
+    "text": "\\(\\frac a% synthetic note\nb\\)",
+    "expect_issue_types": [],
+    "expect_equals": "\\(\\frac a% synthetic note\nb\\)"
+  },
+  {
+    "name": "escaped-percent-does-not-hide-fraction-fault",
+    "text": "$\\% \\frac{a}$",
+    "expect_issue_types": ["malformed-frac"],
+    "expect_equals": "$\\% \\frac{a}$"
+  },
+  {
+    "name": "comment-preserves-control-word-boundary",
+    "text": "$\\frac\\al% synthetic note\npha$",
+    "expect_issue_types": [],
+    "expect_equals": "$\\frac\\al% synthetic note\npha$"
+  },
+  {
     "name": "clean-latex-has-no-faults",
     "text": "$\\frac{\\partial^2 z}{\\partial x\\,\\mathrm dy}$",
     "expect_issue_types": []
