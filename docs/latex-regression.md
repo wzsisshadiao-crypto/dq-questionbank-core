@@ -58,12 +58,25 @@ executable memory:
 - Fraction arguments may be braced groups or single TeX tokens; valid
   `\frac a b` and `\frac{a} b` are not flagged, while a missing denominator
   is. This is a structural guard, not a complete TeX renderer.
+- Percent comments are ignored when detecting structural faults. Commented
+  commands and braces cannot create or conceal a fraction fault; escaped
+  `\%` stays literal. Comments between arguments are allowed, and removing a
+  comment must preserve control-word token boundaries. Five original
+  synthetic snippets pin these cases without changing their source text.
+
+Comment handling assumes ordinary TeX category codes, consistent with the
+percent-comment rule in [KaTeX's lexer](https://github.com/KaTeX/KaTeX/blob/main/src/Lexer.ts).
+Custom category codes and verbatim regions are outside this structural
+detector's scope; it is not a full TeX tokenizer or compiler.
 
 Run them anywhere:
 
+The built-in case JSON is included in the wheel and source distribution;
+the command works from an installed package as well as a source checkout.
+
 ```bash
 python -m dq_questionbank.latex_regression
-# cases=11 failed=0
+# cases=16 failed=0
 ```
 
 ### The change ritual

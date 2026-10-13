@@ -2,6 +2,17 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.2.1] - 2026-10-13
+
+Make the structural LaTeX fault detector respect ordinary percent comments.
+Commands and braces inside comments no longer produce false findings or
+conceal a missing fraction argument. Escaped percent signs remain literal,
+and control-word boundaries survive comments between tokens. Five original
+synthetic regression fixtures and focused tests cover the change. Source
+text, repair transforms, question schema, and public signatures are unchanged.
+Include the regression-case JSON in distributions so the installed regression
+runner can load its built-in cases.
+
 ## [1.2.0] - 2026-10-12
 
 Add an opt-in FTS5 stem phrase search to the loopback-only visual workspace.
