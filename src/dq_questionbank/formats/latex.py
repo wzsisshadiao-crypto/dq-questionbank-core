@@ -12,6 +12,36 @@ from .common import markup_to_content
 
 BEGIN_MARKER = "% dq-question-set: "
 QUESTION_MARKER = "% dq-question: "
+ENUMERATE_TOKEN_RE = re.compile(
+    r"\\begin\s*\{enumerate\}|\\end\s*\{enumerate\}|\\item\b"
+)
+
+
+def _top_level_enumerate_items(text: str) -> list[str]:
+    """Return items from outer enumerate environments, retaining nested source."""
+    depth = 0
+    item_start: int | None = None
+    items: list[str] = []
+
+    for token in ENUMERATE_TOKEN_RE.finditer(text):
+        value = token.group(0)
+        if value.startswith(r"\begin"):
+            depth += 1
+            continue
+        if value.startswith(r"\end"):
+            if depth == 1 and item_start is not None:
+                items.append(text[item_start : token.start()].strip())
+                item_start = None
+            if depth > 0:
+                depth -= 1
+            continue
+        if depth != 1:
+            continue
+        if item_start is not None:
+            items.append(text[item_start : token.start()].strip())
+        item_start = token.end()
+
+    return items
 
 
 def _escape_text(value: str) -> str:
@@ -113,7 +143,7 @@ class LatexImporter:
 
     def _load_simple_latex(self, text: str, source: Path) -> QuestionSet:
         """Best-effort import for simple enumerate-based question documents."""
-        items = re.findall(r"\\item\s+(.+?)(?=\\item|\\end\{enumerate\})", text, re.DOTALL)
+        items = _top_level_enumerate_items(text)
         questions = []
         for index, item in enumerate(items, start=1):
             cleaned = re.sub(r"\\(?:textbf|emph)\{([^}]*)\}", r"\1", item).strip()
