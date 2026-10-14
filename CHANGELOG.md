@@ -2,6 +2,15 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.2.2] - 2026-10-14
+
+Make the best-effort LaTeX fallback importer distinguish outer question items
+from items inside nested `enumerate` environments. Nested source remains part
+of its outer question stem instead of becoming extra standalone questions. An
+original synthetic two-question fixture locks the behavior and documents its
+provenance. Generated-document markers, canonical schemas, and public
+signatures are unchanged.
+
 ## [1.2.1] - 2026-10-13
 
 Make the structural LaTeX fault detector respect ordinary percent comments.
