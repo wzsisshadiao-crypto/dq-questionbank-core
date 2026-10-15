@@ -164,7 +164,10 @@ class DocxImporter:
                     parsed_value: Any = (
                         [
                             part.strip()
-                            for part in answer_value.strip("[]").replace("'", "").split(",")
+                            for part in answer_value.strip("[]")
+                            .replace("'", "")
+                            .replace('"', "")
+                            .split(",")
                         ]
                         if kind == "choices"
                         else answer_value

@@ -26,6 +26,11 @@ Answer: text:4
 **Preserved:** The question ID, type, language, stem, and answer are
 recognised when these documented labels are used.
 
+For choice answers, both the exporter's single-quoted list and a JSON-style
+double-quoted list are accepted. For example, `Answer: choices:["A", "B"]`
+imports the canonical choice IDs `A` and `B`; the quote characters are not
+part of the IDs.
+
 **Best effort:** Surrounding Word formatting is not part of the canonical
 import contract. The importer primarily relies on paragraph content and the
 documented field labels.
