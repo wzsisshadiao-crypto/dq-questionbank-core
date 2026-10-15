@@ -1,0 +1,41 @@
+{
+  "fixture_note": "Original synthetic DOCX field-label specimen generated at test time.",
+  "title": "Synthetic labeled choice answer",
+  "paragraphs": [
+    {
+      "style": "Heading 1",
+      "text": "Question choice-json-1"
+    },
+    {
+      "text": "Type: multiple_choice | Language: en"
+    },
+    {
+      "text": "Question: Select both synthetic labels."
+    },
+    {
+      "text": "[A] Alpha"
+    },
+    {
+      "text": "[B] Beta"
+    },
+    {
+      "text": "Answer: choices:[\"A\", \"B\"]"
+    }
+  ],
+  "expected": {
+    "question_id": "choice-json-1",
+    "type": "multiple_choice",
+    "language": "en",
+    "choice_ids": [
+      "A",
+      "B"
+    ],
+    "answer": {
+      "kind": "choices",
+      "value": [
+        "A",
+        "B"
+      ]
+    }
+  }
+}

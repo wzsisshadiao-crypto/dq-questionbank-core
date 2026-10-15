@@ -2,6 +2,14 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.2.3] - 2026-10-15
+
+Normalize double-quoted members in DOCX `Answer: choices:[...]` field labels,
+so JSON-style lists import the same canonical choice IDs as the exporter's
+single-quoted representation. An original, text-auditable synthetic fixture
+builds the DOCX at test time and records its provenance. Other answer kinds,
+question schemas, and public signatures are unchanged.
+
 ## [1.2.2] - 2026-10-14
 
 Make the best-effort LaTeX fallback importer distinguish outer question items
