@@ -11,7 +11,7 @@ from ..models import Choice, Question, QuestionSet
 from .common import content_to_markup, markup_to_content
 
 QUESTION_HEADER_RE = re.compile(r"^## Question `(?P<id>[^`]+)` \((?P<type>[^)]+)\)$")
-CHOICE_RE = re.compile(r"^- \[(?P<id>[^]]+)\] (?P<content>.*)$")
+CHOICE_RE = re.compile(r"^ {0,3}- \[(?P<id>[^]]+)\] (?P<content>.*)$")
 
 
 def _json_line(prefix: str, value: Any) -> str:
