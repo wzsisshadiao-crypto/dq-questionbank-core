@@ -1,0 +1,63 @@
+{
+  "schema_version": "1.0",
+  "id": "markdown-indented-choices",
+  "title": "Synthetic indented choices",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "indent-choices-001",
+      "type": "single_choice",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Choose the synthetic label that comes second."
+          }
+        ]
+      },
+      "choices": [
+        {
+          "id": "A",
+          "content": {
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Alpha"
+              }
+            ]
+          }
+        },
+        {
+          "id": "B",
+          "content": {
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Beta"
+              }
+            ]
+          }
+        },
+        {
+          "id": "C",
+          "content": {
+            "blocks": [
+              {
+                "type": "text",
+                "text": "Gamma"
+              }
+            ]
+          }
+        }
+      ],
+      "answer": {
+        "kind": "choices",
+        "value": [
+          "B"
+        ]
+      }
+    }
+  ]
+}

@@ -2,6 +2,14 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.2.4] - 2026-10-16
+
+Accept zero to three leading spaces before labeled Markdown choice items, in
+line with ordinary Markdown list indentation. Four-space code blocks remain
+outside the canonical choice syntax. An original synthetic fixture records the
+supported boundary and its provenance. Generated Markdown, question schemas,
+and public signatures are unchanged.
+
 ## [1.2.3] - 2026-10-15
 
 Normalize double-quoted members in DOCX `Answer: choices:[...]` field labels,
