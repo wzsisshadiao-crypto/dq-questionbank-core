@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "id": "markdown-reserved-headings",
+  "title": "Synthetic reserved headings",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "reserved-heading-001",
+      "type": "short_answer",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Before the synthetic markers.\n### Choices\nThis remains stem text.\n### Solution\nThis also remains stem text.\n### Hint 2\nEnd of the synthetic stem.\n\\### Solution"
+          }
+        ]
+      }
+    }
+  ]
+}
