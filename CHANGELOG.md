@@ -2,6 +2,14 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.2.5] - 2026-10-17
+
+Preserve literal Markdown section headings inside canonical content by
+backslash-escaping them during export and reversing exactly one escape during
+import. Existing leading backslashes remain reversible. An original synthetic
+fixture covers the Choices, Solution, and Hint heading boundary. Question
+schemas and public signatures are unchanged.
+
 ## [1.2.4] - 2026-10-16
 
 Accept zero to three leading spaces before labeled Markdown choice items, in

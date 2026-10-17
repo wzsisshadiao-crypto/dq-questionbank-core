@@ -12,10 +12,33 @@ from .common import content_to_markup, markup_to_content
 
 QUESTION_HEADER_RE = re.compile(r"^## Question `(?P<id>[^`]+)` \((?P<type>[^)]+)\)$")
 CHOICE_RE = re.compile(r"^ {0,3}- \[(?P<id>[^]]+)\] (?P<content>.*)$")
+RESERVED_HEADING_RE = re.compile(
+    r"^(?P<escapes>\\*)(?:#+.* (?:Choices|Solution)|#+ Hint \d+)$"
+)
 
 
 def _json_line(prefix: str, value: Any) -> str:
     return f"{prefix}{json.dumps(value, ensure_ascii=False, separators=(',', ':'))}"
+
+
+def _escape_reserved_headings(value: str) -> str:
+    lines = []
+    for line in value.split("\n"):
+        stripped = line.strip()
+        if RESERVED_HEADING_RE.fullmatch(stripped):
+            start = line.index(stripped)
+            line = f"{line[:start]}\\{line[start:]}"
+        lines.append(line)
+    return "\n".join(lines)
+
+
+def _unescape_reserved_heading(line: str) -> str:
+    stripped = line.strip()
+    match = RESERVED_HEADING_RE.fullmatch(stripped)
+    if match and match.group("escapes"):
+        start = line.index(stripped)
+        return f"{line[:start]}{line[start + 1:]}"
+    return line
 
 
 class MarkdownExporter:
@@ -57,13 +80,14 @@ class MarkdownExporter:
             f"{heading} Question `{question.id}` ({question.type})",
             _json_line("<!-- dq:question ", metadata) + " -->",
             "",
-            content_to_markup(question.stem),
+            _escape_reserved_headings(content_to_markup(question.stem)),
             "",
         ]
         if question.choices:
             lines.append(f"{'#' * (level + 1)} Choices")
             for choice in question.choices:
-                lines.append(f"- [{choice.id}] {content_to_markup(choice.content)}")
+                rendered = _escape_reserved_headings(content_to_markup(choice.content))
+                lines.append(f"- [{choice.id}] {rendered}")
             lines.append("")
         if question.answer:
             lines.extend(
@@ -71,10 +95,20 @@ class MarkdownExporter:
             )
         if question.solution:
             lines.extend(
-                [f"{'#' * (level + 1)} Solution", content_to_markup(question.solution), ""]
+                [
+                    f"{'#' * (level + 1)} Solution",
+                    _escape_reserved_headings(content_to_markup(question.solution)),
+                    "",
+                ]
             )
         for index, hint in enumerate(question.hints, start=1):
-            lines.extend([f"{'#' * (level + 1)} Hint {index}", content_to_markup(hint), ""])
+            lines.extend(
+                [
+                    f"{'#' * (level + 1)} Hint {index}",
+                    _escape_reserved_headings(content_to_markup(hint)),
+                    "",
+                ]
+            )
         return lines
 
 
@@ -149,11 +183,14 @@ class MarkdownImporter:
                 choice_match = CHOICE_RE.match(line)
                 if choice_match:
                     choice = Choice(
-                        choice_match.group("id"), markup_to_content(choice_match.group("content"))
+                        choice_match.group("id"),
+                        markup_to_content(
+                            _unescape_reserved_heading(choice_match.group("content"))
+                        ),
                     )
                     current["choices"].append(choice.to_dict())
                 continue
-            buffers.setdefault(section, []).append(line)
+            buffers.setdefault(section, []).append(_unescape_reserved_heading(line))
         finish()
         title = next(
             (line[2:].strip() for line in lines if line.startswith("# ")), "Imported questions"
