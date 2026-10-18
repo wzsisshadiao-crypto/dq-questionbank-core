@@ -2,6 +2,14 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.2.6] - 2026-10-18
+
+Preserve literal Markdown answer-marker lines inside canonical content by
+including them in the format's reversible backslash-escape boundary. Existing
+leading backslashes remain lossless. An original synthetic fixture covers the
+marker and pre-escaped forms. Question schemas and public signatures are
+unchanged.
+
 ## [1.2.5] - 2026-10-17
 
 Preserve literal Markdown section headings inside canonical content by

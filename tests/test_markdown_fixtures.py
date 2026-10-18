@@ -41,6 +41,24 @@ class MarkdownFixtureTests(unittest.TestCase):
         self.assertEqual(imported.to_dict(), question_set.to_dict())
         self.assertIsNone(imported.questions[0].solution)
 
+    def test_answer_markers_in_content_round_trip_as_literal_text(self):
+        fixture_dir = COMMUNITY_FIXTURES / "markdown-answer-marker"
+        question_set = QuestionSet.from_dict(
+            json.loads((fixture_dir / "canonical.json").read_text(encoding="utf-8"))
+        )
+
+        with tempfile.TemporaryDirectory() as temporary:
+            target = Path(temporary) / "answer-marker.md"
+            MarkdownExporter().dump(question_set, target)
+            self.assertEqual(
+                target.read_text(encoding="utf-8"),
+                (fixture_dir / "expected.md").read_text(encoding="utf-8"),
+            )
+            imported = MarkdownImporter().load(target)
+
+        self.assertEqual(imported.to_dict(), question_set.to_dict())
+        self.assertIsNone(imported.questions[0].answer)
+
 
 if __name__ == "__main__":
     unittest.main()
