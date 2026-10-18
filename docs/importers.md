@@ -9,7 +9,9 @@ Importers translate source documents into a `QuestionSet`.
   best-effort choice parser also accepts Markdown list items with zero to three
   leading spaces; four-space code blocks are not treated as canonical choices.
   Literal `### Choices`, `### Solution`, and `### Hint N` lines inside content
-  are backslash-escaped on export and restored as content on import.
+  are backslash-escaped on export and restored as content on import. The same
+  reversible escape protects literal lines shaped like the `**Answer:**`
+  marker.
 - LaTeX fully restores generated files and provides a basic `enumerate`
   fallback. Only items in an outer `enumerate` become questions; nested
   environments remain source text inside their outer question.
