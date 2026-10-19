@@ -11,7 +11,7 @@ Importers translate source documents into a `QuestionSet`.
   Literal `### Choices`, `### Solution`, and `### Hint N` lines inside content
   are backslash-escaped on export and restored as content on import. The same
   reversible escape protects literal lines shaped like the `**Answer:**`
-  marker.
+  marker or a generated `## Question` header.
 - LaTeX fully restores generated files and provides a basic `enumerate`
   fallback. Only items in an outer `enumerate` become questions; nested
   environments remain source text inside their outer question.
