@@ -1,0 +1,22 @@
+{
+  "schema_version": "1.0",
+  "id": "markdown-question-header",
+  "title": "Synthetic question header",
+  "language": "en",
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "question-header-001",
+      "type": "short_answer",
+      "language": "en",
+      "stem": {
+        "blocks": [
+          {
+            "type": "text",
+            "text": "Before the synthetic header.\n## Question `shadow-002` (short_answer)\nThis remains stem text.\n\\## Question `escaped-003` (short_answer)"
+          }
+        ]
+      }
+    }
+  ]
+}
