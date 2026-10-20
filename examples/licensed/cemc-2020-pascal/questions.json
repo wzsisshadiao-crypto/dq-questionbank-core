@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "id": "cemc-2020-pascal-licensed-sample",
+  "title": "2020 Pascal Contest licensed sample",
+  "description": "Three-question non-commercial interoperability sample; see the adjacent license and provenance files.",
+  "language": "en",
+  "metadata": {
+    "license": "CC-BY-NC-4.0",
+    "license_uri": "https://creativecommons.org/licenses/by-nc/4.0/",
+    "disclaimer": "Not endorsed by or affiliated with the University of Waterloo or CEMC."
+  },
+  "questions": [
+    {
+      "schema_version": "1.0",
+      "id": "cemc-2020-pascal-q02",
+      "type": "single_choice",
+      "language": "en",
+      "subject": "Mathematics",
+      "stem": {
+        "blocks": [
+          {"type": "text", "text": "The value of "},
+          {"type": "math", "latex": "0.8 + 0.02"},
+          {"type": "text", "text": " is"}
+        ]
+      },
+      "choices": [
+        {"id": "A", "content": {"blocks": [{"type": "math", "latex": "0.28"}]}},
+        {"id": "B", "content": {"blocks": [{"type": "math", "latex": "8.02"}]}},
+        {"id": "C", "content": {"blocks": [{"type": "math", "latex": "0.82"}]}},
+        {"id": "D", "content": {"blocks": [{"type": "math", "latex": "0.16"}]}},
+        {"id": "E", "content": {"blocks": [{"type": "math", "latex": "0.01"}]}}
+      ],
+      "answer": {"kind": "choice", "value": "C"},
+      "source": {
+        "title": "2020 Pascal Contest",
+        "author": "Centre for Education in Mathematics and Computing, University of Waterloo",
+        "year": 2020,
+        "uri": "https://cemc.uwaterloo.ca/sites/default/files/documents/2020/2020PascalContest.html",
+        "license": "CC-BY-NC-4.0",
+        "attribution": "Copyright 2019 University of Waterloo. Used under CC BY-NC 4.0.",
+        "locator": "Question 2",
+        "license_uri": "https://creativecommons.org/licenses/by-nc/4.0/",
+        "modifications": "Structured as canonical DQ JSON; mathematical notation normalized to LaTeX blocks."
+      }
+    },
+    {
+      "schema_version": "1.0",
+      "id": "cemc-2020-pascal-q03",
+      "type": "single_choice",
+      "language": "en",
+      "subject": "Mathematics",
+      "stem": {
+        "blocks": [
+          {"type": "text", "text": "If "},
+          {"type": "math", "latex": "2x + 6 = 16"},
+          {"type": "text", "text": ", the value of "},
+          {"type": "math", "latex": "x + 4"},
+          {"type": "text", "text": " is"}
+        ]
+      },
+      "choices": [
+        {"id": "A", "content": {"blocks": [{"type": "math", "latex": "7"}]}},
+        {"id": "B", "content": {"blocks": [{"type": "math", "latex": "8"}]}},
+        {"id": "C", "content": {"blocks": [{"type": "math", "latex": "9"}]}},
+        {"id": "D", "content": {"blocks": [{"type": "math", "latex": "15"}]}},
+        {"id": "E", "content": {"blocks": [{"type": "math", "latex": "13"}]}}
+      ],
+      "answer": {"kind": "choice", "value": "C"},
+      "source": {
+        "title": "2020 Pascal Contest",
+        "author": "Centre for Education in Mathematics and Computing, University of Waterloo",
+        "year": 2020,
+        "uri": "https://cemc.uwaterloo.ca/sites/default/files/documents/2020/2020PascalContest.html",
+        "license": "CC-BY-NC-4.0",
+        "attribution": "Copyright 2019 University of Waterloo. Used under CC BY-NC 4.0.",
+        "locator": "Question 3",
+        "license_uri": "https://creativecommons.org/licenses/by-nc/4.0/",
+        "modifications": "Structured as canonical DQ JSON; mathematical notation normalized to LaTeX blocks."
+      }
+    },
+    {
+      "schema_version": "1.0",
+      "id": "cemc-2020-pascal-q06",
+      "type": "single_choice",
+      "language": "en",
+      "subject": "Mathematics",
+      "stem": {
+        "blocks": [
+          {"type": "text", "text": "The value of "},
+          {"type": "math", "latex": "\\frac{2^4 - 2}{2^3 - 1}"},
+          {"type": "text", "text": " is"}
+        ]
+      },
+      "choices": [
+        {"id": "A", "content": {"blocks": [{"type": "math", "latex": "1"}]}},
+        {"id": "B", "content": {"blocks": [{"type": "math", "latex": "0"}]}},
+        {"id": "C", "content": {"blocks": [{"type": "math", "latex": "\\frac{7}{4}"}]}},
+        {"id": "D", "content": {"blocks": [{"type": "math", "latex": "\\frac{4}{3}"}]}},
+        {"id": "E", "content": {"blocks": [{"type": "math", "latex": "2"}]}}
+      ],
+      "answer": {"kind": "choice", "value": "E"},
+      "source": {
+        "title": "2020 Pascal Contest",
+        "author": "Centre for Education in Mathematics and Computing, University of Waterloo",
+        "year": 2020,
+        "uri": "https://cemc.uwaterloo.ca/sites/default/files/documents/2020/2020PascalContest.html",
+        "license": "CC-BY-NC-4.0",
+        "attribution": "Copyright 2019 University of Waterloo. Used under CC BY-NC 4.0.",
+        "locator": "Question 6",
+        "license_uri": "https://creativecommons.org/licenses/by-nc/4.0/",
+        "modifications": "Structured as canonical DQ JSON; mathematical notation normalized to LaTeX blocks."
+      }
+    }
+  ]
+}

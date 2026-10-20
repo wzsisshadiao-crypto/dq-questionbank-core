@@ -1,0 +1,16 @@
+{
+  "schema_version": "dq-provenance/v1",
+  "publisher": "Centre for Education in Mathematics and Computing, University of Waterloo",
+  "work": "2020 Pascal Contest",
+  "year": 2020,
+  "source_html": "https://cemc.uwaterloo.ca/sites/default/files/documents/2020/2020PascalContest.html",
+  "source_pdf": "https://cemc.uwaterloo.ca/sites/default/files/documents/2020/2020PascalContest.pdf",
+  "source_pdf_sha256": "2553dadf296212d0aea2c49b53264ef448addba5b10cc06ec4d4cc04e36e799e",
+  "locators": ["Question 2", "Question 3", "Question 6"],
+  "retrieved_at": "2026-10-20",
+  "review": "Source PDF visually checked against the official HTML; wording and choice order retained.",
+  "license": "CC-BY-NC-4.0",
+  "license_uri": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "license_statement_uri": "https://cemc.uwaterloo.ca/copyright",
+  "changes": "Selected three questions and represented mathematical notation as canonical LaTeX blocks; official solution prose omitted."
+}

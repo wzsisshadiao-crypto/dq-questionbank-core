@@ -119,3 +119,10 @@ dq word-serve reviewed.json
 中文站和本文件是面向用户的本地化入口。公共 API 名称、CLI、Schema、Issue、贡献规范和技术文档仍以英文版本为唯一规范来源。题目内容本身支持多语言。
 
 仓库绝不包含生产题库、真实用户数据、凭据、供应商配置或业务维护记录。详细边界见 [OPEN_SOURCE_BOUNDARY.md](OPEN_SOURCE_BOUNDARY.md)，贡献前请阅读 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 许可
+
+项目代码及项目原创文档采用 Apache License 2.0。单独标注的第三方内容不在
+Apache-2.0 覆盖范围内；其中 `examples/licensed/` 下的小规模 CEMC 示例采用
+CC BY-NC 4.0，来源、改编说明和免责声明见
+[`THIRD_PARTY_CONTENT.md`](THIRD_PARTY_CONTENT.md)。
