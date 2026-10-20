@@ -5,7 +5,7 @@
 [![CI](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml/badge.svg)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/license-Apache--2.0-green)](LICENSE)
-[![Release](https://img.shields.io/badge/release-v1.2.7-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
+[![Release](https://img.shields.io/badge/release-v1.2.8-informational)](https://github.com/wzsisshadiao-crypto/dq-questionbank-core/releases)
 [![PyPI](https://img.shields.io/pypi/v/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 [![Downloads](https://img.shields.io/pypi/dm/dq-questionbank-core)](https://pypi.org/project/dq-questionbank-core/)
 
@@ -510,4 +510,8 @@ First pull requests get a fast review, a specific thank-you, and a suggested nex
 
 ## License
 
-Apache License 2.0. See [`LICENSE`](LICENSE).
+Project code and project-authored documentation are licensed under Apache
+License 2.0. See [`LICENSE`](LICENSE). Files identified in
+[`THIRD_PARTY_CONTENT.md`](THIRD_PARTY_CONTENT.md), including the small CEMC
+sample under `examples/licensed/`, retain their separate licenses and are not
+covered by Apache-2.0.

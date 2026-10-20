@@ -2,6 +2,18 @@
 
 All notable changes will be documented here. The project follows semantic versioning.
 
+## [1.2.8] - 2026-10-20
+
+Add a three-question, text-only canonical sample from the University of
+Waterloo CEMC 2020 Pascal Contest. Each question carries stable source,
+locator, attribution, modification, and CC BY-NC 4.0 metadata. Adjacent
+provenance and license notices record the source PDF hash, review date, and
+non-commercial boundary; a repository-level third-party manifest keeps this
+data outside the Apache-2.0 project license. Tests enforce the three-question
+limit, canonical validation, attribution, provenance, and disclaimer. No CEMC
+logos, source PDF, official solution prose, private data, or PyPI publication
+are included.
+
 ## [1.2.7] - 2026-10-19
 
 Preserve literal Markdown question-header lines inside canonical content by
